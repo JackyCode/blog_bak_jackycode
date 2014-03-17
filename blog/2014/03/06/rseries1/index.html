@@ -1,0 +1,444 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>R语言记录1 ：基础 - Jacky and MSC</title>
+  <meta name="author" content="Jacky Code">
+
+  
+  <meta name="description" content="">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/03/06/rseries1">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Jacky and MSC" type="application/atom+xml">
+  
+  
+  <!-- 
+ -->
+
+  <script type="text/javascript">var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-48812316-1']);_gaq.push(['_trackPageview']);(function() {var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);})();</script>
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">Jacky and MSC</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/home">Home</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:jackycode.github.io" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">R语言记录1 ：基础</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-06T15:27:28+08:00" pubdate data-updated="true">Mar 6<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/artical/artical4.jpg" alt="aritical 4" /></p>
+
+<!-- more -->
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h3 id="section">一. 配置与帮助</h3>
+
+<p>很多时候我们希望软件可以根据我们的需要输出结果，比如我想将所有的结果小数都保留三位，那么就需要自己去更改设置，这时候就需要使用函数：<code>options(...)</code>。这个函数可以用来<strong><em>显示或设置当前的选项</em></strong>。运行<code>options()</code>，可以查看选项当前的设置，<code>help(options)</code>可以显示可用选项的说明。如果想要单独查看某一个设置，则需要使用函数<code>getOption(x, default=NULL)</code>。</p>
+
+<p>可以运行这些代码以查看：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>config_set.R</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">options<span class="p">()</span>
+</span><span class="line">getOption<span class="p">(</span><span class="s">&quot;digits&quot;</span><span class="p">)</span>
+</span><span class="line">options<span class="p">(</span>digits<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+</span><span class="line">getOption<span class="p">(</span><span class="s">&quot;digits&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在学习一个软件之前，最重要的是知道在哪里才能获取帮助。R语言提供了强大的帮助系统，提供了已安装包中所有函数的细节、参考文献以及使用示例。以和函数<code>sum()</code>为例，你可以直接输入<code>help(sum)或?sum</code>查看函数<code>sum</code>的帮助，也可以输入<code>help.search(sum)或??sum</code>在本地以关键词<code>sum</code>进行搜索。你甚至可以直接输入<code>sum</code>得到该函数的源代码细节（这对于学习编程来说实在是太棒了）。</p>
+
+<p>试试这些：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>help_use.R</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">help.start<span class="p">()</span> <span class="c1"># 打开帮助文档首页</span>
+</span><span class="line"><span class="o">?</span>sum
+</span><span class="line"><span class="o">??</span>sum
+</span><span class="line">sum<span class="p">()</span>
+</span><span class="line">sum
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="section-1">二. 控制语句</h3>
+
+<h4 id="section-2">1. 循环语句</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="kr">for</span> <span class="p">(</span>var <span class="kr">in</span> seq<span class="p">)</span> expr
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>即变量<em>var</em>从<em>seq</em>中依次取值，计算<em>expr</em>直到结束。例如：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> c<span class="p">()</span>
+</span><span class="line"><span class="kr">for</span> <span class="p">(</span>i <span class="kr">in</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">))</span> x<span class="p">[</span>i<span class="p">]</span><span class="o">&lt;-</span>i<span class="o">*</span>i
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>当然，R语言也支持<code>while</code>和<code>repeat</code>这类C语言风格的循环：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1"># while loop</span>
+</span><span class="line">i <span class="o">&lt;-</span> <span class="m">1</span>
+</span><span class="line"><span class="kr">while</span> <span class="p">(</span>i <span class="o">&lt;=</span> <span class="m">3</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">	x<span class="p">[</span>i<span class="p">]</span> <span class="o">&lt;-</span> i<span class="o">*</span>i
+</span><span class="line">	i <span class="o">&lt;-</span> i<span class="m">+1</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># another while loop</span>
+</span><span class="line">i <span class="o">&lt;-</span> <span class="m">1</span>
+</span><span class="line"><span class="kr">while</span> <span class="p">(</span><span class="kc">TRUE</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    x<span class="p">[</span>i<span class="p">]</span> <span class="o">&lt;-</span> i<span class="o">*</span>i
+</span><span class="line">    i <span class="o">&lt;-</span> i<span class="m">+1</span>
+</span><span class="line">    <span class="kr">if</span> <span class="p">(</span>i <span class="o">&gt;</span> <span class="m">3</span><span class="p">)</span> <span class="kr">break</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># repeat loop</span>
+</span><span class="line">i <span class="o">&lt;-</span> <span class="m">1</span>
+</span><span class="line"><span class="kr">repeat</span> <span class="p">{</span>
+</span><span class="line">    x<span class="p">[</span>i<span class="p">]</span> <span class="o">&lt;-</span> i<span class="o">*</span>i
+</span><span class="line">    i <span class="o">&lt;-</span> i<span class="m">+1</span>
+</span><span class="line">    <span class="kr">if</span> <span class="p">(</span>i <span class="o">&gt;</span> <span class="m">3</span><span class="p">)</span> <span class="kr">break</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="o">==========================</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="section-3">非向量集合上的循环</h5>
+<p>R语言并不直接支持在非向量结合上做循环，但是我们可以用函数<code>apply()</code>,<code>sapply()</code>,<code>lapply()</code>以及<code>tapply</code>来避开循环得到想要的结果。</p>
+
+<p>比如上面的例子，对集合{1, 2, 3}中每一个元素求平方得到新的集合：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">i <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">)</span>
+</span><span class="line">Fun <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">)</span> <span class="p">{</span>
+</span><span class="line">	y <span class="o">&lt;-</span> x<span class="o">*</span>x
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">x <span class="o">&lt;-</span> lapply<span class="p">(</span>i<span class="p">,</span> Fun<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>使用<code>apply()</code>函数，还可以简单地对一个矩阵按行(按列)求和(任意函数)。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">a <span class="o">&lt;-</span> matrix<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">12</span><span class="p">,</span> nrow<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+</span><span class="line">b <span class="o">&lt;-</span> apply<span class="p">(</span>a<span class="p">,</span> <span class="m">1</span><span class="p">,</span> sum<span class="p">)</span>
+</span><span class="line">c <span class="o">&lt;-</span> apply<span class="p">(</span>a<span class="p">,</span> <span class="m">2</span><span class="p">,</span> sum<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-4">2. 条件语句</h4>
+
+<p>跟C语言类似：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">r <span class="o">&lt;-</span> <span class="m">3</span>
+</span><span class="line"><span class="kr">if</span> <span class="p">(</span>r <span class="o">==</span> <span class="m">4</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    x <span class="o">&lt;-</span> <span class="m">1</span>
+</span><span class="line"><span class="p">}</span> <span class="kr">else</span> <span class="p">{</span>
+</span><span class="line">    x <span class="o">&lt;-</span> <span class="m">3</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-5">3. 自定义函数</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="kr">function</span> <span class="p">(</span><span class="o">&lt;</span>formal arguments<span class="o">&gt;</span><span class="p">)</span> body
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>使用上面的例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">Fun <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">)</span> <span class="p">{</span>
+</span><span class="line">	y <span class="o">&lt;-</span> x<span class="o">*</span>x
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">a <span class="o">&lt;-</span> <span class="m">2</span>
+</span><span class="line">b <span class="o">&lt;-</span> Fun<span class="p">(</span>a<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>学习这么多之后，我们就可以使用R做点小事情了。但是这还没有涉及到R语言自身的东西，毕竟上面的这些能力哪个编程语言没有。</p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacky Code</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-06T15:27:28+08:00" pubdate data-updated="true">Mar 6<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rseries/'>RSeries</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jackycode.github.io/blog/2014/03/06/rseries1/" data-via="" data-counturl="http://jackycode.github.io/blog/2014/03/06/rseries1/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2014/02/26/record2/" title="Previous Post:
+        记录：Octopress配置修改之旅">&laquo; 记录：Octopress配置修改之旅</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+      <li class="next"><a class="basic-alignment right" href="/blog/2014/03/07/rseries2/"
+        title="Next Post: R语言记录2 ：R语言中的数据">R语言记录2 ：R语言中的数据
+        &raquo;</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">Recent Posts</li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/17/rseries7/">R语言记录7：相关分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/14/rseries6/">R语言记录6：描述统计2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/12/rseries5/">R语言记录5：描述统计1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/10/rseries4/">R语言记录4：自定义函数的深入</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/09/rseries3/">R语言记录3:数据的导入及复杂操作</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+  <section>  
+  <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jacky130"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>  
+</section>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><!-- mathjax config similar to math.stackexchange --> 
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ jax: ["input/TeX", "output/HTML-CSS"], tex2jax: { inlineMath: [ ['$', '$'] ], displayMath: [ ['$$', '$$']], processEscapes: true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }, messageStyle: "none", "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] } }); </script> <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+<hr>
+<p>
+  Copyright &copy; 2014 - Jacky Code -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

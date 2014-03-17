@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Record | Jacky and MSC]]></title>
+  <link href="http://jackycode.github.io/blog/categories/record/atom.xml" rel="self"/>
+  <link href="http://jackycode.github.io/"/>
+  <updated>2014-03-17T20:42:34+08:00</updated>
+  <id>http://jackycode.github.io/</id>
+  <author>
+    <name><![CDATA[Jacky Code]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[记录：Octopress配置修改之旅]]></title>
+    <link href="http://jackycode.github.io/blog/2014/02/26/record2/"/>
+    <updated>2014-02-26T15:40:39+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/02/26/record2</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical3.jpg" alt="aritical 3" /></p>
+
+<!-- more -->
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>花了两天的时间对主题进行了修改，由于对Web的东西了解的不多，查资料找东西修改代码着实累了一把(丫的，这些代码可读性很强，比起R，Python神马的可是容易学的多。只是要看懂框架还真是需要大大的一番功夫，而且怎么修改CSS做效果，作为门外汉的我是真心欲哭无泪啊)。</p>
+
+<p>本来想把网页做得美观大方简洁，高大上吧反正。最终出来这么个效果，虽说离高大上远了点，但我也就算是满意了，起码它是自己独有的，也算是独一无二了。</p>
+
+<hr />
+
+<p>在修改配置的过程中发现了一些东西，在这里做个小记录。</p>
+
+<h4 id="section">1. 安装第三方主题的结果</h4>
+
+<p>由于想偷懒，所以一开始就想直接使用现有的第三方主题，安装的主题多了之后，发现一个很严重的问题。那就是当我对一些配置进行修改后，发现网页根本没有作出反应。最终我在网页审查元素时发现，我做的很多修改都被其它设置覆盖掉了。很多主题同时安装会导致出现越来越多的配置文件，最终配置混乱难以修改。但是我只是遇到字体啊，颜色啊一类小的问题，大的问题倒是没有遇到。</p>
+
+<p>有了这个教训，我就将所有的内容重新部署之后，使用默认主题进行修改，这样的好处是，没有那么多杂七杂八的配置文件，找个什么东西也比较方便。</p>
+
+<h4 id="section-1">2. 统一文章的样式</h4>
+
+<p>之前发过两篇博文，第一篇很短，第二篇很长。直接发上去的结果就是列表页面太长，看起来很难受。所以就决定采用<code>read on</code>的方法，在文中加了<code>&lt;!-- more --&gt;</code>之后的确或多或少解决了这个问题。</p>
+
+<p>但是不同的文章无法控制其样式统一，保持好的视觉效果。后来在<a href="http://beyondvincent.com/">破船之家</a>网站和<a href="http://www.uiweek.com/">UIWeek</a>杂志上得到了启发；最终决定将博客的<strong>Header</strong>设定成蓝色渐变，每一篇日志都以蓝色图片的形式出现在列表，更多的内容就放到博文内部。这样一来就能够保证样式统一，而且看起来比较简洁，换个专业点的话就是学习成本低（呵呵）。</p>
+
+<h4 id="section-2">3. 隐藏侧边栏</h4>
+
+<p>对于我这种有洁癖的人来说，大部分情况下侧边栏不存在比较好(难得看到一个侧边栏存在还好看简洁的网站)，所以打一开始就是要结束它的。要想做到这个效果，需要修改<code>_config.yml</code>文件：</p>
+
+<p><code>
+# remove the sidebar
+default_asides: []
+sidebar: collapse
+</code></p>
+
+<p>即将<code>default_asides</code>里面的东西全删掉，然后添加<code>sidebar: collapse</code>就可以了。</p>
+
+<h4 id="section-3">4. 添加多说评论</h4>
+
+<p>首先去<a href="http://duoshuo.com/">多说</a>注册帐号，然后多说会给你一段代码，如下：</p>
+
+<p><code>html
+&lt;!-- Duoshuo Comment BEGIN --&gt;
+&lt;div class="ds-thread"&gt;&lt;/div&gt;
+&lt;script type="text/javascript"&gt;
+  var duoshuoQuery = {short_name:"yourname"};
+  (function() {
+        var ds = document.createElement('script');
+	    ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+	    ds.charset = 'UTF-8';
+	    (document.getElementsByTagName('head')[0]
+	     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+&lt;/script&gt;
+&lt;!-- Duoshuo Comment END --&gt;
+</code></p>
+
+<p>你获得的代码跟这段唯一的区别就在于short_name不同。然后：</p>
+
+<h6 id="a-configyml">a. 在<code>_config.yml</code>文件中添加：</h6>
+
+<p><code>
+# duoshuo comments
+duoshuo_comments: true
+</code></p>
+
+<h6 id="b-sourcelayoutsposthtml">b. 在<code>source/_layouts/post.html</code>中添加多说的模块：</h6>
+
+<p>``` html
+</p>
+
+<!-- 其中`abc.html`随便你起什么名字，个人建议为`duoshuo.html`. -->
+<p>```</p>
+
+<h6 id="c-sourceincludespostduoshuohtmlok">c. 创建<code>source/_includes/post/duoshuo.html</code>，并把多说给你的代码放进去就OK了。</h6>
+
+<h6 id="d-">d. 发布到博客上</h6>
+
+<p><code>
+rake generate
+git add .
+git commit -m 'add duoshuo comment'
+git push origin source
+rake deploy
+</code></p>
+
+<h6 id="e-">e. 打完收工</h6>
+
+<h4 id="section-4">5. 修改样式</h4>
+<p>对于样式的修改，需要学习CSS。以前虽然在<a href="http://www.codecademy.com/">Codecademy</a>上看过一点，但是从没有自己真正用过，所以也还算是初学。我对样式的修改大致就是将<strong>Header</strong>，<strong>Navigation</strong>以及<strong>Artical</strong>这些部分分开来，对不同的部分使用了一些特效。有些代码是在网上搜到后自己稍作了修改，有些是原创，有兴趣可以直接到我的GitHub网站上去看，不要告诉我找不到它在哪哦。</p>
+
+<hr />
+
+<h3 id="section-5">总结</h3>
+<p>花了两天修改，发现其实干的事情并不很多。仔细想来大部分修改的时间都在调整不同的系数，以及在网上看材料。这两天学到的东西很多，也让我发现很多很好玩的东西，比如Web的框架，特效，还有很多很好很美的设计，大爱！</p>
+
+<h4 id="section-6">参考</h4>
+<ol>
+  <li><a href="http://beyondvincent.com/">破船之家</a></li>
+  <li><a href="http://www.uiweek.com/">UIWeek</a></li>
+  <li><a href="http://octopress.org/">Octopress官网</a></li>
+  <li><a href="http://shanewfx.github.io/blog/2012/08/13/improve-blog-theme/">Octopress主题改造</a></li>
+  <li><a href="http://www.jcodecraeer.com/a/cssjiqiaoyuguifan/2012/0628/289.html">css实现简约的纸张卷角效果</a></li>
+  <li><a href="http://www.cnblogs.com/oec2003/archive/2013/05/31/3109577.html">Octopress博客设置</a></li>
+  <li><a href="https://www.google.com.hk/search?q=Octopress%E4%B8%BB%E9%A2%98%E6%94%B9%E9%80%A0&amp;oq=Octopress%E4%B8%BB%E9%A2%98%E6%94%B9%E9%80%A0&amp;aqs=chrome..69i57&amp;sourceid=chrome&amp;espv=210&amp;es_sm=119&amp;ie=UTF-8">。。。</a></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[记录：Octopress建站之旅]]></title>
+    <link href="http://jackycode.github.io/blog/2014/02/23/record/"/>
+    <updated>2014-02-23T10:40:38+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/02/23/record</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical2.jpg" alt="aritical 2" /></p>
+
+<!-- more -->
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>博客建立好了，花了不少时间，今天就想将自己如何建立这个博客的过程梳理一遍，写在这里，当作复习回顾的同时，也与人参考。</p>
+
+<p>自己的这个小博客是用的Octopress搭建的，托管在github上面(没有资金但又想建立一个自己独立博客的同志们可以使用GitHub，free哦)。</p>
+
+<p>使用Octopress唯一的问题在于你得学一点shell commands和Git基础(其实用的内容并不很多，照着顺序搭建部署都可以搞定）。以后发博客只需要一些<strong>简单的</strong><em>每次都一样的</em>步骤就可以搞定了，直接复制粘贴就好。但是我想你需要对这些命令不感到反感才行，正如Octopress官方文档开头说的：</p>
+
+<blockquote>
+  <p>You should be comfortable running shell commands and familiar with the basics of Git. If that sounds daunting, Octopress probably isn’t for you.</p>
+</blockquote>
+
+<p>但是shell跟Git是很好的东东，shell可以帮你很大限度地减少重复工作，而且学习shell的过程会让你对计算机有更深入的了解；Git是一个开源的分布式版本控制系统，它让我一次性放弃了CVS而投入它的怀抱（变得是不是太快了）。GitHub就是为开源项目免费提供Git存储的网站，看看现在无数的开源项目在GitHub里面活跃，你就知道不是我变得太快，而是它的优秀让你无法抗拒。</p>
+
+<hr />
+
+<h3 id="section">一、准备工作</h3>
+<p>在安装Octopress之前，你必须得先安装上Git和Ruby。安装很简单，直接百度就可以了。如果你用的是Mac，那么恭喜你，你的电脑里面已经自带了Ruby。当然你仍然可以选择用rvm或者rbenv去安装更新Ruby，这些命令在官网上都有，就不多说了。</p>
+
+<p>安装完成后，在终端中运行命令：</p>
+
+<p><code>
+git --version
+ruby --version
+</code></p>
+
+<p>如果能正确显示版本号，类似于我的输出：分别是<code>git version 1.8.3.4 (Apple Git-47)</code>和<code>ruby 2.0.0p247 (2013-06-27 revision 41674) [universal.x86_64-darwin13]</code>，就没有问题了，继续往下吧！</p>
+
+<h3 id="octopress">二、安装Octopress</h3>
+<p>首先在终端进入你想安装Octopress的文件夹中，然后使用git命令将Octopress clone到本地：</p>
+
+<p><code>
+git clone git://github.com/imathis/octopress.git octopress
+</code></p>
+
+<p>进入octopress文件夹：</p>
+
+<p><code>
+cd octopress
+</code></p>
+
+<p>安装依赖项:</p>
+
+<p><code>
+gem install bundler
+rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
+bundle install
+</code></p>
+
+<p>当然你有可能跟我一样遇到权限不足，操作无法完成的情况，那么你需要在命令前面加上<code>sudo</code>，第一次终端会要求你输入密码，输入成功后就可以正常安装了。</p>
+
+<p>安装好依赖项后，你需要安装主题：</p>
+
+<p><code>
+rake install
+</code></p>
+
+<p>上面命令会安装默认主题，当然你可以选择安装第三方主题，在<a href="https://github.com/imathis/octopress/wiki/3rd-Party-Octopress-Themes">这里</a>有很多第三方的主题，你可以挑选自己喜欢的主题，然后安装：</p>
+
+<p><code>
+git clone GIT_URL .themes/THEME_NAME
+rake install['THEME_NAME']
+</code></p>
+
+<p>比如我的用的是CleanPress主题：</p>
+
+<p><code>
+git clone git://github.com/macjasp/cleanpress.git .themes/cleanpress
+rake install['cleanpress']
+</code></p>
+
+<h3 id="github">三、注册GitHub</h3>
+<p>到<a href="https://github.com/">GitHub</a>网站上注册一个免费账户，然后新建一个repository。<strong>repository一定要使用这样的格式命名：<code>yourname.github.io</code>，其中<code>yourname</code>是你注册时的用户名。</strong></p>
+
+<h3 id="github-1">四、部署到GitHub</h3>
+
+<p><code>
+rake setup_github_pages
+</code></p>
+
+<p>输入上述的命令会要求你输入SSH(你注册GitHub时会有)或者是你的repository的url，找到复制粘贴就好。</p>
+
+<p>然后就可以开始部署了：</p>
+
+<p><code>
+rake generate
+rake deploy
+</code></p>
+
+<p>此时可能会让你登录你的github，按照提示进行输入即可。</p>
+
+<p>到此为止，就差博客的source还没有提交了：</p>
+
+<p><code>
+git add .
+git commit -m 'your message'
+git push origin source
+</code></p>
+
+<h3 id="octopress-1">五、配置Octopress</h3>
+<p>我对Octopress没有做很大的配置改动，只是设置了博客名称，以及添加了Home页及其它一些页面的内容(其实就是给了一个空网页，里面神马都没有，以后再慢慢填充吧)。</p>
+
+<p>在octopress文件夹中，需要在<code>_config.yml</code>中设置自己博客的名称等等的内容：</p>
+
+<p><code>
+url: [url of your github]
+title: [title of your blog]
+subtitle: [subtitle of your blog]
+author: [your name]
+simple_search: http://google.com/search
+description: [some other information you want to add]
+</code></p>
+
+<p>除此之外，我还将里面有关twitter、facebook等等的社交信息全部给删除掉了(谢谢<a href="http://beyondvincent.com/">船哥</a>，这个明显的是偷师啊～)。当然你要是有这些帐号也可以设置，只是在国内用处不大呀。</p>
+
+<p>之后，我对<code>octopress/source/_includes/custom</code>下的<code>navigation.html</code>进行了简单的修改，就是添加了<code>Home</code>，以及变换了<code>About</code>的位置：</p>
+
+<p>``` html</p>
+<ul>
+	<li><a href="/home">Home</a></li>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/portfolio">Portfolio</a></li>
+	<li><a href="/archives">Archive</a></li>
+	<li><a href="/about">About</a></li>
+</ul>
+<p>```</p>
+
+<p>现在添加了Home页，但是Home页其实还是不存在的，所有需要建立一个新的page：</p>
+
+<p><code>
+rake new_page[home]
+</code></p>
+
+<p>上述命令会在<code>octopress/source</code>文件夹下生成一个新的文件夹<code>home</code>，<code>home</code>文件夹下面有一个markdown文件<code>index.markdown</code>。编辑该文件，将你想放在Home页上的东西写进去就OK了。</p>
+
+<p>默认情况下，<code>About</code>,<code>porfolio</code>页面都是不存在的，所以需要自己设置，方法与设置<code>home</code>页面的一样，就不多说了。</p>
+
+<p>根据自己的需求，修改完成后，不要忘了：</p>
+
+<p><code>
+rake generate
+git add .
+git commit -m 'customise octopress'
+git push origin source
+rake deploy
+</code></p>
+
+<h3 id="section-1">六、发布新博客</h3>
+<p>根据Jekyll的命名规则，文章命名必须有这样的格式：<code>YYYY-MM-DD-post-title.markdown</code>，使用Octopress的rake task可以简单解决这个问题：</p>
+
+<p><code>
+rake new_post["title"]
+</code></p>
+
+<p>命令会生成这样的文件：<code>source/_posts/YYYY-MM-DD-title.markdown</code>，然后你可以修改markdown文件，写自己的博文。写好后，别忘记部署到GitHub：</p>
+
+<p><code>
+rake generate
+git add .
+git commit -am 'YYYY-MM_DD post'
+git push origin source
+rake deploy
+</code></p>
+
+<p>至此文章就部署好了，过两分钟去自己的博客看看吧。</p>
+
+<h3 id="section-2">七、最后</h3>
+<p>利用Octopress搭建一个GitHub博客的简单流程差不多就像上述。但是对于自己的博客，可能我们还需要做更多的一些配置，比如添加评论系统，社交分享啊等等。这些内容网上有很多，可以到Google里面百度一下～</p>
+
+<hr />
+
+<h4 id="octopress-2">参考资源以及更多配置Octopress的资源推荐</h4>
+<ol>
+  <li><a href="http://octopress.org/docs/setup/">Octopress官方文档</a></li>
+  <li><a href="http://beyondvincent.com/">破船之家</a>：<a href="http://beyondvincent.com/blog/2013/08/03/108-creating-a-github-blog-using-octopress/">利用Octopress搭建一个Github博客</a></li>
+  <li><a href="http://never.doubting.me/">Never Doubting Me</a>：<a href="http://never.doubting.me/2013/04/18/2013-04-18-setup-octopress-on-github-step-by-step/">教程:一步步在github上建立octopress博客</a></li>
+  <li><a href="http://williamherry.com/">William’s Blog with Octopress</a>：<a href="http://williamherry.com/blog/2012/07/20/octopress-setup/">Octopress - 像黑客一样写博客</a></li>
+  <li><a href="http://www.yanjiuyanjiu.com/">研究研究</a>：<a href="http://www.yanjiuyanjiu.com/blog/20130402/">我的Octopress配置</a></li>
+  <li><a href="http://agiledon.github.io/">简单文本</a>：<a href="http://agiledon.github.io/blog/2012/12/25/octopress-issues-solution-and-tips/">Octopress博客问题解决方案与技巧</a></li>
+  <li><a href="https://www.google.com.hk/search?newwindow=1&amp;safe=strict&amp;espv=210&amp;es_sm=119&amp;q=octopress%E6%95%99%E7%A8%8B&amp;oq=octopress%E6%95%99%E7%A8%8B&amp;gs_l=serp.12..35i39.5308.6241.0.8806.10.8.0.0.0.1.237.921.0j3j2.5.0....0...1c.1j4.35.serp..6.4.789.PMKW2jRRdPI">。。。</a></li>
+</ol>
+
+<p><strong>如果有什么问题或者建议，可以直接回复我或者给我发邮件：<code>jackycodemsc@gmail.com</code>。</strong></p>
+]]></content>
+  </entry>
+  
+</feed>

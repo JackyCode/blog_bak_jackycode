@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: essay | Jacky and MSC]]></title>
+  <link href="http://jackycode.github.io/blog/categories/essay/atom.xml" rel="self"/>
+  <link href="http://jackycode.github.io/"/>
+  <updated>2014-03-17T20:42:34+08:00</updated>
+  <id>http://jackycode.github.io/</id>
+  <author>
+    <name><![CDATA[Jacky Code]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hello, my blog]]></title>
+    <link href="http://jackycode.github.io/blog/2014/02/21/hello/"/>
+    <updated>2014-02-21T14:17:35+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/02/21/hello</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical1.jpg" alt="aritical 1" /></p>
+
+<!-- more -->
+
+<p>花了一个晚上以及一个上午的时间，总算是把这个博客弄出来了(对一个数学系的孩子不容易啊！)。这里要非常感谢<a href="http://beyondvincent.com/">破船之家</a>，<a href="http://williamherry.com/">William’s Blog with Octopress</a>以及<a href="http://octopress.org/">Octopress</a>的官方文档和一些其它网站上的材料(翻了不少材料，没记住那么多，sorry！)。我大致是照着做了两遍，其中大错了一次(对Git掌握有待加强啊)，小错蛮多次(对Web这些语言实在是不甚了了，需要好好摸索学习)，一路错下来倒也是把这个小站弄出来了。非常感谢Github，不然我一个穷学生还真没钱去买个域名建博客，非常感谢Octopress，不然我也没本事弄出个博客系统来～哈哈！</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,11 +1,59 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://JackyCode.github.io/blog/archives/</loc>
+        <loc>http://jackycode.github.io/blog/2014/02/21/hello/</loc>
+        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/blog/2014/02/23/record/</loc>
+        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/blog/2014/02/26/record2/</loc>
+        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/blog/2014/03/06/rseries1/</loc>
+        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/blog/2014/03/07/rseries2/</loc>
+        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/blog/2014/03/09/rseries3/</loc>
+        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/blog/2014/03/10/rseries4/</loc>
+        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/blog/2014/03/12/rseries5/</loc>
+        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/blog/2014/03/14/rseries6/</loc>
+        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/blog/2014/03/17/rseries7/</loc>
+        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/about/</loc>
+        <lastmod>2014-03-17T19:35:02+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/blog/archives/</loc>
         <lastmod>2014-03-17T20:32:48+08:00</lastmod>
     </url>
     <url>
-        <loc>http://JackyCode.github.io/</loc>
+        <loc>http://jackycode.github.io/home/</loc>
+        <lastmod>2014-03-17T19:35:02+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/</loc>
         <lastmod>2014-03-17T20:32:48+08:00</lastmod>
     </url>
 </urlset>

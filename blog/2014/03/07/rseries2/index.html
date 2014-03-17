@@ -1,0 +1,431 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>R语言记录2 ：R语言中的数据 - Jacky and MSC</title>
+  <meta name="author" content="Jacky Code">
+
+  
+  <meta name="description" content="">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/03/07/rseries2">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Jacky and MSC" type="application/atom+xml">
+  
+  
+  <!-- 
+ -->
+
+  <script type="text/javascript">var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-48812316-1']);_gaq.push(['_trackPageview']);(function() {var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);})();</script>
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">Jacky and MSC</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/home">Home</a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:jackycode.github.io" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">R语言记录2 ：R语言中的数据</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-07T17:03:58+08:00" pubdate data-updated="true">Mar 7<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/artical/artical5.jpg" alt="aritical 5" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>上一次简单地讲了一下R语言编程的一些控制语句，这次来看一看R中的数据。</p>
+
+<h4 id="section">一. 数据类型简介</h4>
+
+<p>首先，要记住，R语言中的一切都是对象，<code>Everything in R is an Object</code>。那么对象就存在其属性，R中每一个对象包含多个属性用来描述该对象。最重要的两个属性是<strong>模式</strong>和<strong>类</strong>。可以使用函数<code>mode()</code>和函数<code>class()</code>去查看对象的模式和类。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>datamode</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1"># 比如查看函数sum的模式和类</span>
+</span><span class="line">mode<span class="p">(</span>sum<span class="p">)</span>	<span class="c1"># function</span>
+</span><span class="line">class<span class="p">(</span>sum<span class="p">)</span>	<span class="c1"># function</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>我们用R语言来处理数据，遇到的最多的对象模式应该是<em>数值型</em>，<em>字符型</em>，<em>逻辑型</em>，<em>因子</em>和<em>日期时间</em>。而我们正常处理的数据中往往会存在不止一种数据模式，比如一批数据中有变量：姓名和年龄，显然姓名是字符型而年龄是数值型。那么在存储这些变量的时候，就出现一个对象需要对应多个模式。R语言中<strong>像矩阵，数组等等的对象只能存储相同模式的数据；而像数据框，列表等等的对象则可存储多种模式的数据</strong>。</p>
+
+<p>在R中最常遇到的数据模式是<strong><em>列表</em></strong>，因为其可以存储具有不同模式和不同长度的对象。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>datamode</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">create.list <span class="o">&lt;-</span> list<span class="p">(</span>name <span class="o">=</span> c<span class="p">(</span><span class="s">&quot;Li&quot;</span><span class="p">,</span> <span class="s">&quot;Wang&quot;</span><span class="p">,</span><span class="s">&quot; Xue&quot;</span><span class="p">),</span> age <span class="o">=</span> c<span class="p">(</span><span class="m">21</span><span class="p">,</span> <span class="m">22</span><span class="p">,</span> <span class="m">24</span><span class="p">),</span> sex <span class="o">=</span> factor<span class="p">(</span><span class="s">&quot;b&quot;</span><span class="p">,</span> <span class="s">&quot;g&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">))</span>
+</span><span class="line"><span class="c1"># 使用sapply查看模式和类（回想上一节内容）</span>
+</span><span class="line">sapply<span class="p">(</span>create.list<span class="p">,</span> mode<span class="p">)</span>
+</span><span class="line">sapply<span class="p">(</span>create.list<span class="p">,</span> class<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-1">二. 简单的数据操作</h4>
+
+<h6 id="r">1. 进入R程序，更改工作空间：</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>data_manipulation</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1"># 获取当前的路径</span>
+</span><span class="line">getwd<span class="p">()</span>
+</span><span class="line"><span class="c1"># 更改到目标路径</span>
+</span><span class="line">setwd<span class="p">(</span><span class="s">&quot;~/DataInR&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h6 id="section-2">2. 向量</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>data_manipulation</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1"># c函数：连接或合并数据</span>
+</span><span class="line">x <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">)</span>
+</span><span class="line">y <span class="o">&lt;-</span> c<span class="p">(</span><span class="s">&quot;abc&quot;</span><span class="p">,</span> <span class="s">&quot;bc&quot;</span><span class="p">,</span> <span class="s">&quot;c&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># 使用seq函数创建数据</span>
+</span><span class="line">z <span class="o">&lt;-</span> seq<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">21</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span> <span class="c1"># 或 z &lt;- 1:21</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># 查看数据</span>
+</span><span class="line">head<span class="p">(</span>z<span class="p">)</span>
+</span><span class="line">tail<span class="p">(</span>z<span class="p">)</span>
+</span><span class="line">head<span class="p">(</span>z<span class="p">,</span> <span class="m">3</span><span class="p">)</span>
+</span><span class="line">tail<span class="p">(</span>z<span class="p">,</span> <span class="m">3</span><span class="p">)</span>
+</span><span class="line">nchar<span class="p">(</span>y<span class="p">)</span> <span class="c1"># 注意空格</span>
+</span><span class="line">z<span class="p">[</span><span class="m">1</span><span class="p">]</span>
+</span><span class="line">z<span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">]</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># 合并数据</span>
+</span><span class="line">mode<span class="p">(</span>x<span class="p">)</span>
+</span><span class="line">mode<span class="p">(</span>y<span class="p">)</span>
+</span><span class="line">xy <span class="o">&lt;-</span> c<span class="p">(</span>x<span class="p">,</span> y<span class="p">)</span>
+</span><span class="line">mode<span class="p">(</span>xy<span class="p">)</span>
+</span><span class="line"><span class="c1">## c函数合并不同模式的数据：logical &lt; integer &lt; numeric &lt; complex &lt; character &lt; list</span>
+</span><span class="line"><span class="c1">## 当级别低的遇到级别高的，则转为级别高的</span>
+</span><span class="line"><span class="c1">## 比如logical与integer合并，则logical类型中TRUE转成1，FALSE转成0，全部转成integer</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># 简单运算</span>
+</span><span class="line">z <span class="o">+</span> <span class="m">1</span>
+</span><span class="line">z <span class="o">+</span> x <span class="c1"># 注意长度不同</span>
+</span><span class="line">k <span class="o">&lt;-</span> <span class="m">1</span><span class="o">:</span><span class="m">20</span>
+</span><span class="line">z <span class="o">+</span> k <span class="c1"># 注意warning</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h6 id="section-3">3. 矩阵</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>data_manipulation</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1"># 创建矩阵</span>
+</span><span class="line">v <span class="o">&lt;-</span> <span class="m">1</span><span class="o">:</span><span class="m">12</span>
+</span><span class="line">m <span class="o">&lt;-</span> matrix<span class="p">(</span>v<span class="p">,</span> nrow <span class="o">=</span> <span class="m">3</span><span class="p">,</span> ncol <span class="o">=</span> <span class="m">4</span><span class="p">)</span>
+</span><span class="line">m1 <span class="o">&lt;-</span> matrix<span class="p">(</span>v<span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">)</span>
+</span><span class="line">m2 <span class="o">&lt;-</span> matrix<span class="p">(</span>v<span class="p">,</span> <span class="m">3</span><span class="p">)</span>
+</span><span class="line">m3 <span class="o">&lt;-</span> matrix<span class="p">(</span>v<span class="p">,</span> <span class="m">4</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">m4 <span class="o">&lt;-</span> matrix<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">)</span> <span class="c1"># 创建零矩阵</span>
+</span><span class="line">m5 <span class="o">&lt;-</span> matrix<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">)</span> <span class="c1"># 全一矩阵</span>
+</span><span class="line">m6 <span class="o">&lt;-</span> matrix<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">)</span> <span class="c1"># 行相同矩阵</span>
+</span><span class="line">m7 <span class="o">&lt;-</span> matrix<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">)</span> <span class="c1"># 列相同矩阵</span>
+</span><span class="line">m8 <span class="o">&lt;-</span> matrix<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">)</span> <span class="c1"># 注意warning</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># 查看数据</span>
+</span><span class="line">m<span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">]</span>
+</span><span class="line">m<span class="p">[</span><span class="m">2</span><span class="o">:</span><span class="m">3</span><span class="p">,</span> <span class="m">3</span><span class="o">:</span><span class="m">4</span><span class="p">]</span>
+</span><span class="line">dim<span class="p">(</span>m<span class="p">)</span>
+</span><span class="line">length<span class="p">(</span>m<span class="p">)</span>
+</span><span class="line">head<span class="p">(</span>m<span class="p">,</span> <span class="m">2</span><span class="p">)</span>
+</span><span class="line">tail<span class="p">(</span>m<span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>#### 三. 小节	 
+到此为止，我们就可以在R语言中创建录入一些数据，并对数据进行一些简单的操作。利用上一节中所讲的控制语句，我们就可以编写R语言的小程序了。试试用R语言解决一些你在学习中遇到的小问题吧。下一次我将讲讲如何从文件中导入数据，以及一些其他的处理。</p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacky Code</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-07T17:03:58+08:00" pubdate data-updated="true">Mar 7<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rseries/'>RSeries</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jackycode.github.io/blog/2014/03/07/rseries2/" data-via="" data-counturl="http://jackycode.github.io/blog/2014/03/07/rseries2/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2014/03/06/rseries1/" title="Previous Post:
+        R语言记录1 ：基础">&laquo; R语言记录1 ：基础</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+      <li class="next"><a class="basic-alignment right" href="/blog/2014/03/09/rseries3/"
+        title="Next Post: R语言记录3:数据的导入及复杂操作">R语言记录3:数据的导入及复杂操作
+        &raquo;</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">Recent Posts</li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/17/rseries7/">R语言记录7：相关分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/14/rseries6/">R语言记录6：描述统计2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/12/rseries5/">R语言记录5：描述统计1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/10/rseries4/">R语言记录4：自定义函数的深入</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/09/rseries3/">R语言记录3:数据的导入及复杂操作</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+  
+</aside>
+
+
+  <section>  
+  <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jacky130"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>  
+</section>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><!-- mathjax config similar to math.stackexchange --> 
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ jax: ["input/TeX", "output/HTML-CSS"], tex2jax: { inlineMath: [ ['$', '$'] ], displayMath: [ ['$$', '$$']], processEscapes: true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }, messageStyle: "none", "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] } }); </script> <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+<hr>
+<p>
+  Copyright &copy; 2014 - Jacky Code -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
