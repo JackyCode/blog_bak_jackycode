@@ -1,0 +1,210 @@
+---
+layout: post
+title: "R语言记录6：描述统计2"
+date: 2014-03-14 16:31:26 +0800
+comments: true
+categories: RSeries
+---
+
+![aritical 9](/images/artical/artical9.jpg)
+<!-- more -->
+
+*“文章原创，转载请注明出处”*
+
+***
+
+#### 二. 可视化
+开头我们就说过，描述性统计分析包括计算统计量的值，也可以进行制表画图。首先我们看看如何在R中绘制列联表：
+
+##### 1. 频数表和列联表
+如果数据集中对应的变量都是定性变量，即是上一节中我们所说的分类数据（还记得分组数据的描述性统计量的计算吗）。对于这种数据，作图很多时候并没有太大的意义。一般，我们会采取绘制列联表的方式去描述数据。
+
+在数据集`mtcars`中，有不少定性变量，这里取出其中的`am`,`gear`和`carb`作演示。首先看看一维的情况：
+
+``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+> dataSub <- data.frame(am=mtcars$am, gear=mtcars$gear, carb=mtcars$carb)
+> head(dataSub)
+  am gear carb
+1  1    4    4
+2  1    4    4
+3  1    4    1
+4  0    3    1
+5  0    3    2
+6  0    3    1
+> with(dataSub, {
++ 	mytable <- list(table(am), table(gear), table(carb))
++ 	mytable
++ })
+[[1]]
+am
+ 0  1 
+19 13 
+
+[[2]]
+gear
+ 3  4  5 
+15 12  5 
+
+[[3]]
+carb
+ 1  2  3  4  6  8 
+ 7 10  3 10  1  1 
+```
+
+一维的情况，其实就是统计频数，把每个类别各自的频数计算出来就可以了。像`am`变量，其结果告诉我们，用自动挡的有19人，用手动挡的是13人(0 -> 19; 1 -> 13)。再来看看二维的：
+
+``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+> with(dataSub, {
++ 	mytable2 <- list(table(am, carb), table(carb, am))
++ 	mytable2
++ })
+[[1]]
+   carb
+am  1 2 3 4 6 8
+  0 3 6 3 7 0 0
+  1 4 4 0 3 1 1
+
+[[2]]
+    am
+carb 0 1
+   1 3 4
+   2 6 4
+   3 3 0
+   4 7 3
+   6 0 1
+   8 0 1
+```
+
+可以看到，对于二维来说，绘制的方法与一维类似。但是，这里有个可以深入的东西，那就是边际列表。也就是利用二维列联表得到一维列联表：
+
+``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+> with(dataSub, {
++ 	mytable2 <- list(table(am, carb), table(carb, am))
++ 	mytableConvert <- list(margin.table(mytable2[[1]], 1), 
++ 		margin.table(mytable2[[1]], 2)) # 选项1和2控制按行和按列
++ 	mytableConvert
++ })
+[[1]]
+am
+ 0  1 
+19 13 
+
+[[2]]
+carb
+ 1  2  3  4  6  8 
+ 7 10  3 10  1  1 
+```
+
+可以看到，使用`margin.table`函数可以很容易得到一个列表的边际列表。下面看看三维的情况：
+
+``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+> with(dataSub, {
++ 	mytable3 <- table(am, carb, gear)
++ 	mytable3
++ })
+, , gear = 3
+
+   carb
+am  1 2 3 4 6 8
+  0 3 4 3 5 0 0
+  1 0 0 0 0 0 0
+
+, , gear = 4
+
+   carb
+am  1 2 3 4 6 8
+  0 0 2 0 2 0 0
+  1 4 2 0 2 0 0
+
+, , gear = 5
+
+   carb
+am  1 2 3 4 6 8
+  0 0 0 0 0 0 0
+  1 0 2 0 1 1 1
+```
+
+其实`table`函数可以处理三维以及三维以上的列联表，你可以自己试一试。现在我们已经能够使用R轻松地绘制出频数表了，但很多时候，我们希望得到的是频率表，那应该怎么绘制呢？试试这个函数`prop.table()`：
+
+``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+> with(dataSub, {
++ 	mytable <- list(table(am), table(gear), table(carb))
++ 	prop.table(mytable[[1]])
++ })
+am
+      0       1 
+0.59375 0.40625 
+```
+
+二维以及以上都可以这么处理。那么，如果需要求的是全局相对频率列联表呢？想想，那不就是频数除以总数嘛，直接一句代码不就搞定了嘛：
+
+``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+> with(dataSub, {
++ 	mytable2 <- list(table(am, carb), table(carb, am))
++ 	mytable2[[1]]/sum(mytable2[[1]])
++ })
+   carb
+am        1       2       3       4       6       8
+  0 0.09375 0.18750 0.09375 0.21875 0.00000 0.00000
+  1 0.12500 0.12500 0.00000 0.09375 0.03125 0.03125
+```
+
+##### 2. 图形
+常用的图形一般有：直方图，散点图，框须图等等。我们一个一个来看一下：
+
+###### a. 直方图
+我们使用`mtcars$mpg`数据作演示，首先你可以检查一下`mpg`的范围，然后确定频数直方图的分割大小(使用参数`break`设定)，这里我们不设定，让R自动生成：
+
+``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+> range(mtcars$mpg)
+[1] 10.4 33.9
+> hist(mtcars$mpg)
+```
+
+得到如下的图形：
+![Histogram1](/images/RSeries6/Histogram1.jpg)
+
+其实更多地，我们希望得到频率直方图，并且给出其核密度曲线以及正态密度曲线。
+
+``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+> hist(mtcars$mpg, probability=TRUE)
+> dens <- density(mtcars$mpg)
+> mean <- mean(mtcars$mpg)
+> sd <- sd(mtcars$mpg)
+> lines(dens, col='red', lty=2)
+> curve(dnorm(x, mean, sd), col='blue', add=TRUE)
+> legend("topright", inset = 0.05, c("density", "normal"),
++   lty = c(2, 1), col = c("red", "blue"))
+```
+
+得到图形如下：
+![Histogram2](/images/RSeries6/Histogram2.jpg)
+
+###### b. 散点图
+我们可以使用`plot`函数直接画出散点图，此外，我这里还给散点图加上了一条拟合曲线。`lowess()`函数可以用特殊的曲线对二维数据进行非线性拟合(多维的情况需要使用`loess()`函数)。
+
+``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+> plot(mtcars$disp ~ mtcars$mpg)
+> lines(lowess(mtcars$mpg, mtcars$disp), lwd=2, col='blue')
+```
+
+![Scatter](/images/RSeries6/Scatter.jpg)
+
+###### c. 框须图
+框须图,也称为盒形图、箱线图。其通过绘制连续型变量的五数(最小最大值，中位数以及上下侧四分位数)来描述变量的分布。可以使用`boxplot`函数来得到：
+
+``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+> boxplot(mtcars$mpg)
+```
+
+![box1](/images/RSeries6/box1.jpg)
+
+也可以使用`boxplot`函数展示分组变量，例如这里`mtcars`中有`am`变量，可以使用该函数画出不同的`am`值对应的箱线图：
+
+``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+> boxplot(mpg ~ am, data=mtcars)
+```
+
+![box2](/images/RSeries6/box2.jpg)
+
+到这边，就基本上把描述统计的一些主体内容说了一下。不过，描述统计并不是只有这点东西，此外，我讲的这些作图啊，制表啊其实都没有深入地去讲。而且对于R语言的研究学习来说，我上面做的图还太简单了，没有给图起名称，也没有横纵轴的名称等等。这些在R语言的帮助文档里有详细的讲解说明，有兴趣的话可以看看。

@@ -1,0 +1,111 @@
+---
+layout: post
+title: "R语言记录7：相关分析"
+date: 2014-03-17 16:46:47 +0800
+comments: true
+categories: RSeries
+---
+
+![aritical 10](/images/artical/artical10.jpg)
+<!-- more -->
+
+*“文章原创，转载请注明出处”*
+
+***
+
+变量之间的关系，大致可分为两种：*函数关系*和*相关关系*。
+
+函数关系，简单来说就是可以将变量之间的关系用方程(其实就是函数)来描述：$y=f(x)$，处理这种关系对应的统计方法就是***回归分析***。
+
+相关关系，就是指变量之间存在不完全确定的依赖关系，其数值不能够使用函数表示出来，这个对应的就是***相关分析***。
+
+判断变量之间是否存在相关关系，最直接简单的方法就是画出两个变量之间的散点图。
+
+#### 1. 散点图
+我们使用`cars`数据集中的数据进行演示,`cars`数据集中包含了汽车速度与制动距离的数据，显然直观感觉这两个变量之间肯定存在相关关系。画个散点图看看：
+
+``` r Correlation_Analysis.r https://github.com/JackyCode/RSeries
+> head(cars)
+  speed dist
+1     4    2
+2     4   10
+3     7    4
+4     7   22
+5     8   16
+6     9   10
+> with (cars, {
++ 	plot(speed, dist)
++ })
+```
+
+得到如下图形：
+![scatter](/images/RSeries7/scatter.jpg)
+
+从散点图看，汽车速度与其制动距离存在相关关系。但是，仅仅从图像来看，我们只能得到大概是否相关，而不能给出一个确切的描述。那么就希望能够找到一个方法，能够描述变量之间有多相关，程度有多大。
+
+#### 2. 相关的种类
+根据相关程度，我们可以给相关进行分类：完全相关，不完全相关，完全不相关；而根据相关方向的不同，又可以分类：正相关(一个变大另一个也变大)，负相关。那么怎么用数学的方式去描述这些种类呢，那就需要用到相关系数。
+
+##### (1). 相关系数
+相关系数的符号用来代表正负相关($+$ -> 正；$-$ -> 负)，其值的大小用来描述相关程度的大小(0~1:完全不相关~完全相关)。相关系数的定义有很多，常用的有Person相关系数、Spearman相关系数等等。这里给出最常用的Person相关系数的计算方法：
+
+$$\gamma=\frac{\sum_{i=1}^{n}{(x_i-\overline{x})(y_i-\overline{y})}}{\sqrt{\sum_{i=1}^{n}{(x_i-\overline{x})^2}\sum_{i=1}^{n}{(y_i-\overline{y})^2}}}$$
+
+当样本个数充分大时，样本相关系数可以作为总体相关系数的估计。
+
+在R中，可以使用`cor`函数来得到变量间的相关系数矩阵：
+
+``` r Correlation_Analysis.r https://github.com/JackyCode/RSeries
+> cor(cars)
+          speed      dist
+speed 1.0000000 0.8068949
+dist  0.8068949 1.0000000
+```
+
+可以看到，$corr(speed, dist)=0.8068949$，说明汽车速度与其制动距离之间存在较强的正相关关系。
+
+###### 注：
+可以指定`cor`的参数得到不同的相关系数：
+
+``` r Correlation_Analysis.r https://github.com/JackyCode/RSeries
+> cor(cars, method='spearman')
+          speed      dist
+speed 1.0000000 0.8303568
+dist  0.8303568 1.0000000
+```
+
+##### (2). 相关性的显著性检验
+得到了两个变量之间的相关系数，那就需要检验，得到的结果是否能够通过显著性检验。即相关性到底显著与否。
+
+这里需要建立假设检验：$H_0:$ 变量X和Y不相关；那么可以构造检验统计量如下：
+
+$$T = \frac{\gamma(X,Y)\sqrt{n-2}}{\sqrt{1-\gamma(X,Y)^2}}$$
+
+在零假设成立的条件下，$$T \sim t(n-2)$$。那么若有$T > t_{1-\alpha}(n-2)$，则拒绝原假设，说明变量X和Y存在显著的相关关系。
+
+###### 注：这里提到的内容可以到参数统计的书籍上寻找。
+
+在R中，我们可以使用`cor.test`函数很轻松地对此进行检验：
+
+``` r Correlation_Analysis.r https://github.com/JackyCode/RSeries
+> with(cars, {
++ 	cor.test(speed, dist)
++ })
+
+	Pearson's product-moment correlation
+
+data:  speed and dist
+t = 9.464, df = 48, p-value = 1.49e-12
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.6816422 0.8862036
+sample estimates:
+      cor 
+0.8068949 
+```
+
+从结果可以看到，$t=9.464$这个不容易看出来结果，因为还需要查表。我们可以选择直接看$p$值：1.49e-12，比0.05小太多了。故而拒绝原假设，认为汽车速度与制动距离存在高度相关关系。
+
+###### 注：这里如何修改，使得其使用spearman相关系数呢？
+
+到此，就将相关分析的大致内容进行了阐述。但是，相关分析也还有很多其它内容，比如偏相关等等。

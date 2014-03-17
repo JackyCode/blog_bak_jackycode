@@ -1,0 +1,130 @@
+---
+layout: post
+title: "R语言记录2 ：R语言中的数据"
+date: 2014-03-07 17:03:58 +0800
+comments: true
+categories: RSeries
+---
+
+![aritical 5](/images/artical/artical5.jpg)
+<!-- more -->
+
+*“文章原创，转载请注明出处”*
+
+***
+
+上一次简单地讲了一下R语言编程的一些控制语句，这次来看一看R中的数据。
+
+#### 一. 数据类型简介
+
+首先，要记住，R语言中的一切都是对象，`Everything in R is an Object`。那么对象就存在其属性，R中每一个对象包含多个属性用来描述该对象。最重要的两个属性是**模式**和**类**。可以使用函数`mode()`和函数`class()`去查看对象的模式和类。
+
+``` r datamode https://github.com/JackyCode/RSeries
+# 比如查看函数sum的模式和类
+mode(sum)	# function
+class(sum)	# function
+```
+
+我们用R语言来处理数据，遇到的最多的对象模式应该是*数值型*，*字符型*，*逻辑型*，*因子*和*日期时间*。而我们正常处理的数据中往往会存在不止一种数据模式，比如一批数据中有变量：姓名和年龄，显然姓名是字符型而年龄是数值型。那么在存储这些变量的时候，就出现一个对象需要对应多个模式。R语言中**像矩阵，数组等等的对象只能存储相同模式的数据；而像数据框，列表等等的对象则可存储多种模式的数据**。
+
+在R中最常遇到的数据模式是***列表***，因为其可以存储具有不同模式和不同长度的对象。
+
+``` r datamode https://github.com/JackyCode/RSeries
+create.list <- list(name = c("Li", "Wang"," Xue"), age = c(21, 22, 24), sex = factor("b", "g", "b"))
+# 使用sapply查看模式和类（回想上一节内容）
+sapply(create.list, mode)
+sapply(create.list, class)
+```
+
+#### 二. 简单的数据操作
+
+###### 1. 进入R程序，更改工作空间：
+
+``` r data_manipulation https://github.com/JackyCode/RSeries
+# 获取当前的路径
+getwd()
+# 更改到目标路径
+setwd("~/DataInR")
+```
+	
+###### 2. 向量
+
+``` r  data_manipulation https://github.com/JackyCode/RSeries
+# c函数：连接或合并数据
+x <- c(1, 2, 3)
+y <- c("abc", "bc", "c")
+
+# 使用seq函数创建数据
+z <- seq(1, 21, 1) # 或 z <- 1:21
+
+# 查看数据
+head(z)
+tail(z)
+head(z, 3)
+tail(z, 3)
+nchar(y) # 注意空格
+z[1]
+z[1:5]
+
+# 合并数据
+mode(x)
+mode(y)
+xy <- c(x, y)
+mode(xy)
+## c函数合并不同模式的数据：logical < integer < numeric < complex < character < list
+## 当级别低的遇到级别高的，则转为级别高的
+## 比如logical与integer合并，则logical类型中TRUE转成1，FALSE转成0，全部转成integer
+
+# 简单运算
+z + 1
+z + x # 注意长度不同
+k <- 1:20
+z + k # 注意warning
+```
+		
+###### 3. 矩阵
+
+``` r  data_manipulation https://github.com/JackyCode/RSeries
+# 创建矩阵
+v <- 1:12
+m <- matrix(v, nrow = 3, ncol = 4)
+m1 <- matrix(v, 3, 4)
+m2 <- matrix(v, 3)
+m3 <- matrix(v, 4)
+
+m4 <- matrix(0, 3, 4) # 创建零矩阵
+m5 <- matrix(1, 3, 4) # 全一矩阵
+m6 <- matrix(1:3, 3, 4) # 行相同矩阵
+m7 <- matrix(1:4, 3, 4) # 列相同矩阵
+m8 <- matrix(1:5, 3, 4) # 注意warning
+
+# 查看数据
+m[1, 1]
+m[2:3, 3:4]
+dim(m)
+length(m)
+head(m, 2)
+tail(m, 1)
+```
+#### 三. 小节	 
+到此为止，我们就可以在R语言中创建录入一些数据，并对数据进行一些简单的操作。利用上一节中所讲的控制语句，我们就可以编写R语言的小程序了。试试用R语言解决一些你在学习中遇到的小问题吧。下一次我将讲讲如何从文件中导入数据，以及一些其他的处理。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

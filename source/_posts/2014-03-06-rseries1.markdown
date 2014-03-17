@@ -1,0 +1,139 @@
+---
+layout: post
+title: "R语言记录1 ：基础"
+date: 2014-03-06 15:27:28 +0800
+comments: true
+categories: RSeries
+---
+
+![aritical 4](/images/artical/artical4.jpg)
+
+<!-- more -->
+
+*“文章原创，转载请注明出处”*
+
+***
+
+### 一. 配置与帮助
+
+很多时候我们希望软件可以根据我们的需要输出结果，比如我想将所有的结果小数都保留三位，那么就需要自己去更改设置，这时候就需要使用函数：`options(...)`。这个函数可以用来***显示或设置当前的选项***。运行`options()`，可以查看选项当前的设置，`help(options)`可以显示可用选项的说明。如果想要单独查看某一个设置，则需要使用函数`getOption(x, default=NULL)`。
+
+可以运行这些代码以查看：
+
+``` r config_set.R https://github.com/JackyCode/RSeries
+options()
+getOption("digits")
+options(digits=3)
+getOption("digits")
+```
+
+在学习一个软件之前，最重要的是知道在哪里才能获取帮助。R语言提供了强大的帮助系统，提供了已安装包中所有函数的细节、参考文献以及使用示例。以和函数`sum()`为例，你可以直接输入`help(sum)或?sum`查看函数`sum`的帮助，也可以输入`help.search(sum)或??sum`在本地以关键词`sum`进行搜索。你甚至可以直接输入`sum`得到该函数的源代码细节（这对于学习编程来说实在是太棒了）。
+
+试试这些：
+
+``` r help_use.R https://github.com/JackyCode/RSeries
+help.start() # 打开帮助文档首页
+?sum
+??sum
+sum()
+sum
+```
+
+### 二. 控制语句
+
+#### 1. 循环语句
+
+``` r	
+for (var in seq) expr
+```
+
+即变量*var*从*seq*中依次取值，计算*expr*直到结束。例如：
+
+``` r controlSentence_use https://github.com/JackyCode/RSeries
+x <- c()
+for (i in c(1, 2, 3)) x[i]<-i*i
+```
+当然，R语言也支持`while`和`repeat`这类C语言风格的循环：
+
+``` r controlSentence_use https://github.com/JackyCode/RSeries
+# while loop
+i <- 1
+while (i <= 3) {
+	x[i] <- i*i
+	i <- i+1
+}
+
+# another while loop
+i <- 1
+while (TRUE) {
+    x[i] <- i*i
+    i <- i+1
+    if (i > 3) break
+}
+
+# repeat loop
+i <- 1
+repeat {
+    x[i] <- i*i
+    i <- i+1
+    if (i > 3) break
+}
+==========================
+```
+
+##### 非向量集合上的循环
+R语言并不直接支持在非向量结合上做循环，但是我们可以用函数`apply()`,`sapply()`,`lapply()`以及`tapply`来避开循环得到想要的结果。
+
+比如上面的例子，对集合{1, 2, 3}中每一个元素求平方得到新的集合：
+
+``` r controlSentence_use https://github.com/JackyCode/RSeries
+i <- c(1, 2, 3)
+Fun <- function(x) {
+	y <- x*x
+}
+x <- lapply(i, Fun)
+```
+
+使用`apply()`函数，还可以简单地对一个矩阵按行(按列)求和(任意函数)。
+
+``` r controlSentence_use https://github.com/JackyCode/RSeries
+a <- matrix(1:12, nrow=4)
+b <- apply(a, 1, sum)
+c <- apply(a, 2, sum)
+```
+
+#### 2. 条件语句
+
+跟C语言类似：
+
+``` r controlSentence_use https://github.com/JackyCode/RSeries
+r <- 3
+if (r == 4) {
+    x <- 1
+} else {
+    x <- 3
+}
+```
+
+#### 3. 自定义函数
+
+``` r
+function (<formal arguments>) body
+```
+
+使用上面的例子：
+
+``` r controlSentence_use https://github.com/JackyCode/RSeries
+Fun <- function(x) {
+	y <- x*x
+}
+a <- 2
+b <- Fun(a)
+```
+	
+学习这么多之后，我们就可以使用R做点小事情了。但是这还没有涉及到R语言自身的东西，毕竟上面的这些能力哪个编程语言没有。
+
+
+
+
+

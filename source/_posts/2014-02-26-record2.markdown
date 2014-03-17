@@ -1,0 +1,123 @@
+---
+layout: post
+title: "记录：Octopress配置修改之旅"
+date: 2014-02-26 15:40:39 +0800
+comments: true
+categories: Octopress Record
+---
+
+![aritical 3](/images/artical/artical3.jpg)
+
+<!-- more -->
+
+*“文章原创，转载请注明出处”*
+
+***
+
+花了两天的时间对主题进行了修改，由于对Web的东西了解的不多，查资料找东西修改代码着实累了一把(丫的，这些代码可读性很强，比起R，Python神马的可是容易学的多。只是要看懂框架还真是需要大大的一番功夫，而且怎么修改CSS做效果，作为门外汉的我是真心欲哭无泪啊)。
+
+本来想把网页做得美观大方简洁，高大上吧反正。最终出来这么个效果，虽说离高大上远了点，但我也就算是满意了，起码它是自己独有的，也算是独一无二了。
+
+***
+
+在修改配置的过程中发现了一些东西，在这里做个小记录。
+
+#### 1. 安装第三方主题的结果
+
+由于想偷懒，所以一开始就想直接使用现有的第三方主题，安装的主题多了之后，发现一个很严重的问题。那就是当我对一些配置进行修改后，发现网页根本没有作出反应。最终我在网页审查元素时发现，我做的很多修改都被其它设置覆盖掉了。很多主题同时安装会导致出现越来越多的配置文件，最终配置混乱难以修改。但是我只是遇到字体啊，颜色啊一类小的问题，大的问题倒是没有遇到。
+
+有了这个教训，我就将所有的内容重新部署之后，使用默认主题进行修改，这样的好处是，没有那么多杂七杂八的配置文件，找个什么东西也比较方便。
+
+#### 2. 统一文章的样式
+
+之前发过两篇博文，第一篇很短，第二篇很长。直接发上去的结果就是列表页面太长，看起来很难受。所以就决定采用`read on`的方法，在文中加了`<!-- more -->`之后的确或多或少解决了这个问题。
+
+但是不同的文章无法控制其样式统一，保持好的视觉效果。后来在[破船之家](http://beyondvincent.com/)网站和[UIWeek](http://www.uiweek.com/)杂志上得到了启发；最终决定将博客的**Header**设定成蓝色渐变，每一篇日志都以蓝色图片的形式出现在列表，更多的内容就放到博文内部。这样一来就能够保证样式统一，而且看起来比较简洁，换个专业点的话就是学习成本低（呵呵）。
+
+#### 3. 隐藏侧边栏
+
+对于我这种有洁癖的人来说，大部分情况下侧边栏不存在比较好(难得看到一个侧边栏存在还好看简洁的网站)，所以打一开始就是要结束它的。要想做到这个效果，需要修改`_config.yml`文件：
+
+```
+# remove the sidebar
+default_asides: []
+sidebar: collapse
+```
+	
+即将`default_asides`里面的东西全删掉，然后添加`sidebar: collapse`就可以了。
+
+#### 4. 添加多说评论
+
+首先去[多说](http://duoshuo.com/)注册帐号，然后多说会给你一段代码，如下：
+
+``` html
+<!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"yourname"};
+  (function() {
+        var ds = document.createElement('script');
+	    ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+	    ds.charset = 'UTF-8';
+	    (document.getElementsByTagName('head')[0]
+	     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END -->
+```
+	
+你获得的代码跟这段唯一的区别就在于short_name不同。然后：
+
+###### a. 在`_config.yml`文件中添加：
+
+``` 
+# duoshuo comments
+duoshuo_comments: true
+```
+		
+###### b. 在`source/_layouts/post.html`中添加多说的模块：
+
+``` html
+{% if site.duoshuo_short_name and site.duoshuo_comments == true and page.comments == true %}
+  <section>    
+		<h1>Comments</h1>    
+		<div id="comments" aria-live="polite">{% include post/abc.html %}</div>  
+  </section>
+{% endif %}
+
+<!-- 其中`abc.html`随便你起什么名字，个人建议为`duoshuo.html`. -->
+```
+
+###### c. 创建`source/_includes/post/duoshuo.html`，并把多说给你的代码放进去就OK了。
+
+###### d. 发布到博客上
+
+``` 
+rake generate
+git add .
+git commit -m 'add duoshuo comment'
+git push origin source
+rake deploy
+```
+		
+###### e. 打完收工
+
+#### 5. 修改样式
+对于样式的修改，需要学习CSS。以前虽然在[Codecademy](http://www.codecademy.com/)上看过一点，但是从没有自己真正用过，所以也还算是初学。我对样式的修改大致就是将**Header**，**Navigation**以及**Artical**这些部分分开来，对不同的部分使用了一些特效。有些代码是在网上搜到后自己稍作了修改，有些是原创，有兴趣可以直接到我的GitHub网站上去看，不要告诉我找不到它在哪哦。
+
+***
+
+### 总结
+花了两天修改，发现其实干的事情并不很多。仔细想来大部分修改的时间都在调整不同的系数，以及在网上看材料。这两天学到的东西很多，也让我发现很多很好玩的东西，比如Web的框架，特效，还有很多很好很美的设计，大爱！
+
+#### 参考
+1. [破船之家](http://beyondvincent.com/)
+2. [UIWeek](http://www.uiweek.com/)
+3. [Octopress官网](http://octopress.org/)
+4. [Octopress主题改造](http://shanewfx.github.io/blog/2012/08/13/improve-blog-theme/)
+5. [css实现简约的纸张卷角效果](http://www.jcodecraeer.com/a/cssjiqiaoyuguifan/2012/0628/289.html)
+6. [Octopress博客设置](http://www.cnblogs.com/oec2003/archive/2013/05/31/3109577.html)
+7. [。。。](https://www.google.com.hk/search?q=Octopress%E4%B8%BB%E9%A2%98%E6%94%B9%E9%80%A0&oq=Octopress%E4%B8%BB%E9%A2%98%E6%94%B9%E9%80%A0&aqs=chrome..69i57&sourceid=chrome&espv=210&es_sm=119&ie=UTF-8)
+
+

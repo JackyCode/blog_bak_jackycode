@@ -1,0 +1,325 @@
+---
+layout: post
+title: "R语言记录3:数据的导入及复杂操作"
+date: 2014-03-09 11:16:58 +0800
+comments: true
+categories: RSeries
+---
+
+![aritical 6](/images/artical/artical6.jpg)
+<!-- more -->
+
+*“文章原创，转载请注明出处”*
+
+***
+
+上一节介绍了R语言中常用的数据类型，并且介绍了R语言中对数据的一些简单操作，如创建查看向量或者矩阵等等。今天就介绍一下如何从文件中导入数据，以及对数据进行一些较为复杂的操作。
+
+#### 一. 读取数据
+
+R语言读取数据有很多方式，如`scan`函数，`read.table`函数等等。我这里还想介绍另外两个函数，`read.csv`和`read.delim`函数，因为处理数据，大部分时候遇到的文件是csv文件或者txt文件，而这两个函数可以很好的读取此类型的文件。
+
+##### 1. `scan`函数
+首先简单说说`scan`函数，这个函数在默认的情况下，希望所有输入的数据都是数值型的。`scan`函数读取的数据必须是同一模式的，如果没有指定参数，scan将从R控制台读取数据，直到遇到一个空白行停止。
+
+``` r loadData https://github.com/JackyCode/RSeries
+> x <- scan()
+1: 1 2 3
+4: 2 3 4
+7: 
+Read 6 items
+> x
+[1] 1 2 3 2 3 4
+```
+	
+也可以通过设定参数，设定读取的数据类型：
+
+``` r loadData https://github.com/JackyCode/RSeries
+> y <- scan(what="") # 读取字符型数据
+1: 1 2 3
+4: 2 3 4
+7: 
+Read 6 items
+> y
+[1] "1" "2" "3" "2" "3" "4"
+```
+	
+也可以直接读取一个同一模式的数据文件：
+
+``` r loadData https://github.com/JackyCode/RSeries
+> z <- scan("example.txt")
+Read 9 items
+> z
+[1] 1 2 3 4 5 6 7 8 9
+```
+	
+其中`example.txt`的内容如下：
+
+	1	2	3
+	4	5	6
+	7	8	9
+	
+注意最后留一个空白行，以便R读取数据时可以找到终止位置(否则会出现`warning`)。
+
+##### 2. `read.table`函数
+顾名思义，`read.table`函数即是以**数据框**的格式在R中读取数据。这里就涉及到一个新的概念，**数据框**。前一节我们提到过，可以使用列表和数据框去存储具有不同模式的数据。**数据框**可以存储具有相同长度的变量，并且在统计中，其每一行就是样本的一个观测值，有多少行就有多少次观测。我们可以使用`data.frame`函数来生成一个数据框：
+
+``` r loadData https://github.com/JackyCode/RSeries
+> name <- c("Li", "Wang", "Sun")
+> age <- c(21, 22, 23)
+> Datafr <- data.frame(name = name, age = age)
+> Datafr
+  name age
+1   Li  21
+2 Wang  22
+3  Sun  23
+```
+	
+此外，数据框还有一个优点：可以在不影响原始数据的情况下，改变数据。比如我想知道，数据里面每个人的年龄比18大多少：
+
+``` r loadData https://github.com/JackyCode/RSeries
+> Datafr2 <- data.frame(name = name, age = age, age.u = age-18)
+> Datafr2
+  name age age.u
+1   Li  21     3
+2 Wang  22     4
+3  Sun  23     5
+```
+	
+那么如何使用`read.table`函数呢，看看如下示例：
+
+``` r loadData https://github.com/JackyCode/RSeries
+> example <- read.table("example.txt", header=FALSE)
+> example
+  V1 V2 V3
+1  1  2  3
+2  4  5  6
+3  7  8  9
+```
+	
+其中`header`参数指定数据文件的第一行是否为变量名。当没有变量名时，可以使用参数`col.names`来指定：
+
+``` r loadData https://github.com/JackyCode/RSeries
+> example <- read.table("example.txt", header=FALSE, col.names=c("x1", "x2", "x3"))
+> example
+  x1 x2 x3
+1  1  2  3
+2  4  5  6
+3  7  8  9
+```
+	
+当然`read.table`函数读取数据时，可以使用`sep=参数`指定分隔符。这些可以使用`?read.table`查看。
+
+##### 3. `read.csv`和`read.delim`函数
+
+使用方法与`read.table`函数类似，可以直接读取csv文件和txt文件。
+
+``` r loadData https://github.com/JackyCode/RSeries
+dataCsv <- read.csv("example.csv", header=FALSE)
+dataTxt <- read.delim("example.txt", header=FALSE)
+```
+
+#### 二. 数据操作
+上一节介绍了一些简单的数据操作，这次讲一讲较为复杂的数据操作。
+
+###### 1. 首先从$-5$到$5$中随机取出不重复的$10$个数据(`sample`函数)：
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> x <- sample(-5:5, 10)
+> y <- sample(-5:5, 10)
+> x
+ [1] -2  3 -3  0 -5  5  1  4 -1  2
+> y
+ [1] -1  3 -3  1 -4  5  0  2 -5 -2
+```
+	
+###### 2. 判断$x$中的数据是否大于$0$(`all`和`any`函数)：
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> x>0
+[1] FALSE  TRUE FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE
+> all(x>0)
+[1] FALSE
+> any(x>0)
+[1] TRUE
+```
+	
+###### 3. 试试更多的逻辑运算(`&, |, !`)：
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> x > 0 & y > 0
+	 [1] FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE
+> x > 0 | y > 0
+ [1] FALSE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE  TRUE
+> !(x>0)
+	 [1]  TRUE FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE FALSE
+```
+	 
+###### 4. 找出$x$与$y$相等的元素(`which`函数):
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> x == y
+ [1] FALSE  TRUE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+> which(x == y) # 取出满足条件的位置
+ [1] 2 3 6
+```
+
+###### 5. 从$-5$到$5$中随机取出允许重复的$10$个数据(`sample`函数)：
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> z <- sample(-5:5, 10, replace=TRUE)
+> z
+ [1]  4 -4 -1 -2  4  5 -3 -3  1  2
+```
+		 
+###### 6. 取出$z$中不同的元素(`unique`函数)：
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> z.unique <- unique(z)
+> z.unique
+[1]  4 -4 -1 -2  5 -3  1  2
+```
+		
+###### 7. 生成存在缺失数据的一列数据(`NA`)：
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> x.na <- c(1:5, NA, 2, NA, 3:5)
+> x.na
+ [1]  1  2  3  4  5 NA  2 NA  3  4  5
+```
+
+###### 8. 对$x$求和(`is.na`函数):
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> sum(x.na) # 带着缺失数据计算
+[1] NA
+> sum(is.na(x.na)) # 统计缺失数据的个数
+[1] 2
+> sum(x.na, na.rm=TRUE) # 剔除缺失数据后求和
+[1] 29
+```
+
+###### 9. 向变量$x$中添加数据(`append`函数)：
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> x <- append(x, sample(-5:5, 2))
+> x
+[1] -2  3 -3  0 -5  5  1  4 -1  2 -1 -5
+```
+	 
+###### 10. 更改$x$的数据类型(`as.character`,`as.factor`,`as.numeric`函数)：
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> x <- as.character(x)
+> x
+ [1] "2"  "8"  "3"  "5"  "4"  "10" "6"  "9"  "1"  "7"  "1"  "4" 
+> x <- as.factor(x)
+> x
+ [1] 2  8  3  5  4  10 6  9  1  7  1  4 
+Levels: 1 10 2 3 4 5 6 7 8 9
+> x <- as.numeric(as.character(x)) # 如果一组因子变量是用数字表示，一般先将数字因子转换成字符后再转换成数值。
+> x
+ [1]  2  8  3  5  4 10  6  9  1  7  1  4
+```
+		 
+###### 11. 数据类型更改(`unlist`,`as.data.frame`)：
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> myList <- list()
+> myList$x1 <- c(1, 2, 3)
+> myList$x2 <- c(2, 4, 6)
+> myList
+$x1
+[1] 1 2 3
+
+$x2
+[1] 2 4 6
+
+# unlist
+> uList <- unlist(myList)
+> uList
+x11 x12 x13 x21 x22 x23 
+  1   2   3   2   4   6 
+  
+# matrix
+> mList <- matrix(uList, 2, 3, byrow=TRUE)
+> mList
+     [,1] [,2] [,3]
+[1,]    1    2    3
+[2,]    2    4    6
+
+# dataframe
+> dfList <- as.data.frame(mList)
+> dfList
+  V1 V2 V3
+1  1  2  3
+2  2  4  6
+> colnames(dfList) <- c("x1", "x2", "x3")
+> dfList
+  x1 x2 x3
+1  1  2  3
+2  2  4  6
+> rownames(dfList) <- c("o1", "o2")
+> dfList
+   x1 x2 x3
+o1  1  2  3
+o2  2  4  6
+```
+		
+###### 12. 按条件整理计算数据(`table`,`tapply`,`by`,`aggregate`函数)：
+
+``` r dataManipulation https://github.com/JackyCode/RSeries
+> x <- list()
+> x$a <- sample(-10:10, 20, replace=TRUE)
+> x$b <- as.factor(sample(1:4, 20, replace=TRUE))
+> x$c <- as.factor(sample(-3:-1, 20, replace=TRUE))
+> x
+
+# 统计因子出现的频数
+> table(x$b)
+
+ 1  2  3  4 
+ 5  3  1 11 
+> table(x$c)
+
+-3 -2 -1 
+ 9  7  4
+> table(x$b, x$c)
+
+    -3 -2 -1
+  1  1  3  1
+  2  1  2  0
+  3  0  1  0
+  4  7  1  3
+
+# 使用tapply，by以及aggregate函数根据不同因子对数据进行计算
+> tapply(x$a, x$b, sum)
+ 1  2  3  4 
+ 8 11  2 -5 
+> tapply(x$a, x$c, sum)
+-3 -2 -1 
+-7 16  7
+> tapply(x$a, list(x$b, x$c), sum) # 可以看到，由于b=2且c=-1的数据不存在，所有计算结果为NA(其它类似)
+  -3 -2 -1
+1 -3  6  5
+2  5  6 NA
+3 NA  2 NA
+4 -9  2  2
+
+> by(x$a, list(x$b, x$c), sum) # 输出结果太长就不给出了，可以观察一下与tapply输出的区别
+
+> aggregate(a ~ b+c, x, sum) # 第一个参数为要计算的量，中间的参数为条件，第三个参数为数据集名称，最后一个为函数
+  b  c  a
+1 1 -3 -3
+2 2 -3  5
+3 4 -3 -9
+4 1 -2  6
+5 2 -2  6
+6 3 -2  2
+7 4 -2  2
+8 1 -1  5
+9 4 -1  2
+```
+
+#### 三. 小节
+这次我们介绍了R语言如何从外部读取数据，以及对得到的数据如何进行一些复杂点的操作。当然这还不是全部，比如我这里还没有讲到如何将数据集按行按列去进行合并(`rbind`,`cbind`函数)等等，这些都可以通过help文档得到。我觉得学习一门语言一定要学会使用`help`，还有善用Google很重要。

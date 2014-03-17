@@ -1,0 +1,194 @@
+---
+layout: post
+title: "记录：Octopress建站之旅"
+date: 2014-02-23 10:40:38 +0800
+comments: true
+categories: Octopress Record
+---
+
+![aritical 2](/images/artical/artical2.jpg)
+
+<!-- more -->
+
+*“文章原创，转载请注明出处”*
+
+***
+
+博客建立好了，花了不少时间，今天就想将自己如何建立这个博客的过程梳理一遍，写在这里，当作复习回顾的同时，也与人参考。
+
+自己的这个小博客是用的Octopress搭建的，托管在github上面(没有资金但又想建立一个自己独立博客的同志们可以使用GitHub，free哦)。
+
+使用Octopress唯一的问题在于你得学一点shell commands和Git基础(其实用的内容并不很多，照着顺序搭建部署都可以搞定）。以后发博客只需要一些**简单的***每次都一样的*步骤就可以搞定了，直接复制粘贴就好。但是我想你需要对这些命令不感到反感才行，正如Octopress官方文档开头说的：
+
+>You should be comfortable running shell commands and familiar with the basics of Git. If that sounds daunting, Octopress probably isn't for you.
+
+但是shell跟Git是很好的东东，shell可以帮你很大限度地减少重复工作，而且学习shell的过程会让你对计算机有更深入的了解；Git是一个开源的分布式版本控制系统，它让我一次性放弃了CVS而投入它的怀抱（变得是不是太快了）。GitHub就是为开源项目免费提供Git存储的网站，看看现在无数的开源项目在GitHub里面活跃，你就知道不是我变得太快，而是它的优秀让你无法抗拒。
+
+***
+
+### 一、准备工作
+在安装Octopress之前，你必须得先安装上Git和Ruby。安装很简单，直接百度就可以了。如果你用的是Mac，那么恭喜你，你的电脑里面已经自带了Ruby。当然你仍然可以选择用rvm或者rbenv去安装更新Ruby，这些命令在官网上都有，就不多说了。
+
+安装完成后，在终端中运行命令：
+
+```
+git --version
+ruby --version
+```
+	
+如果能正确显示版本号，类似于我的输出：分别是`git version 1.8.3.4 (Apple Git-47)`和`ruby 2.0.0p247 (2013-06-27 revision 41674) [universal.x86_64-darwin13]`，就没有问题了，继续往下吧！
+
+
+### 二、安装Octopress
+首先在终端进入你想安装Octopress的文件夹中，然后使用git命令将Octopress clone到本地：
+
+```
+git clone git://github.com/imathis/octopress.git octopress
+```
+
+进入octopress文件夹：
+
+```
+cd octopress
+```
+
+安装依赖项:
+
+```
+gem install bundler
+rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
+bundle install
+```
+
+当然你有可能跟我一样遇到权限不足，操作无法完成的情况，那么你需要在命令前面加上`sudo`，第一次终端会要求你输入密码，输入成功后就可以正常安装了。
+
+安装好依赖项后，你需要安装主题：
+
+```
+rake install
+```
+
+上面命令会安装默认主题，当然你可以选择安装第三方主题，在[这里](https://github.com/imathis/octopress/wiki/3rd-Party-Octopress-Themes)有很多第三方的主题，你可以挑选自己喜欢的主题，然后安装：
+
+```
+git clone GIT_URL .themes/THEME_NAME
+rake install['THEME_NAME']
+```
+
+比如我的用的是CleanPress主题：
+
+```
+git clone git://github.com/macjasp/cleanpress.git .themes/cleanpress
+rake install['cleanpress']
+```
+
+### 三、注册GitHub
+到[GitHub](https://github.com/)网站上注册一个免费账户，然后新建一个repository。**repository一定要使用这样的格式命名：`yourname.github.io`，其中`yourname`是你注册时的用户名。**
+
+### 四、部署到GitHub
+
+```
+rake setup_github_pages
+```
+
+输入上述的命令会要求你输入SSH(你注册GitHub时会有)或者是你的repository的url，找到复制粘贴就好。
+
+然后就可以开始部署了：
+
+```
+rake generate
+rake deploy
+```
+
+此时可能会让你登录你的github，按照提示进行输入即可。
+
+到此为止，就差博客的source还没有提交了：
+
+```
+git add .
+git commit -m 'your message'
+git push origin source
+```
+
+### 五、配置Octopress
+我对Octopress没有做很大的配置改动，只是设置了博客名称，以及添加了Home页及其它一些页面的内容(其实就是给了一个空网页，里面神马都没有，以后再慢慢填充吧)。
+
+在octopress文件夹中，需要在`_config.yml`中设置自己博客的名称等等的内容：
+
+```
+url: [url of your github]
+title: [title of your blog]
+subtitle: [subtitle of your blog]
+author: [your name]
+simple_search: http://google.com/search
+description: [some other information you want to add]
+```
+
+除此之外，我还将里面有关twitter、facebook等等的社交信息全部给删除掉了(谢谢[船哥](http://beyondvincent.com/)，这个明显的是偷师啊～)。当然你要是有这些帐号也可以设置，只是在国内用处不大呀。
+
+之后，我对`octopress/source/_includes/custom`下的`navigation.html`进行了简单的修改，就是添加了`Home`，以及变换了`About`的位置：
+
+``` html
+<ul>
+	<li><a href="{{ root_url }}/home">Home</a></li>
+	<li><a href="{{ root_url }}/">Blog</a></li>
+	<li><a href="{{ root_url }}/portfolio">Portfolio</a></li>
+	<li><a href="{{ root_url }}/archives">Archive</a></li>
+	<li><a href="{{ root_url }}/about">About</a></li>
+</ul>
+```
+
+现在添加了Home页，但是Home页其实还是不存在的，所有需要建立一个新的page：
+
+```
+rake new_page[home]
+```
+
+上述命令会在`octopress/source`文件夹下生成一个新的文件夹`home`，`home`文件夹下面有一个markdown文件`index.markdown`。编辑该文件，将你想放在Home页上的东西写进去就OK了。
+
+默认情况下，`About`,`porfolio`页面都是不存在的，所以需要自己设置，方法与设置`home`页面的一样，就不多说了。
+
+根据自己的需求，修改完成后，不要忘了：
+
+```
+rake generate
+git add .
+git commit -m 'customise octopress'
+git push origin source
+rake deploy
+```
+
+### 六、发布新博客
+根据Jekyll的命名规则，文章命名必须有这样的格式：`YYYY-MM-DD-post-title.markdown`，使用Octopress的rake task可以简单解决这个问题：
+
+```
+rake new_post["title"]
+```
+
+命令会生成这样的文件：`source/_posts/YYYY-MM-DD-title.markdown`，然后你可以修改markdown文件，写自己的博文。写好后，别忘记部署到GitHub：
+
+```
+rake generate
+git add .
+git commit -am 'YYYY-MM_DD post'
+git push origin source
+rake deploy
+```
+
+至此文章就部署好了，过两分钟去自己的博客看看吧。
+
+### 七、最后
+利用Octopress搭建一个GitHub博客的简单流程差不多就像上述。但是对于自己的博客，可能我们还需要做更多的一些配置，比如添加评论系统，社交分享啊等等。这些内容网上有很多，可以到Google里面百度一下～
+
+***
+
+#### 参考资源以及更多配置Octopress的资源推荐
+1. [Octopress官方文档](http://octopress.org/docs/setup/)
+2. [破船之家](http://beyondvincent.com/)：[利用Octopress搭建一个Github博客](http://beyondvincent.com/blog/2013/08/03/108-creating-a-github-blog-using-octopress/)
+3. [Never Doubting Me](http://never.doubting.me/)：[教程:一步步在github上建立octopress博客](http://never.doubting.me/2013/04/18/2013-04-18-setup-octopress-on-github-step-by-step/)
+4. [William's Blog with Octopress](http://williamherry.com/)：[Octopress - 像黑客一样写博客](http://williamherry.com/blog/2012/07/20/octopress-setup/)
+5. [研究研究](http://www.yanjiuyanjiu.com/)：[我的Octopress配置](http://www.yanjiuyanjiu.com/blog/20130402/)
+6. [简单文本](http://agiledon.github.io/)：[Octopress博客问题解决方案与技巧](http://agiledon.github.io/blog/2012/12/25/octopress-issues-solution-and-tips/)
+7. [。。。](https://www.google.com.hk/search?newwindow=1&safe=strict&espv=210&es_sm=119&q=octopress%E6%95%99%E7%A8%8B&oq=octopress%E6%95%99%E7%A8%8B&gs_l=serp.12..35i39.5308.6241.0.8806.10.8.0.0.0.1.237.921.0j3j2.5.0....0...1c.1j4.35.serp..6.4.789.PMKW2jRRdPI)
+
+**如果有什么问题或者建议，可以直接回复我或者给我发邮件：`jackycodemsc@gmail.com`。**
