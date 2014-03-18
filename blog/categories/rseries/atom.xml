@@ -4,7 +4,7 @@
   <title><![CDATA[Category: RSeries | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/rseries/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-03-17T21:15:41+08:00</updated>
+  <updated>2014-03-18T19:44:32+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -50,8 +50,9 @@
 + })
 </code></p>
 
-<p>得到如下图形：
-<img src="/images/RSeries7/scatter.jpg" alt="scatter" /></p>
+<p>得到如下图形：</p>
+
+<p><img src="/images/RSeries7/scatter.jpg" alt="scatter" /></p>
 
 <p>从散点图看，汽车速度与其制动距离存在相关关系。但是，仅仅从图像来看，我们只能得到大概是否相关，而不能给出一个确切的描述。那么就希望能够找到一个方法，能够描述变量之间有多相关，程度有多大。</p>
 
@@ -285,8 +286,9 @@ am        1       2       3       4       6       8
 &gt; hist(mtcars$mpg)
 </code></p>
 
-<p>得到如下的图形：
-<img src="/images/RSeries6/Histogram1.jpg" alt="Histogram1" /></p>
+<p>得到如下的图形：</p>
+
+<p><img src="/images/RSeries6/Histogram1.jpg" alt="Histogram1" /></p>
 
 <p>其实更多地，我们希望得到频率直方图，并且给出其核密度曲线以及正态密度曲线。</p>
 
@@ -301,8 +303,9 @@ am        1       2       3       4       6       8
 +   lty = c(2, 1), col = c("red", "blue"))
 </code></p>
 
-<p>得到图形如下：
-<img src="/images/RSeries6/Histogram2.jpg" alt="Histogram2" /></p>
+<p>得到图形如下：</p>
+
+<p><img src="/images/RSeries6/Histogram2.jpg" alt="Histogram2" /></p>
 
 <h6 id="b-">b. 散点图</h6>
 <p>我们可以使用<code>plot</code>函数直接画出散点图，此外，我这里还给散点图加上了一条拟合曲线。<code>lowess()</code>函数可以用特殊的曲线对二维数据进行非线性拟合(多维的情况需要使用<code>loess()</code>函数)。</p>

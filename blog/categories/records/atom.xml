@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Records | Jacky and MSC]]></title>
+  <link href="http://jackycode.github.io/blog/categories/records/atom.xml" rel="self"/>
+  <link href="http://jackycode.github.io/"/>
+  <updated>2014-03-18T19:44:32+08:00</updated>
+  <id>http://jackycode.github.io/</id>
+  <author>
+    <name><![CDATA[Jacky Code]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[记录：最近对博客的一些修改]]></title>
+    <link href="http://jackycode.github.io/blog/2014/03/18/record3/"/>
+    <updated>2014-03-18T18:52:12+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/03/18/record3</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical11.jpg" alt="aritical 11" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>前两天发现了一款很不错的主题<code>bootstrap</code>，心中一直很是惦记，终于还是在昨天晚上换了主题。趁着换主题的时间，我也顺便为我的博客添加了一些其它的功能，也设置了一下侧边栏，详情如下。</p>
+
+<h4 id="google-analytics">1. 加入Google Analytics</h4>
+<p>对于自己的博客，总是想了解它的现状的。起码我希望知道我的博客有没人来看，所以加了这个功能。</p>
+
+<p>加入这个功能的方法很简单，就是去<a href="http://www.google.com/analytics/">Google Analytics</a>注册个帐号，然后把你的帐号填到<code>_config.yml</code>中对应的位置就OK啦。</p>
+
+<p>当然我就遇到了一个问题，就是填入帐号之后，Google Analytics总是跟踪不到。最后我只能把<code>_config.yml</code>中的帐号注释掉，然后进入<code>source/_includes/head.html</code>中，添加了申请帐号之后给出的脚本。等了大概几分钟，Google Analytics就显示跟踪到了。如果你遇到类似的问题，可以试一下这个方法。</p>
+
+<h4 id="section">2. 加入数学公式支持</h4>
+
+<p>首先启用MathJax，即在<code>source/_includes/custom/footer.html</code>的第一行添加代码：</p>
+
+<p><code>javascript
+&lt;!-- mathjax config similar to math.stackexchange --&gt;
+&lt;script type="text/x-mathjax-config"&gt;
+  MathJax.Hub.Config({ 
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+    	inlineMath: [ ['$', '$'] ],
+    	displayMath: [ ['$$', '$$']],
+    	processEscapes: true,
+    	skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] },
+    	messageStyle: "none",
+    	"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] } });
+&lt;/script&gt;
+&lt;script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"&gt;&lt;/script&gt;
+</code></p>
+
+<p>添加之后，就在博客里面引入了MathJax，那么就可以在markdown里面直接输入公式了，例如：<code>$n^2$</code>就可以解析成$n^2$。</p>
+
+<p>在引入MathJax之后，我更换了解析器，因为自带的<code>rdiscount</code>解析器对于MathJax的细节处理存在一些小问题。更换解析器，可以到<code>Gemfile</code>中添加：</p>
+
+<p><code>ruby
+gem 'kramdown', '~&gt; 0.13.8'
+</code></p>
+
+<p>然后在终端运行：</p>
+
+<p><code>ruby
+bundle install
+</code></p>
+
+<p>最后，在<code>_config.yml</code>文件中，将解析器更换：</p>
+
+<p><code>
+markdown:kramdown
+</code></p>
+
+<p>使用kramdown，有两点需要注意：</p>
+
+<ol>
+  <li>公式无论行内行间都以<code>$$</code>开头；行间公式，必须独占一行；</li>
+  <li>代码块开头必须空一行，否则代码高亮会失效。</li>
+</ol>
+
+<p>至于其它的，可以去<a href="http://kramdown.rubyforge.org/syntax.html">官方文档</a>查看。</p>
+
+<h4 id="section-1">3. 更换主题</h4>
+<p>如何更换主题，在之前的文章里面早已说过。这次就是将主题更换成了<code>bootstrap</code>。</p>
+
+<h4 id="section-2">4. 侧边栏的修改</h4>
+
+<h5 id="a-">a. 关于我</h5>
+<p>添加自己的简介，可以在<code>custom/asides/</code>文件夹下添加<code>about.html</code>，然后添加内容：</p>
+
+<p><code>html
+&lt;section class="well"&gt;
+  &lt;ul id="about" class='nav nav-list'&gt;
+    &lt;li class="nav-header"&gt;&lt;a href="/about"&gt;关于我&lt;/a&gt;&lt;/li&gt;
+      &lt;p&gt;介绍一下自己&lt;/p&gt;
+      &lt;p&gt;可以留下联系方式，比如微博等等&lt;/p&gt;
+  &lt;/ul&gt;
+&lt;/section&gt;
+</code></p>
+
+<p>这里我使用了我博客主题的样式，就是里面的<code>class</code>和<code>id</code>的值。这些值需要你根据自己博客的主题样式设定，可以参看其自带的侧边栏的一些网页，比如<code>_includes/asides/recent_post.html</code>。</p>
+
+<h5 id="b-">b. 文章分类</h5>
+<p>给自己的文章分类，需要的操作稍微麻烦一些。首先需要在<code>plugins</code>目录下创建<code>category_list_tag.rb</code>文件：</p>
+
+<p>``` ruby
+module Jekyll 
+  class CategoryListTag &lt; Liquid::Tag 
+    def render(context) 
+      html = “” 
+      categories = context.registers[:site].categories.keys 
+      categories.sort.each do |category| 
+        posts_in_category = context.registers[:site].categories[category].size 
+        category_dir = context.registers[:site].config[‘category_dir’] 
+        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, ‘-‘).gsub(/-{2,}/, ‘-‘).downcase) 
+        html « “&lt;li class='category'&gt;<a href="http://jackycode.github.io/#{category_url}/">#{category} (#{posts_in_category})</a>&lt;/li&gt;\n” 
+      end 
+      html 
+    end 
+  end 
+end</p>
+
+<p>Liquid::Template.register_tag(‘category_list’, Jekyll::CategoryListTag)
+```</p>
+
+<p>然后新建<code>source/_includes/asides/category_list.html</code>：</p>
+
+<p><code>html
+&lt;section class="well"&gt;
+  &lt;ul id="category_list" class="nav nav-list"&gt;
+    &lt;li class="nav-header"&gt;文章分类&lt;/li&gt;
+      &lt;li id="categories"&gt;% category_list %}&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/section&gt;
+</code></p>
+
+<p>这样就可以了。</p>
+
+<h5 id="c-">c. 推荐站点</h5>
+<p>跟添加<strong>关于我</strong>类似，可以直接在<code>custom/asides/</code>目录下添加<code>links.html</code>：</p>
+
+<p><code>html
+&lt;section class="well"&gt;
+  &lt;ul id="links" class="nav nav-list"&gt;
+    &lt;li class="nav-header"&gt;推荐站点&lt;/li&gt;
+    &lt;li&gt;
+      &lt;a href="http://macshuo.com/"&gt;MacTalk-池建强的随想录&lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;a href="http://yihui.name/"&gt;Yihui Xie&lt;/a&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/section&gt;
+</code></p>
+
+<h5 id="d-license">d. License</h5>
+<p>与推荐站点一样，可以在<code>custom/asides/</code>目录下添加<code>license.html</code>。然后到<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">署名-非商业性使用-相同方式共享 2.5 中国大陆</a>网页获取license的网页代码。</p>
+
+<p><strong>建好这些文件后，别忘了在<code>_config.yml</code>中修改侧边栏项：</strong></p>
+
+<p><code>
+default_asides: [custom/asides/about.html, asides/category_list.html]
+</code></p>
+
+<h4 id="section-3">5. 其它一些修改</h4>
+
+<ol>
+  <li>将博客大部分文字换成了中文；</li>
+  <li>去除了之前的Home页；</li>
+  <li>修改各篇文章内部的图片大小，统一使用8cm*8cm；</li>
+  <li>将所有的头部的导图长度加长。</li>
+</ol>
+
+<hr />
+
+<h4 id="section-4">参考资源</h4>
+
+<ol>
+  <li>
+    <p><a href="http://www.yanjiuyanjiu.com/blog/20130402/">研究研究: 我的Octopress配置</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.cnblogs.com/oec2003/archive/2013/05/31/3109577.html">冯威的学习专栏: Octopress博客设置</a></p>
+  </li>
+  <li>
+    <p><a href="http://shanewfx.github.io/blog/2012/08/13/improve-blog-theme/">思考的轨迹: Octopress主题改造</a></p>
+  </li>
+  <li>
+    <p><a href="https://www.google.com.hk/search?newwindow=1&amp;safe=strict&amp;espv=210&amp;es_sm=119&amp;q=octopress%E6%95%99%E7%A8%8B&amp;oq=octopress%E6%95%99%E7%A8%8B&amp;gs_l=serp.12..35i39.5308.6241.0.8806.10.8.0.0.0.1.237.921.0j3j2.5.0....0...1c.1j4.35.serp..6.4.789.PMKW2jRRdPI">。。。</a></p>
+  </li>
+</ol>
+]]></content>
+  </entry>
+  
+</feed>
