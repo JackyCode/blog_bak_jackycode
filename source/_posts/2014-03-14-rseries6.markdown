@@ -162,6 +162,7 @@ am        1       2       3       4       6       8
 ```
 
 得到如下的图形：
+
 ![Histogram1](/images/RSeries6/Histogram1.jpg)
 
 其实更多地，我们希望得到频率直方图，并且给出其核密度曲线以及正态密度曲线。
@@ -178,6 +179,7 @@ am        1       2       3       4       6       8
 ```
 
 得到图形如下：
+
 ![Histogram2](/images/RSeries6/Histogram2.jpg)
 
 ###### b. 散点图

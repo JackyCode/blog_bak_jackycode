@@ -1,0 +1,171 @@
+---
+layout: post
+title: "记录：最近对博客的一些修改"
+date: 2014-03-18 18:52:12 +0800
+comments: true
+categories: Records Octopress
+---
+
+![aritical 11](/images/artical/artical11.jpg)
+<!-- more -->
+
+*“文章原创，转载请注明出处”*
+
+***
+
+前两天发现了一款很不错的主题`bootstrap`，心中一直很是惦记，终于还是在昨天晚上换了主题。趁着换主题的时间，我也顺便为我的博客添加了一些其它的功能，也设置了一下侧边栏，详情如下。
+
+#### 1. 加入Google Analytics
+对于自己的博客，总是想了解它的现状的。起码我希望知道我的博客有没人来看，所以加了这个功能。
+
+加入这个功能的方法很简单，就是去[Google Analytics](http://www.google.com/analytics/)注册个帐号，然后把你的帐号填到`_config.yml`中对应的位置就OK啦。
+
+当然我就遇到了一个问题，就是填入帐号之后，Google Analytics总是跟踪不到。最后我只能把`_config.yml`中的帐号注释掉，然后进入`source/_includes/head.html`中，添加了申请帐号之后给出的脚本。等了大概几分钟，Google Analytics就显示跟踪到了。如果你遇到类似的问题，可以试一下这个方法。
+
+#### 2. 加入数学公式支持
+
+首先启用MathJax，即在`source/_includes/custom/footer.html`的第一行添加代码：
+
+``` javascript
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ 
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+    	inlineMath: [ ['$', '$'] ],
+    	displayMath: [ ['$$', '$$']],
+    	processEscapes: true,
+    	skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] },
+    	messageStyle: "none",
+    	"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] } });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+```
+
+添加之后，就在博客里面引入了MathJax，那么就可以在markdown里面直接输入公式了，例如：`$n^2$`就可以解析成$n^2$。
+
+在引入MathJax之后，我更换了解析器，因为自带的`rdiscount`解析器对于MathJax的细节处理存在一些小问题。更换解析器，可以到`Gemfile`中添加：
+
+``` ruby
+gem 'kramdown', '~> 0.13.8'
+```
+
+然后在终端运行：
+
+``` ruby
+bundle install
+```
+
+最后，在`_config.yml`文件中，将解析器更换：
+
+```
+markdown:kramdown
+```
+
+使用kramdown，有两点需要注意：
+
+1. 公式无论行内行间都以`$$`开头；行间公式，必须独占一行；
+2. 代码块开头必须空一行，否则代码高亮会失效。
+
+至于其它的，可以去[官方文档](http://kramdown.rubyforge.org/syntax.html)查看。
+
+#### 3. 更换主题
+如何更换主题，在之前的文章里面早已说过。这次就是将主题更换成了`bootstrap`。
+
+#### 4. 侧边栏的修改
+
+##### a. 关于我
+添加自己的简介，可以在`custom/asides/`文件夹下添加`about.html`，然后添加内容：
+
+``` html
+<section class="well">
+  <ul id="about" class='nav nav-list'>
+    <li class="nav-header"><a href="{{ root_url }}/about">关于我</a></li>
+      <p>介绍一下自己</p>
+      <p>可以留下联系方式，比如微博等等</p>
+  </ul>
+</section>
+```
+
+这里我使用了我博客主题的样式，就是里面的`class`和`id`的值。这些值需要你根据自己博客的主题样式设定，可以参看其自带的侧边栏的一些网页，比如`_includes/asides/recent_post.html`。
+
+##### b. 文章分类
+给自己的文章分类，需要的操作稍微麻烦一些。首先需要在`plugins`目录下创建`category_list_tag.rb`文件：
+
+``` ruby
+module Jekyll 
+  class CategoryListTag < Liquid::Tag 
+    def render(context) 
+      html = "" 
+      categories = context.registers[:site].categories.keys 
+      categories.sort.each do |category| 
+        posts_in_category = context.registers[:site].categories[category].size 
+        category_dir = context.registers[:site].config['category_dir'] 
+        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase) 
+        html << "<li class='category'><a href='/#{category_url}/'>#{category} (#{posts_in_category})</a></li>\n" 
+      end 
+      html 
+    end 
+  end 
+end
+
+Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
+```
+
+然后新建`source/_includes/asides/category_list.html`：
+
+``` html
+<section class="well">
+  <ul id="category_list" class="nav nav-list">
+    <li class="nav-header">文章分类</li>
+      <li id="categories">% category_list %}</li>
+  </ul>
+</section>
+```
+
+这样就可以了。
+
+##### c. 推荐站点
+跟添加**关于我**类似，可以直接在`custom/asides/`目录下添加`links.html`：
+
+``` html
+<section class="well">
+  <ul id="links" class="nav nav-list">
+    <li class="nav-header">推荐站点</li>
+    <li>
+      <a href="http://macshuo.com/">MacTalk-池建强的随想录</a>
+    </li>
+    <li>
+      <a href="http://yihui.name/">Yihui Xie</a>
+    </li>
+</ul>
+</section>
+```
+
+##### d. License
+与推荐站点一样，可以在`custom/asides/`目录下添加`license.html`。然后到[署名-非商业性使用-相同方式共享 2.5 中国大陆](http://creativecommons.org/licenses/by-nc-sa/2.5/cn/)网页获取license的网页代码。
+
+**建好这些文件后，别忘了在`_config.yml`中修改侧边栏项：**
+
+```
+default_asides: [custom/asides/about.html, asides/category_list.html]
+```
+
+#### 5. 其它一些修改
+
+1. 将博客大部分文字换成了中文；
+2. 去除了之前的Home页；
+3. 修改各篇文章内部的图片大小，统一使用8cm*8cm；
+4. 将所有的头部的导图长度加长。
+
+***
+
+#### 参考资源
+
+1. [研究研究: 我的Octopress配置](http://www.yanjiuyanjiu.com/blog/20130402/)
+
+2. [冯威的学习专栏: Octopress博客设置](http://www.cnblogs.com/oec2003/archive/2013/05/31/3109577.html)
+
+3. [思考的轨迹: Octopress主题改造](http://shanewfx.github.io/blog/2012/08/13/improve-blog-theme/)
+
+4. [。。。](https://www.google.com.hk/search?newwindow=1&safe=strict&espv=210&es_sm=119&q=octopress%E6%95%99%E7%A8%8B&oq=octopress%E6%95%99%E7%A8%8B&gs_l=serp.12..35i39.5308.6241.0.8806.10.8.0.0.0.1.237.921.0j3j2.5.0....0...1c.1j4.35.serp..6.4.789.PMKW2jRRdPI)
