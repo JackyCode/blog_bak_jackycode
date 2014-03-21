@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: Records - Jacky and MSC</title>
+  <title>Koding：免费VPS服务的初体验 - Jacky and MSC</title>
   <meta name="author" content="Jacky Code">
 
   
-  <meta name="description" content="Category: Records">
+  <meta name="description" content="">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jackycode.github.ioblog/categories/records">
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/03/21/kodingrecommended">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -95,38 +95,156 @@
   <div class="container">
     <div class="row-fluid">
       
-<article role="article" class="span9">
+<article class="hentry span9" role="article">
 
   
   <header class="page-header">
-    <h1 class="entry-title">Category: Records</h1>
+    
+      <h1 class="entry-title">Koding：免费VPS服务的初体验</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-21T16:01:44+08:00" pubdate data-updated="true">Mar 21<span>st</span>, 2014</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p><img src="/images/artical/artical12.jpg" alt="aritical 12" />
+<!-- more --></p>
 
-  
-  <h1>2014</h1>
+<p><em>“文章原创，转载请注明出处”</em></p>
 
-<article>
-  <div class="well">
+<hr />
 
-<h2><a href="/blog/2014/03/18/record3/">记录：最近对博客的一些修改</a></h2>
-<time datetime="2014-03-18T18:52:12+08:00" pubdate><span class='month'>Mar</span> <span class='day'>18</span> <span class='year'>2014</span></time>
+<p>昨天晚上在浏览“<a href="http://ztl2004.github.io/MachineLearningWeekly/">机器学习周刊</a>”时，看到了一个提供免费vps服务的网站，免费的虚拟主机平台哎。那么在上面码代码呀干点什么的，不知道效果如何呢？所有抱着尝试的心态就去看了一看。</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/octopress/'>Octopress</a>, <a class='category' href='/blog/categories/records/'>Records</a></span>
-</footer>
+<h3 id="section">一见惊喜</h3>
 
+<hr />
+
+<p><img src="/images/a12/1.jpg" alt="a12_1" /></p>
+
+<p>看到这样的网页，顿时觉得~哇。。。高大上有木有。网页做的这么能吸引我的眼球，已经成功了一半了(对于勾引我的使用来说)。然后就开始注册吧，<a href="https://koding.com/R/jackycode">注册地址</a>。使用我给的注册地址，你跟我都会额外获得1G的空间。输好邮箱跟用户名之后，点击<code>Sign up</code>。很快就会收到一封邮件，点击其中的链接，然后设置自己的密码即可(<strong>注意，这个密码将会是你虚拟主机里终端的密码。</strong>)。</p>
+
+<h3 id="section-1">外表</h3>
+
+<hr />
+
+<p>注册登录之后，大致是这个样子的，看起来还是蛮不错的！</p>
+
+<p><img src="/images/a12/2.jpg" alt="a12_2" /></p>
+
+<p>顶栏的buttons对应的功能分别是：Activity; Teamwork; Terminal; Ace(默认自带的编辑器); Apps(应用中心，现在应用不多，正在从旧版往新版里面转); DevTools(搞个Koding App？); Julia; Bracket。最后两个默认是没有的，是我自己安装的。</p>
+
+<p>第一印象来说，界面比较干净清洁；功能划分也比较清楚。</p>
+
+<h3 id="section-2">玩一下</h3>
+
+<hr />
+
+<p>外表过关了，那么接下来就看看玩起来到底给不给力。话说，Koding官方的介绍文档里面说，支持的功能很多，挑几个试试呗！(在顶栏上面有个<code>?</code>，可以点击查看帮助)</p>
+
+<p>点击进入终端，界面看起来还不错哦：</p>
+
+<p><img src="/images/a12/3.jpg" alt="a12_3" /></p>
+
+<p>尝试输入一下这些命令：</p>
+
+<p><img src="/images/a12/4.jpg" alt="a12_4" /></p>
+
+<p>好吧，自带么有R语言。没关系，这不是基于Ubuntu系统的嘛，我自己装一个还不行~</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">sudo cp /etc/apt/sources.list /etc/apt/sourcesbackup.list
+</span><span class="line">sudo vim /etc/apt/sources.list</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>然后在sources.list里面添加<code>deb http://cran.stat.ucla.edu/bin/linux/ubuntu quantal/</code>(建议使用国外的镜像，国内的龟速啊！！！)。OK，保存退出vim。输入命令：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">sudo apt-get update
+</span><span class="line">sudo apt-get install r-base
+</span><span class="line">sudo apt-get install r-base-dev</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>最后再看看：</p>
+
+<p><img src="/images/a12/5.jpg" alt="a12_5" /></p>
+
+<p>OK了嘛！总算是有了，以后跑点什么烦躁的程序就可以放这了，^_^</p>
+
+<p>玩到现在，就发现这个命令行很疼啊，bash啊~能不能换成zsh啊~试了一下，失败鸟~~算了，这就不错了，我还能要求啥呢！先这么着吧。</p>
+
+<h3 id="section-3">其它</h3>
+<hr />
+<p>看了一下，Koding也是支持Octopress的，而且配置很简单，跟在自己机器上差不多。具体还有什么，就靠自己去慢慢摸索了。可以肯定的是，这个平台还是很不错的，值得推荐哦！</p>
 </div>
 
-</article>
 
-</div>
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacky Code</span></span>
+
+      
+
+
+
+
+
+
+
 
   
+
+
+<time datetime="2014-03-21T16:01:44+08:00" pubdate data-updated="true">Mar 21<span>st</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/koding/'>Koding</a>, <a class='category' href='/blog/categories/vps/'>VPS</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2014/03/18/record3/" title="Previous Post:
+        记录：最近对博客的一些修改">&laquo; 记录：最近对博客的一些修改</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+    </ul>
+  </footer>
 </article>
 
 <aside class="sidebar-nav span3">
@@ -220,6 +338,24 @@
 
   
 </aside>
+
+
+  <section>  
+  <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jacky130"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>  
+</section>
 
 
     </div>
