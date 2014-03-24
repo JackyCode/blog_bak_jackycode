@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-03-21T16:30:45+08:00</updated>
+  <updated>2014-03-24T14:44:31+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,38 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[找回曾经的Kindle]]></title>
+    <link href="http://jackycode.github.io/blog/2014/03/24/kindle/"/>
+    <updated>2014-03-24T14:15:27+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/03/24/kindle</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical13.jpg" alt="artical 13" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h4 id="ipadkindle">iPad与Kindle</h4>
+<hr />
+
+<p>自从买了iPad之后，看书大都就在iPad上进行了。但是最近觉得吧，iPad看时间长点，眼睛会吃不消，所以今天早上就把我抽屉里的Kindle又拿了出来，倒腾了一下。以后还是拿这家伙看书吧，对眼睛来说，这个还是要好点的。</p>
+
+<p>看惯了iPad那炫丽的屏幕，一下看Kindle觉得挺柔和、舒服以及不适应的。只是，好久没动Kindle，里面的东西着实乱了一点。无从下手，不知该如何收拾，所以就直接先卸载了多看系统，然后将Kindle恢复出厂设置了(好狠啊有木有)。重启之后，登录，然后将自己买的一些电子书推送进去，最终干净整齐在我控制之下的Kindle又回来：</p>
+
+<p><img src="http://jackycode.github.io/images/a13/kindle.jpg" alt="kindle" /></p>
+
+<p>说实话，Kindle看书的效果的确没有iPad爽。iPad那叫一个炫丽精致啊！！！不过，那个长时间看也太伤眼睛了一点。这次就决定，以后除了那些注重图片啊之类的书籍杂志，大部分的电子书还是用Kindle看比较好。</p>
+
+<h4 id="kindle">多看与Kindle</h4>
+<hr />
+
+<p>这次卸载了多看系统就没打算再装，因为觉得现在Kindle对中文书籍的支持也蛮好的，没必要搞个多看系统了。更何况，<code>iduokan</code>推送服务有限制，好像超过20M就不行了。</p>
+
+<p>只是多看里面有不少的书籍，不安装多看系统，在Kindle上有些是看不了了(除了图灵出的“码农”可以推送到Kindle)。不过想了一想，觉得也没什么。我大部分在多看上下载的书籍都是免费的，iPhone上看看就好了(个人觉得，iPhone上的多看阅读器体验最好)。那些买了觉得很好的书，我大都也买了纸质的，像<a href="http://macshuo.com/">Mac君</a>的<a href="http://www.amazon.cn/dp/B00ID5UV30">‘MacTalk：人生元编程’</a>等等。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Koding：免费VPS服务的初体验]]></title>
