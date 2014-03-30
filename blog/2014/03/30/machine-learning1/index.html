@@ -1,0 +1,484 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>数据科学之机器学习2：线性回归 - Jacky and MSC</title>
+  <meta name="author" content="Jacky Code">
+
+  
+  <meta name="description" content="">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/03/30/machine-learning1">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Jacky and MSC" type="application/atom+xml">
+  
+  
+  <!-- 
+ -->
+
+  <script type="text/javascript">var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-48812316-1']);_gaq.push(['_trackPageview']);(function() {var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);})();</script>
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">Jacky and MSC</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">文章归档</a></li>
+  <li><a href="/repos">我的项目</a></li>
+  <li><a href="/about">关于我</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:jackycode.github.io" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">数据科学之机器学习2：线性回归</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-30T19:02:30+08:00" pubdate data-updated="true">Mar 30<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/artical/artical16.jpg" alt="artical 16" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h4 id="section">一、回归分析</h4>
+
+<hr />
+
+<p>在统计分析中，最大的两支应该算是相关分析和回归分析。而回归分析应该是统计学的核心。回归分析，就是研究因变量$y$与自变量$x$之间的关系，存在条件数学期望：$f(x)=E(y|x)$。此时有：$y=f(x)+\varepsilon$，一般假设$\varepsilon \sim N(0,\sigma^2)$。</p>
+
+<p>回归分析有很多变种：简单线性回归；多项式回归；Logistic回归；非参数回归；非线性回归等等。本篇就介绍最简单的线性回归，首先来看看一元线性回归。</p>
+
+<hr />
+
+<h4 id="section-1">二、一元线性回归</h4>
+
+<hr />
+
+<p>对于一元线性回归来说，$f(x)$就是线性的，则有：$f(x)=E(y|x)=\beta_0 + \beta_1 x$。通过已知的数据，可以估计出$\beta_0,\beta_1$的估计值：$\hat{\beta}_0,\hat{\beta}_1$。那么就有$y$的预测值：$\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x$。</p>
+
+<hr />
+
+<h5 id="beta0beta1hatbeta0hatbeta1">1. 如何计算$\beta_0,\beta_1$的估计值$\hat{\beta}_0,\hat{\beta}_1$呢？</h5>
+
+<hr />
+
+<p>定义离差平方和：</p>
+
+<script type="math/tex; mode=display">Q(\beta_0,\beta_1) = \sum_{i=1}^{n}(y_i-f(x_i))^2</script>
+
+<p>显然，我们希望$f(x_i)$的值与真实值$y_i$越接近越好。那么就是需要离差平方和越小越好。则得到目标：</p>
+
+<script type="math/tex; mode=display"> \min_{\beta_0,\beta_1}{\sum_{i=1}^{n}(y_i-f(x_i))^2} </script>
+
+<p>如何寻找$\hat{\beta}_0,\hat{\beta}_1$使得上面方程达到最小呢？这个就需要对其对$\hat{\beta}_0,\hat{\beta}_1$求偏导，得到：</p>
+
+<script type="math/tex; mode=display">\frac{\partial Q}{\partial \beta_0}=-2\sum_{i=1}^{n}{(y_i-\beta_0-\beta_1x_i)}</script>
+
+<script type="math/tex; mode=display">\frac{\partial Q}{\partial \beta_1}=-2\sum_{i=1}^{n}{(y_i-\beta_0-\beta_1x_i)x_i}</script>
+
+<p>令上述两式都等于0，计算得到：</p>
+
+<script type="math/tex; mode=display">\hat{\beta}_0=\overline{y}-\hat{\beta}_1\overline{x}</script>
+
+<script type="math/tex; mode=display">\hat{\beta}_1=\frac{\sum_{i=1}^{n}{(x_i-\overline{x})(y_i-\overline{x})}}{\sum_{i=1}^{n}{(x-\overline{x})^2}}</script>
+
+<p>这样就得到$\beta_0,\beta_1$的估计值$\hat{\beta}_0,\hat{\beta}_1$。这个方法就叫做OLS，即普通最小二乘(ordinary least squares)。</p>
+
+<hr />
+
+<h5 id="r">2. R语言实现</h5>
+
+<hr />
+
+<p>在R语言中有自带的函数可以处理线性回归，那就是<code>lm</code>函数。这里使用自带的数据<code>cars</code>做演示：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> attach<span class="p">(</span>cars<span class="p">)</span> <span class="c1"># 使用数据集cars，与with函数类似</span>
+</span><span class="line"><span class="o">&gt;</span> lingre <span class="o">&lt;-</span> lm<span class="p">(</span>dist <span class="o">~</span> speed<span class="p">)</span>
+</span><span class="line"><span class="o">&gt;</span> summary<span class="p">(</span>lingre<span class="p">)</span>
+</span><span class="line">
+</span><span class="line">Call<span class="o">:</span>
+</span><span class="line">lm<span class="p">(</span>formula <span class="o">=</span> dist <span class="o">~</span> speed<span class="p">)</span>
+</span><span class="line">
+</span><span class="line">Residuals<span class="o">:</span>
+</span><span class="line">    Min      <span class="m">1</span>Q  Median      <span class="m">3</span>Q     Max
+</span><span class="line"><span class="m">-29.069</span>  <span class="m">-9.525</span>  <span class="m">-2.272</span>   <span class="m">9.215</span>  <span class="m">43.201</span>
+</span><span class="line">
+</span><span class="line">Coefficients<span class="o">:</span>
+</span><span class="line">            Estimate Std. Error t value Pr<span class="p">(</span><span class="o">&gt;|</span>t<span class="o">|</span><span class="p">)</span>
+</span><span class="line"><span class="p">(</span>Intercept<span class="p">)</span> <span class="m">-17.5791</span>     <span class="m">6.7584</span>  <span class="m">-2.601</span>   <span class="m">0.0123</span> <span class="o">*</span>
+</span><span class="line">speed         <span class="m">3.9324</span>     <span class="m">0.4155</span>   <span class="m">9.464</span> <span class="m">1.49e-12</span> <span class="o">***</span>
+</span><span class="line"><span class="o">---</span>
+</span><span class="line">Signif. codes<span class="o">:</span>  <span class="m">0</span> ‘<span class="o">***</span>’ <span class="m">0.001</span> ‘<span class="o">**</span>’ <span class="m">0.01</span> ‘<span class="o">*</span>’ <span class="m">0.05</span> ‘.’ <span class="m">0.1</span> ‘ ’ <span class="m">1</span>
+</span><span class="line">
+</span><span class="line">Residual standard error<span class="o">:</span> <span class="m">15.38</span> on <span class="m">48</span> degrees of freedom
+</span><span class="line">Multiple R<span class="o">-</span>squared<span class="o">:</span>  <span class="m">0.6511</span><span class="p">,</span>	Adjusted R<span class="o">-</span>squared<span class="o">:</span>  <span class="m">0.6438</span>
+</span><span class="line"><span class="k-Variable">F</span><span class="o">-</span>statistic<span class="o">:</span> <span class="m">89.57</span> on <span class="m">1</span> and <span class="m">48</span> DF<span class="p">,</span>  p<span class="o">-</span>value<span class="o">:</span> <span class="m">1.49e-12</span>
+</span><span class="line">
+</span><span class="line"><span class="o">&gt;</span> plot<span class="p">(</span>dist <span class="o">~</span> speed<span class="p">,</span> pch<span class="o">=</span><span class="m">4</span><span class="p">)</span> <span class="c1"># 画出散点图</span>
+</span><span class="line"><span class="o">&gt;</span> abline<span class="p">(</span>lingre<span class="p">,</span> col<span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># 添加拟合直线</span>
+</span><span class="line"><span class="o">&gt;</span> detach<span class="p">(</span>cars<span class="p">)</span> <span class="c1"># 使用完记得释放</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>从这里可以得到回归方程：$\hat{dist} = -17.5791 + 3.9324 \times speed$。（对于其它的结果是什么意思，可以去查看线性回归的相关书籍）</p>
+
+<p>另外，得到拟合直线的图像：</p>
+
+<p><img src="\images\a16\lingre_one.jpg" alt="lingre_one" /></p>
+
+<hr />
+
+<h4 id="section-2">三、多元线性回归</h4>
+
+<hr />
+
+<p>对于多元线性回归来说，其计算方式与一元线性回归类似，区别在于，多元的时候需要利用矩阵来处理。首先看一下回归模型：</p>
+
+<script type="math/tex; mode=display"> y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_p x_p + \varepsilon </script>
+
+<p>其中$p$代表自变量的个数。</p>
+
+<p>若取$x^T_0=[1, 1, \dots, 1]_{1 \times n}$，则可将上述模型改写成：<script type="math/tex">y=X\beta+\varepsilon</script>。其中：</p>
+
+<script type="math/tex; mode=display">y^T=[y_1,y_2,\dots,y_n], X=[x_0,x_1,\dots,x_p], \beta^T=[\beta_0,\beta_1,\dots,\beta_p], \varepsilon^T=[\varepsilon_1,\varepsilon_2,\dots,\varepsilon_n]</script>
+
+<p>其中<script type="math/tex">x^T_i=[x_{1i},x_{2i},\dots,x_{ni}]</script>。</p>
+
+<p>这样我们就可以将离差平方和<script type="math/tex">\sum_{i=1}^{n}{(y_i-\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_p x_p)^2}</script>写成矩阵形式：</p>
+
+<script type="math/tex; mode=display">(y-X\beta)^T(y-X\beta)</script>
+
+<p>求导可得：<script type="math/tex">-2X^T(y-X\beta)</script>(这里用到矩阵求导的知识，一般介绍<strong>线性模型</strong>的书籍中会讲到；当然也可以直接对上面不是矩阵形式的离差平和求导)。令其等于0，可得：</p>
+
+<script type="math/tex; mode=display">\hat{\beta} = (X^TX)^{-1}X^Ty</script>
+
+<hr />
+
+<h5 id="r-1">R语言实现</h5>
+
+<hr />
+
+<p>对于R语言的实现，依旧使用<code>lm</code>函数：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">lingre_mul <span class="o">&lt;-</span> lm<span class="p">(</span>y <span class="o">~</span> x1 <span class="o">+</span> x2<span class="p">,</span> data<span class="o">=</span>datasets<span class="p">)</span>
+</span><span class="line">summary<span class="p">(</span>lingre_mul<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这里就不再用实际数据去演示了。</p>
+
+<hr />
+
+<h4 id="section-3">四、最后</h4>
+
+<hr />
+
+<p>至此，就把线性回归的基础内容介绍完了。但其实线性回归还存在很多其它的问题。比如说回归诊断（就是检查回归的效果），变量选择等等等等。感兴趣的话，可以找本讲线性回归的书看看，有很多！</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacky Code</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-30T19:02:30+08:00" pubdate data-updated="true">Mar 30<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/datascience/'>DataScience</a>, <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2014/03/30/data-science-an-introduction-to-machine-learning/" title="Previous Post:
+        数据科学之机器学习1：简介">&laquo; 数据科学之机器学习1：简介</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+	<ul id="about" class='nav nav-list'>
+		<li class="nav-header"><a href="/about">关于我</a></li>
+	    <p>概率统计专业的在读研究生</p>
+	    <p>喜欢看书，思考，然后写点什么</p>
+	    <p>能折腾，崇尚效率，喜爱精美</p>
+	    <p>喜欢Apple，离不了Google</p>
+	    <p>新浪微博: <a href="http://weibo.com/jackycode">Jacky130</a></p>
+	    <p>邮箱: <code>jackycodemsc@gmail.com</code></p>
+	</ul>
+</section>
+<section class="well">
+	<ul id="category_list" class="nav nav-list">
+		<li class="nav-header">文章分类</li>
+			<li id="categories">
+    			<li class='category'><a href='/blog/categories/datascience/'>DataScience (3)</a></li>
+<li class='category'><a href='/blog/categories/kindle/'>Kindle (1)</a></li>
+<li class='category'><a href='/blog/categories/koding/'>Koding (1)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>MachineLearning (3)</a></li>
+<li class='category'><a href='/blog/categories/octopress/'>Octopress (3)</a></li>
+<li class='category'><a href='/blog/categories/rseries/'>RSeries (7)</a></li>
+<li class='category'><a href='/blog/categories/record/'>Record (2)</a></li>
+<li class='category'><a href='/blog/categories/records/'>Records (1)</a></li>
+<li class='category'><a href='/blog/categories/vps/'>VPS (1)</a></li>
+<li class='category'><a href='/blog/categories/essay/'>essay (1)</a></li>
+
+  			</li>
+  	</ul>
+</section><section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">最近文章</li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/30/machine-learning1/">数据科学之机器学习2：线性回归</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/30/data-science-an-introduction-to-machine-learning/">数据科学之机器学习1：简介</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/27/an-introduction-to-data-science/">数据科学简介</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/24/kindle/">找回曾经的Kindle</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/21/kodingrecommended/">Koding：免费VPS服务的初体验</a>
+      </li>
+    
+  </ul>
+</section>
+<section class="well">
+  <ul id="links" class="nav nav-list">
+    <li class="nav-header">推荐站点</li>
+    <li>
+      <a href="http://macshuo.com/">MacTalk-池建强的随想录</a>
+    </li>
+    <li>
+      <a href="http://yihui.name/">Yihui Xie</a>
+    </li>
+    <li>
+      <a href="http://www.liaoxuefeng.com/">廖雪峰的官方网站</a>
+    </li>
+    <li>
+      <a href="http://irising.me/">Page to Page</a>
+    </li>
+    <li>
+      <a href="http://www.dongwm.com/">小明明s à domicile</a>
+    </li>
+    <li>
+      <a href="http://beyondvincent.com/">破船之家</a>
+    </li>
+    <li>
+      <a href="http://lucifr.com/">Lucifr</a>
+    </li>
+</ul>
+</section><section class="well">
+	<li class="nav-header">License</li>
+<ul id="license" class='nav nav-list'>
+	
+		<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">
+			<img alt="知识共享许可协议" style="border-width:0" src="/images/license_CC.png" />
+		</a>
+	<br />本站作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">知识共享署名-非商业性使用-相同方式共享 2.5 中国大陆许可协议</a>进行许可。
+</ul>
+</section>
+
+  
+</aside>
+
+
+  <section>  
+  <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jacky130"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>  
+</section>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><!-- mathjax config similar to math.stackexchange --> 
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ jax: ["input/TeX", "output/HTML-CSS"], tex2jax: { inlineMath: [ ['$', '$'] ], displayMath: [ ['$$', '$$']], processEscapes: true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }, messageStyle: "none", "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] } }); </script> <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+<hr>
+<p>
+  Copyright &copy; 2014 - Jacky Code -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
