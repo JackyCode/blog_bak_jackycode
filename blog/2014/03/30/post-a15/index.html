@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>我的项目 - Jacky and MSC</title>
+  <title>数据科学之机器学习1：简介 - Jacky and MSC</title>
   <meta name="author" content="Jacky Code">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jackycode.github.io/repos">
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/03/30/post-a15">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -95,44 +95,16 @@
   <div class="container">
     <div class="row-fluid">
       
-<article role="article" class="span9">
+<article class="hentry span9" role="article">
 
   
   <header class="page-header">
-    <h1 class="entry-title">我的项目</h1>
-    <p class="meta">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-19T20:48:00+08:00" pubdate data-updated="true">Mar 19<span>th</span>, 2014</time></p>
-  </header>
-  
-  <article>
-  <div class="well">
-
-<h2><a href="/funnycodes">FunnyCodes</a></h2>
-
-<footer>
-  用R和Ruby解决一些有意思的问题。
-</footer>
-
-</div>
-
-</article>
-
-  
-    <footer>
+    
+      <h1 class="entry-title">数据科学之机器学习1：简介</h1>
+    
+    
       <p class="meta">
         
-        
 
 
 
@@ -144,20 +116,125 @@
   
 
 
-<time datetime="2014-03-19T20:48:00+08:00" pubdate data-updated="true">Mar 19<span>th</span>, 2014</time>
+<time datetime="2014-03-30T16:39:09+08:00" pubdate data-updated="true">Mar 30<span>th</span>, 2014</time>
         
       </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/artical/artical15.jpg" alt="artical 15" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>上一篇“<a href="http://jackycode.github.io/blog/2014/03/27/an-introduction-to-data-science/">数据科学简介</a>”简单地说了一下数据科学是什么，以及它包罗的东西。这一篇打算简单介绍一下<strong>机器学习</strong>，并理一理机器学习中涉及的内容。</p>
+
+<hr />
+
+<h4 id="section">机器学习的定义</h4>
+
+<hr />
+
+<p>一般来说，教科书介绍一样东西，首先会给它下一个确切的定义。不过，对于机器学习的定义，我还真不知道该怎么去下。有太多的版本，太多的述说方式，不知道用哪个好。这里就列举一些我觉得有代表性的，讲的容易懂的那些定义。对于机器学习是什么，看看这些定义，应该就能够有个大致的了解了。</p>
+
+<p>首先，在“<a href="http://www.amazon.cn/Machine-Learning-The-Art-and-Science-of-Algorithms-That-Make-Sense-of-Data-Flach-Peter/dp/1107422221/ref=tmm_pap_title_0">Machine Learning: the art and science of algorithms that make sense of data</a>”一书中，有这样一个定义：</p>
+
+<blockquote>
+  <p>Machine Learning is the systematic study of algorithms and systems that improve their knowledge or performance with experience.</p>
+</blockquote>
+
+<p>这个定义说的比较简单直白，就是说，机器学习就是研究如何通过经验(其实就是数据)去改进性能的算法(这个翻译学得不好，见谅！)。我们可以简单这样理解，机器学习就是研究这么一类算法，通过这类算法呢，系统可以从数据中获取信息来提升自己的性能。最简单的说法就是将数据转换成有用的信息。</p>
+
+<p>在“<a href="http://www.amazon.cn/Machine-Learning-The-Art-and-Science-of-Algorithms-That-Make-Sense-of-Data-Flach-Peter/dp/1107422221/ref=tmm_pap_title_0">Machine Learning: the art and science of algorithms that make sense of data</a>”书中，还有这么一句话，将机器学习的流程说的很清楚：</p>
+
+<blockquote>
+  <p>Machine learning is concerned with using the right features to build the right models that achieve the right task.</p>
+</blockquote>
+
+<p>这句话就是说，机器学习关心的就是：如何通过对特征(数据)建立模型去完成一些任务。在Andrew Ng的机器学习视频中，还列出了Tom Mitchell给出的定义，与上面的说法有些相近：</p>
+
+<blockquote>
+  <p>A computer program is said to learn from experience E with respect to some task T and some performance measure P, if its performance on T, as measured by P, improves with experience E.</p>
+</blockquote>
+
+<p><strong><em>上一篇博文里曾说，数据科学是统计、计算机科学以及专业知识的结合。而其实，机器学习就是统计与计算机科学的结合。正因如此，机器学习是数据科学的核心。</em></strong>简单来说，机器学习就是：研究让机器通过学习过去的经验，达到提高处理相同任务能力的算法。</p>
+
+<hr />
+
+<h4 id="section-1">机器学习的类别</h4>
+
+<hr />
+
+<p>机器学习大致可以分为两类：监督学习(supervised learning)和无监督学习(unsupervised learning)。</p>
+
+<p>如何区分呢？<strong>区别就在于，测试数据有没有给出确切的类别或者结果。若给出了就是监督学习，若没有则是无监督学习</strong>。</p>
+
+<p>比如说回归：其给定的测试样本中，一组自变量的值肯定对应一个确定的因变量的值；再说分类：对于给出的测试样本中的每一个数据，其都会有自己所属的类别。所以回归与分类就属于监督学习的范畴，也就是可以通过既定的数据去做预测。</p>
+
+<p>而无监督学习不同，其给出的测试样本不存在任何其它信息，比方说聚类，给你一批数据，没有任何信息，让你把数据分成几个类别。一般来说，这时候就需要计算数据之间的相似度(距离)，然后把距离近的归位一类。</p>
+
+<hr />
+
+<h4 id="section-2">最后</h4>
+
+<hr />
+
+<p>到这里，基本上来说，机器学习是干什么的应该有了一些了解了。至于机器学习的分类，监督学习和无监督学习还不明白也不要紧。等弄明白了回归，分类以及聚类等等的是干什么的，自然就明白这两者之间的区别了。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
       
-        <div class="sharing">
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacky Code</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-30T16:39:09+08:00" pubdate data-updated="true">Mar 30<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/datascience/'>DataScience</a>, <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
   
   
   
 </div>
 
+    
+    
+    <ul class="pager">
       
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2014/03/27/an-introduction-to-data-science/" title="Previous Post:
+        数据科学简介">&laquo; 数据科学简介</a></li>
       
-    </footer>
-  
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+    </ul>
+  </footer>
 </article>
 
 <aside class="sidebar-nav span3">
@@ -254,6 +331,24 @@
 
   
 </aside>
+
+
+  <section>  
+  <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jacky130"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>  
+</section>
 
 
     </div>
