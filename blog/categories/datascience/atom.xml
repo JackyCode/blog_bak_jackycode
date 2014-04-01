@@ -4,7 +4,7 @@
   <title><![CDATA[Category: DataScience | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/datascience/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-03-30T20:45:27+08:00</updated>
+  <updated>2014-04-01T17:24:47+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,68 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习2：线性回归2]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/01/linear-regression2/"/>
+    <updated>2014-04-01T16:56:57+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/01/linear-regression2</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical17.jpg" alt="artical 17" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>上一篇简单介绍了线性回归中系数估计的问题，给出了一元以及多元情况下，系数估计值的表达式！此外，还给出了在R语言中如何使用自带的函数计算系数估计值。</p>
+
+<p>这一篇，打算介绍一下线性回归中的一些显著性检验问题。这个就是完全属于统计学中的理论内容，不过依旧有着很强的实际意义。简单来说，显著性检验不能通过，说明你的线性回归的效果不好，可能你就需要选择其它的方式去处理你手头的数据，而不是选择线性回归了。</p>
+
+<hr />
+
+<h4 id="section">一、回归方程的显著性检验</h4>
+
+<hr />
+
+<p>考虑回归方程是否显著，意思就是查看自变量<script type="math/tex">x_1,x_2,\dots,x_p</script>从整体上是否对因变量<script type="math/tex">y</script>有显著的影响。则，我们可以考虑这样的假设检验问题：</p>
+
+<script type="math/tex; mode=display"> H_0:\beta_0=\beta_1=\dots=\beta_p=0;~H_1:\beta_0,\beta_1,\dots,\beta_p\text{不全为0}</script>
+
+<p>显然，如果原假设成立的话，自变量对因变量的影响不大，也就是用线性回归模型来解释就显得不合适了。</p>
+
+<p>在正态假设下，原假设<script type="math/tex">H_0</script>成立时，有<script type="math/tex">F</script>检验统计量：</p>
+
+<script type="math/tex; mode=display"> F = \frac{SSR/p}{SSE/(n-p-1)} \sim F(p,n-p-1) </script>
+
+<p>其中<script type="math/tex">SSR=\sum_{i=1}^{n}{(\hat{y}_i-\overline{y})^2}</script>为回归平方和，<script type="math/tex">SSE=\sum_{i=1}^{n}{(y_i-\hat{y}_i)^2}</script>为残差平方和。对于给定的显著性水平$\alpha$，拒绝域为：<script type="math/tex">\{F \geqslant F_{1-\alpha}(p,n-p-1)\}</script>。</p>
+
+<hr />
+
+<h4 id="section-1">二、回归系数的显著性检验</h4>
+
+<hr />
+
+<p>显然，线性回归中很有可能就存在某个自变量对因变量的影响很小，那么它的回归系数就会接近0.因此有如下的假设检验问题：</p>
+
+<script type="math/tex; mode=display">H_{0j}:\beta_j = 0; ~ H_{1j}:\beta_j \neq 0, ~ j=0,1,\dots,p</script>
+
+<p>在原假设成立的条件下，$t$统计量有：</p>
+
+<script type="math/tex; mode=display">t_j = \frac{\hat{\beta}_j}{\sqrt{c_{jj}}\hat{\sigma}} \sim t(n-p-1)</script>
+
+<p>其中，<script type="math/tex">(c_{ij})=(X^TX)^{-1},i,j=0,1,\dots,p;~\hat{\sigma}=\sqrt{\frac{1}{n-p-1}\sum_{i=1}^{n}{(y_i-\hat{y}_i)^2}}</script>。对于给定的显著性水平$\alpha$，拒绝域为：<script type="math/tex">\{\|t_j\| \geqslant t_{\alpha/2}\}</script>。</p>
+
+<hr />
+
+<h4 id="r">三、R语言中的实现</h4>
+
+<hr />
+
+<p>在上一篇中可以看到，<code>lm</code>函数加上<code>summary</code>函数会有很多的输出内容。其实，那些输出中就含有上述的假设检验的结果，很容易就可以找到，这里不做阐述！</p>
+
+<p>我自己也写了一个关于线性回归的R语言函数，托管在<a href="https://github.com/JackyCode/Data_Science/tree/master/Linear_Regression">我的github</a>上面，函数内部对于线性回归的过程大都涉及到了，有兴趣可以看看。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习2：线性回归]]></title>
