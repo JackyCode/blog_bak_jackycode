@@ -4,7 +4,7 @@
   <title><![CDATA[Category: DataScience | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/datascience/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-01T17:27:08+08:00</updated>
+  <updated>2014-04-02T19:26:48+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -14,7 +14,275 @@
 
   
   <entry>
-    <title type="html"><![CDATA[数据科学之机器学习2：线性回归2]]></title>
+    <title type="html"><![CDATA[数据科学之机器学习4：线性回归3]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/02/linear-regression3/"/>
+    <updated>2014-04-02T18:51:29+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/02/linear-regression3</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical18.jpg" alt="artical 18" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>这是介绍线性回归的最后一篇，首先回顾一下之前的两篇。第一篇主要就是介绍了如何去估计回归系数得到回归方程，以及在R语言中如何使用自带的函数去实现。第二篇主要介绍了对于回归方程和回归系数的显著性检验，以及给出了我自己写的一个处理线性回归的函数。</p>
+
+<p>这一篇介绍线性回归中回归诊断的一些问题，也就是估计出回归方程，检验了回归方程的显著性以及回归系数的显著性后，对这个模型所做的进一步的诊断分析。然后对存在的问题进行探讨，选择不同的方式去解决这些问题。这大致可以分成三块：残差分析，影响分析以及共线性问题。</p>
+
+<hr />
+
+<h4 id="section">一、残差分析</h4>
+
+<hr />
+
+<h5 id="section-1">1. 残差</h5>
+
+<hr />
+
+<p>首先看一看残差的定义，常用的残差大致有三种：残差，标准化残差以及学生化残差：</p>
+
+<ul>
+  <li>残差：<script type="math/tex">\hat{\varepsilon} = y - \hat{y} = (1-H)y</script>,其中<script type="math/tex">H=X(X^TX)^{-1}X</script>称作帽子矩阵；</li>
+  <li>标准化残差：<script type="math/tex">ZRE = \hat{\varepsilon} / \hat{\sigma}</script></li>
+  <li>学生化残差：<script type="math/tex">SRE_i = \hat{\varepsilon}_i / (\hat{\sigma}\sqrt{1-h_{ii}})</script>，其中<script type="math/tex">h_{ii}</script>为帽子矩阵对角线上第$i$个元素。</li>
+</ul>
+
+<hr />
+
+<p><strong>R语言中</strong></p>
+
+<p>使用<code>residuals(),rstandard(),rstudent()</code>函数计算残差，标准化残差以及学生化残差。具体用法，请使用<code>help</code>函数查看。</p>
+
+<hr />
+
+<h5 id="section-2">2. 残差图</h5>
+
+<hr />
+
+<p>以残差为纵坐标，观测值、预测值活则观测时间等等作为横坐标的散点图，称为<strong>残差图</strong>。</p>
+
+<hr />
+
+<p><strong>R语言中</strong></p>
+
+<p><code>r
+model = lm(y~x1+x2)
+y_pred = predict(model)
+y_res = residuals(model)
+plot(y_res ~ y_pred)
+</code>
+***</p>
+
+<h5 id="section-3">3. 异方差问题</h5>
+
+<hr />
+
+<h6 id="a-">a. 问题的提出</h6>
+
+<hr />
+
+<p>在进行回归方程估计之前，一般都会假设误差的方差是齐性的。如果残差图出现类似下面的情况，则这批数据可能存在异方差问题，即方差非齐性。</p>
+
+<ol>
+  <li>随着横坐标的增大，纵坐标的值波动越来越大；</li>
+  <li>随着横坐标的增大，纵坐标的值波动越来越小；</li>
+  <li>随着横坐标的增大，纵坐标的值波动复杂多变，没有系统关系；</li>
+</ol>
+
+<p>大部分时候，考虑前两种就可以了。那么具体如何数值化地检验异方差呢，一般使用的是等级相关系数法，这里不做介绍(可到线性回归的书籍中寻找)。</p>
+
+<hr />
+
+<h6 id="b-">b. 问题的解决</h6>
+
+<hr />
+
+<p>一般有两种方式解决异方差问题，一种是加权最小二乘；另一种是对因变量作适当的变化。</p>
+
+<ol>
+  <li>
+    <p>加权最小二乘</p>
+
+    <p>即是将回归系数的估计转化成：<script type="math/tex">\hat{\beta}=(X^TWX)^{-1}X^TWy</script>，其中<script type="math/tex">W</script>是一个对角矩阵，用于给每一个数据点加上一个权重。一般使用“核”来对附近的点赋予较高的权重，常用的核就是高斯核，其对应的权重为：</p>
+
+<script type="math/tex; mode=display">w_{ii}=exp(\frac{\|x^{(i)}-x\|}{-2k^2})</script>
+
+    <p>从上式可以看出，点$x$离$x^{(i)}$越近，所得到的权重越高。</p>
+  </li>
+  <li>
+    <p>对因变量作适当变化</p>
+
+    <p>常用的变换有：</p>
+
+    <ul>
+      <li>$z = \sqrt{y}$</li>
+      <li>$z = ln(y)$（对数变换）</li>
+      <li>$z = 1/y$</li>
+      <li>$z = \frac{x^{\lambda}-1}{\lambda}$(Box-Cox变换)，其中$\lambda=0$时，即是对数变换</li>
+    </ul>
+  </li>
+</ol>
+
+<hr />
+
+<h5 id="section-4">4. 异常点</h5>
+
+<hr />
+
+<h6 id="a--1">a. 问题的提出</h6>
+
+<hr />
+
+<p>一般将标准化残差的绝对值大于等于2的称为可疑点；将标准化残差的绝对值大于等于3的称为异常点。</p>
+
+<hr />
+
+<h6 id="b--1">b. 问题的解决</h6>
+
+<hr />
+
+<p>一般来说，剔除异常数据即可。</p>
+
+<hr />
+
+<h5 id="section-5">5. 自相关问题</h5>
+
+<hr />
+
+<p>在作回归之前，总是会假设<script type="math/tex">cov(\varepsilon_i, \varepsilon_j)=0,\forall i \neq j</script>。但是实际情况下，可能并不满足这个假设，这就是存在了自相关问题。对于自相关问题，一般使用残差图，自相关系数以及DW检验去进行检验；而处理的方式一般是：迭代法和差分法。这里不做详细介绍，感兴趣的可以去找找相关材料。</p>
+
+<hr />
+
+<h4 id="section-6">二、影响分析</h4>
+
+<hr />
+
+<p>分析观测值对回归结果的影响，从而找出对回归结果影响较大的观测点的分析方法叫做影响分析。一般使用Cook距离去度量第$i$个观测值对回归影响大小，Cook距离的定义如下：</p>
+
+<script type="math/tex; mode=display">D_i(M,MSE) = \frac{(\hat{\beta}_{(i)}-\hat{\beta})^TM(\hat{\beta}_{(i)}-\hat{\beta})}{MSE}</script>
+
+<p>其中，$M$为观测数据的离差阵，$MSE$为回归模型的均方误差。一般<script type="math/tex">\|D_i\| \geqslant 4/n</script>时，称其为强影响点。</p>
+
+<hr />
+
+<p><strong>R语言中</strong></p>
+
+<p>使用<code>cooks.distance()</code>函数计算Cook距离。</p>
+
+<hr />
+
+<h4 id="section-7">三、共线性诊断</h4>
+
+<hr />
+
+<p>共线性是指，在多元线性回归中，自变量之间存在线性关系或者近似线性关系。如果出现这种情况，那么在模型内部就会隐藏部分变量的显著性，也会导致参数估计的误差增大，影响模型的稳定性。</p>
+
+<hr />
+
+<h5 id="a--2">a. 检验方法</h5>
+
+<hr />
+
+<p>常用的检验方法有特征值法，条件数和方差膨胀因子（VIF）。</p>
+
+<hr />
+
+<h6 id="section-8">特征值法</h6>
+
+<hr />
+
+<p>首先介绍一个结论：当矩阵$X^TX$至少有一个特征根为0时，$X$的列向量间必存在多重共线性。</p>
+
+<p>即可证：$X^TX$有多少个特征根接近于零，设计阵$X$就有多少个多重共线性。</p>
+
+<hr />
+
+<p><strong>在R语言中</strong></p>
+
+<p>可以使用<code>eigen()</code>函数去计算特征值和特征向量。</p>
+
+<hr />
+
+<h6 id="section-9">条件数</h6>
+
+<hr />
+
+<p>上述的特征值法中，特征根近似为0，这个标准好想并不明确。那么这边就给出一个条件数的定义：</p>
+
+<script type="math/tex; mode=display">k_i = \frac{\lambda_m}{\lambda_i}</script>
+
+<p>其中，<script type="math/tex">\lambda_m</script>为最大的那个特征根。一般认为，若$k_i$介于10到30之间为弱相关；在30到100之间为中等相关；超过100为强相关。</p>
+
+<hr />
+
+<p><strong>在R语言中</strong></p>
+
+<p>可以使用<code>kappa()</code>函数计算条件数。</p>
+
+<hr />
+
+<h6 id="vif">VIF</h6>
+
+<hr />
+
+<p>定义VIF为：</p>
+
+<script type="math/tex; mode=display">VIF_i = \frac{\text{第i个回归系数的方差}}{\text{自变量不相关时第i个回归系数的方差}} = \frac{1}{1-R^2_i} = \frac{1}{TOL_i}</script>
+
+<p>其中$TOL_i$称为容忍度；$R^2_i$为自变量$x_i$对其余自变量的复决定系数。一般认为，VIF超过10，模型就存在共线性问题。</p>
+
+<hr />
+
+<p><strong>在R语言中</strong></p>
+
+<p>可以使用<code>vif()</code>函数计算VIF的值。</p>
+
+<hr />
+
+<h5 id="b--2">b. 多重共线性的处理</h5>
+
+<hr />
+
+<p>一般有这样几种处理方式：</p>
+
+<ol>
+  <li>
+    <p>剔除一些不重要的解释变量</p>
+
+    <ol>
+      <li>使用变量选择的方式剔除部分变量，作回归；</li>
+      <li>检验VIF，若存在共线性，删除VIF值最大的变量，作回归；</li>
+      <li>再次检验VIF，若还存在共线性，再删除其中VIF值最大的那个；</li>
+      <li>重复直至消除共线性。</li>
+    </ol>
+  </li>
+  <li>
+    <p>增大样本容量</p>
+
+    <p>当变量的个数接近样本容量的数值时，自变量间容易产生多重共线性。所以增大样本容量是解决多重共线性的一种方式，但是在现实中，这种做法基本不可能。</p>
+  </li>
+  <li>
+    <p>主成分回归</p>
+
+    <p>这是一个比较大的主题，这里不做介绍。</p>
+  </li>
+  <li>
+    <p>有偏估计等等。</p>
+  </li>
+</ol>
+
+<hr />
+
+<h3 id="section-10">最后</h3>
+
+<hr />
+
+<p>到这里，除了变量选择问题，线性回归的内容基本上就已经梳理了一遍。变量选择问题，方法简单的非常简单，难的非常难（像lasso），所以暂时还不想写这些内容。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习3：线性回归2]]></title>
     <link href="http://jackycode.github.io/blog/2014/04/01/linear-regression2/"/>
     <updated>2014-04-01T16:56:57+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/01/linear-regression2</id>
@@ -76,7 +344,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[数据科学之机器学习2：线性回归]]></title>
+    <title type="html"><![CDATA[数据科学之机器学习2：线性回归1]]></title>
     <link href="http://jackycode.github.io/blog/2014/03/30/machine-learning1/"/>
     <updated>2014-03-30T19:02:30+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/03/30/machine-learning1</id>
