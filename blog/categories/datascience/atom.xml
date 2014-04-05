@@ -4,7 +4,7 @@
   <title><![CDATA[Category: DataScience | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/datascience/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-02T19:26:48+08:00</updated>
+  <updated>2014-04-05T20:25:01+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,55 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习5：分类之k-近邻算法]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/05/knn/"/>
+    <updated>2014-04-05T19:59:29+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/05/knn</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical19.jpg" alt="artical 19" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h4 id="section">基本思想</h4>
+<hr />
+
+<p>kNN，k-Nearest Neighbor algorithm，也就这边的k-近邻算法，是数据挖掘十大算法之一，是一个比较简单的分类方法。</p>
+
+<p>其基本的思想是：对于一个输入样本（未知分类的样本），考虑其与测试样本中与之距离最近（特征最相似）的k个样本，用这k个样本中出现最多的分类作为输入样本的分类。</p>
+
+<h4 id="section-1">具体流程</h4>
+<hr />
+
+<p>对于输入样本中的每一个点，进行以下操作：</p>
+
+<ol>
+  <li>计算点与测试样本中点的距离；</li>
+  <li>取出与当前点距离最小的k个点；</li>
+  <li>确定k个点的分类，计算各个分类的频数；</li>
+  <li>返回频数最高的类别，作为该输入点的预测分类。</li>
+</ol>
+
+<h4 id="section-2">距离的计算</h4>
+<hr />
+
+<p>上面一直在说，计算输入样本中点与测试样本中点之间的距离，那么这个距离应该怎么计算呢？这个距离一般就是使用欧式距离：</p>
+
+<script type="math/tex; mode=display"> d = \sqrt{(x - y)^T(x - y)} </script>
+
+<p>其中<script type="math/tex">x^T=[x_1, x_2,\dots,x_n], y^T=[y_1,y_2,\dots,y_n]</script>。二维的表示就是：</p>
+
+<script type="math/tex; mode=display"> d = \sqrt{(x - y)^T(x - y)} = \sqrt{(x_1 - y_1)^2 + (x_2 - y_2)^2} </script>
+
+<h4 id="r">R语言实现</h4>
+<hr />
+
+<p>见<a href="https://github.com/JackyCode/Data_Science/tree/master/kNN">我的github</a>。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习4：线性回归3]]></title>
@@ -559,49 +608,6 @@ summary(lingre_mul)
 <hr />
 
 <p>到这里，基本上来说，机器学习是干什么的应该有了一些了解了。至于机器学习的分类，监督学习和无监督学习还不明白也不要紧。等弄明白了回归，分类以及聚类等等的是干什么的，自然就明白这两者之间的区别了。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学简介]]></title>
-    <link href="http://jackycode.github.io/blog/2014/03/27/an-introduction-to-data-science/"/>
-    <updated>2014-03-27T14:39:21+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/03/27/an-introduction-to-data-science</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical14.jpg" alt="artical 14" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>对于这两年渐渐兴起的大数据，云计算之类的技术，相信没有人会陌生。即便不知道这个东西是什么，但也是应该听得耳朵起茧子了。归结原因呢，出现这些技术实在是因为现在的数据越来越多，以前的很多数据分析技术越来越不合适。即便是简单的最小二乘线性回归，直接放到大数据上用，跑起来也是够累的。这时候，各种处理大数据的技术就纷纷崛起了，和之前的云计算相同的就是，大数据也改变了计算机原本的使用方式。</p>
-
-<p>OK，说说数据科学吧。数据科学，Data Science，这个玩意儿最早有一本书，叫做“What is Data Science”，O’Reilly出版的（不得不说其出版了太多太牛太厉害的书籍材料，牛得不需要解释）。数据科学就像是一个综合体，包罗的东西非常多，大致有三个方面。</p>
-
-<h5 id="section">第一，概率统计（数学）</h5>
-<p>这个提供了大数据的很多理论基础。大数据的处理技术，需要用到非常之多的概率统计学知识。而要想学好概率统计，那你数学得先学学好才行。简单罗列一下：概率论基础，统计学基础，高等概率论，测度论，高等参数统计，随机过程等等等等。这些内容都是理论基础，要是理论学的不咋样，估计折腾大数据也就是玩玩工具，弄点儿结果出来。话说，如果真没学好理论，能不能把结果解释清楚还需要质疑，更何况自己去设计改进一个技术算法呢。</p>
-
-<p>嗯，说到这，回过头去看看泛函分析吧~</p>
-
-<h5 id="section-1">第二，计算机科学</h5>
-<p>这个就提供了大数据处理的工具平台了。那么多的数据，你就是理论学得再牛，没有计算机，你自己手算试试！你说你要处理数据，OK，计算机提供了工具平台，那么你就得学习如何运用这些系统环境吧，那么就得学习<strong>分布式计算机系统环境</strong>，这个主流的有：Hadoop(鼎鼎大名吧); Spark(也听说过吧); Cassandra等等。</p>
-
-<p>好了，环境搞明白了，下面你就得发号施令，让计算机去处理数据了。计算可不是人类，你可以跟他讲普通话，讲英文让他帮你干活。你要想它听你的，你得先学会点它能懂的、能听明白的话。OK，编程语言就降临了。一般来说，用于数据处理的语言有R，Python，Octave（与Matlab类似，只是这个开源免费），Matlab等等。为了使用各个平台，说不得你也得学点Java，C，C++。</p>
-
-<p>写到这边，估计已经头大了，这么多东西，这数据科学是不是恐怖了点，谁能受得了啊！！！是的，包含的东西的确多了点，但是学习起来还是很好玩的，我保证(当然，前提你得跟我一样，看见数学不会头晕)！</p>
-
-<p>当然除了上面提到的，数据科学包含的计算机知识还有很多，像数据结构啊，数据库啊，Mahout这样的架构啊等等。</p>
-
-<h5 id="section-2">第三，专业</h5>
-<p>这个也就是应用啦。练就了一身绝世内功（理论基础），找到了一把趁手的绝世神兵（计算机科学），现在需要决定的就是出山之后是想做个武林盟主呢，还是独创一个门派，也就是想把这些东西用到哪些地方去。像生物学，跟统计一结合就成了生物统计，要是再加上点计算机科学，那就成了生物学数据科学。OK，这么说应该是很明白的了。</p>
-
-<hr />
-
-<p>数据科学家Drew Conway绘制过一幅图，很好地描述了我上面所说的东西：</p>
-
-<p><img src="/images/a14/drew-conway-data-science-venn-diagram.jpg" alt="Venn diagram" /></p>
-
-<p>前几天图灵上出了一本书，叫做“<a href="http://www.ituring.com.cn/book/1268">Software Design 中文版 01</a>”。里面介绍了数据科学的很多基础内容，也给出了很多的学习材料，大部分都是网上的视频教程。此外书中还介绍了一些如何使用Excel，R以及Mahout这些工具的基础知识，有兴趣倒是可以入手一本，作为学习数据科学的开始。</p>
 ]]></content>
   </entry>
   

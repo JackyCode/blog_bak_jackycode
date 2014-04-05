@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>about - Jacky and MSC</title>
+  <title>数据科学之机器学习5：分类之k-近邻算法 - Jacky and MSC</title>
   <meta name="author" content="Jacky Code">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jackycode.github.io/about">
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/04/05/knn">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -95,52 +95,16 @@
   <div class="container">
     <div class="row-fluid">
       
-<article role="article" class="span9">
+<article class="hentry span9" role="article">
 
   
   <header class="page-header">
-    <h1 class="entry-title">About</h1>
-    <p class="meta">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-21T16:06:00+08:00" pubdate data-updated="true">Feb 21<span>st</span>, 2014</time></p>
-  </header>
-  
-  <h3 id="section">关于我</h3>
-
-<p>一个在学概率统计的研究生～～</p>
-
-<p>由于自身有些洁癖，所以网站做的简简单单，白底黑字，无任何添加剂，原滋原味，正如主题名称CleanPress。但是很招我媳妇儿鄙视～～～</p>
-
-<h4 id="section-1">更新：</h4>
-<p>由于周围的同志们，尤其是我媳妇儿表示很鄙视我之前一点没做修改的主题，我只能加了一天多的时间慢慢修改主题，具体情况见日志喽。</p>
-
-<p>在这里表示很感谢<a href="http://beyondvincent.com/">破船之家</a>以及<a href="http://www.uiweek.com/">UIWeek</a>，在船哥的网站上偷了很多师，在UIWeek的杂志上学了很多东东。</p>
-
-<hr />
-
-<p>如果想要订阅我的博客，请猛戳<a href="http://jackycode.github.io/atom.xml"><strong>RSS</strong></a>。</p>
-
-<p>如果想联系我的话呢，新浪微博：<a href="http://weibo.com/jackycode"><code>Jacky130</code></a>，也可以给我发邮件：<code>jackycodemsc@gmail.com</code>。发邮件请写清楚主题跟你的一些信息哦(需要我知道的那些)。欢迎联系我！</p>
-
-<hr />
-
-<p>博客部分内容来源于互联网，如果对您的权利有所侵犯，请您联系我，我会及时处理，我的邮箱：<code>jackycodemsc@gmail.com</code>。</p>
-
-  
-    <footer>
+    
+      <h1 class="entry-title">数据科学之机器学习5：分类之k-近邻算法</h1>
+    
+    
       <p class="meta">
         
-        
 
 
 
@@ -152,20 +116,106 @@
   
 
 
-<time datetime="2014-02-21T16:06:00+08:00" pubdate data-updated="true">Feb 21<span>st</span>, 2014</time>
+<time datetime="2014-04-05T19:59:29+08:00" pubdate data-updated="true">Apr 5<span>th</span>, 2014</time>
         
       </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/artical/artical19.jpg" alt="artical 19" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h4 id="section">基本思想</h4>
+<hr />
+
+<p>kNN，k-Nearest Neighbor algorithm，也就这边的k-近邻算法，是数据挖掘十大算法之一，是一个比较简单的分类方法。</p>
+
+<p>其基本的思想是：对于一个输入样本（未知分类的样本），考虑其与测试样本中与之距离最近（特征最相似）的k个样本，用这k个样本中出现最多的分类作为输入样本的分类。</p>
+
+<h4 id="section-1">具体流程</h4>
+<hr />
+
+<p>对于输入样本中的每一个点，进行以下操作：</p>
+
+<ol>
+  <li>计算点与测试样本中点的距离；</li>
+  <li>取出与当前点距离最小的k个点；</li>
+  <li>确定k个点的分类，计算各个分类的频数；</li>
+  <li>返回频数最高的类别，作为该输入点的预测分类。</li>
+</ol>
+
+<h4 id="section-2">距离的计算</h4>
+<hr />
+
+<p>上面一直在说，计算输入样本中点与测试样本中点之间的距离，那么这个距离应该怎么计算呢？这个距离一般就是使用欧式距离：</p>
+
+<script type="math/tex; mode=display"> d = \sqrt{(x - y)^T(x - y)} </script>
+
+<p>其中<script type="math/tex">x^T=[x_1, x_2,\dots,x_n], y^T=[y_1,y_2,\dots,y_n]</script>。二维的表示就是：</p>
+
+<script type="math/tex; mode=display"> d = \sqrt{(x - y)^T(x - y)} = \sqrt{(x_1 - y_1)^2 + (x_2 - y_2)^2} </script>
+
+<h4 id="r">R语言实现</h4>
+<hr />
+
+<p>见<a href="https://github.com/JackyCode/Data_Science/tree/master/kNN">我的github</a>。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
       
-        <div class="sharing">
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacky Code</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-05T19:59:29+08:00" pubdate data-updated="true">Apr 5<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/classification/'>Classification</a>, <a class='category' href='/blog/categories/datascience/'>DataScience</a>, <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
   
   
   
 </div>
 
+    
+    
+    <ul class="pager">
       
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2014/04/02/linear-regression3/" title="Previous Post:
+        数据科学之机器学习4：线性回归3">&laquo; 数据科学之机器学习4：线性回归3</a></li>
       
-    </footer>
-  
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+    </ul>
+  </footer>
 </article>
 
 <aside class="sidebar-nav span3">
@@ -263,6 +313,24 @@
 
   
 </aside>
+
+
+  <section>  
+  <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jacky130"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>  
+</section>
 
 
     </div>
