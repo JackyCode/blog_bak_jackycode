@@ -18,3 +18,16 @@ footer: true
 </div>
 
 </article>
+
+<article>
+  <div class="well">
+
+<h2><a href="{{ root_url }}/datascience">DataScience</a></h2>
+
+<footer>
+  与数据科学有关的编程。
+</footer>
+
+</div>
+
+</article>

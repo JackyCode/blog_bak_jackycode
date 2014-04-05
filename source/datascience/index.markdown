@@ -1,0 +1,34 @@
+---
+layout: page
+title: "datascience"
+date: 2014-04-05 20:38
+comments: true
+sharing: true
+footer: true
+---
+
+<article>
+  <div class="well">
+
+<h2><a href="https://github.com/JackyCode/Data_Science/tree/master/Linear_Regression">Linear Regression</a></h2>
+
+<footer>
+  线性回归
+</footer>
+
+</div>
+
+</article>
+
+<article>
+  <div class="well">
+
+<h2><a href="https://github.com/JackyCode/Data_Science/tree/master/kNN">kNN</a></h2>
+
+<footer>
+  分类之kNN算法
+</footer>
+
+</div>
+
+</article>
