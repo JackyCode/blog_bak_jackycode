@@ -32,3 +32,16 @@ footer: true
 </div>
 
 </article>
+
+<article>
+  <div class="well">
+
+<h2><a href="https://github.com/JackyCode/Data_Science/tree/master/NaiveBayes">NaiveBayes</a></h2>
+
+<footer>
+  分类之朴素贝叶斯
+</footer>
+
+</div>
+
+</article>
