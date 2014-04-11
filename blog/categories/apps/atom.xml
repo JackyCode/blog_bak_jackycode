@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Apps | Jacky and MSC]]></title>
+  <link href="http://jackycode.github.io/blog/categories/apps/atom.xml" rel="self"/>
+  <link href="http://jackycode.github.io/"/>
+  <updated>2014-04-11T19:56:40+08:00</updated>
+  <id>http://jackycode.github.io/</id>
+  <author>
+    <name><![CDATA[Jacky Code]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[打折的Apps]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/11/apps-at-a-discount/"/>
+    <updated>2014-04-11T19:32:31+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/11/apps-at-a-discount</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical22.jpg" alt="artical 22" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>这两天，很多Mac和iPhone上的Apps都在打折，比如出名的Day one、1Password等等。</p>
+
+<p>在StackSoical上面也介绍了一些，链接如下：<a href="https://stacksocial.com/ios_bundle?utm_source=ssnetwork&amp;utm_medium=hellobar&amp;utm_campaign=iosbundle">链接</a></p>
+
+<p><img src="/images/a22/stack.jpg" alt="stack" /></p>
+
+<p>StackSoical上没有介绍的，就是打折的<a href="https://agilebits.com/store">1Password</a></p>
+
+<p><img src="/images/a22/1pass.jpg" alt="1pass" /></p>
+
+<p>这些打折的应用，都可以直接在App Store购买。我暂时不知道打折持续的时间有多少，也不知道打折的原因。没关系啦，这个打折总归是我们这些消费者福音，像1Password这样贵的应用，如果需要的，抓紧时间购买吧！！！</p>
+]]></content>
+  </entry>
+  
+</feed>

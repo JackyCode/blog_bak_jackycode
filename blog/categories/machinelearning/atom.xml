@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MachineLearning | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-08T16:33:17+08:00</updated>
+  <updated>2014-04-11T19:56:40+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,64 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习7: 决策树]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/11/decision-trees/"/>
+    <updated>2014-04-11T19:00:32+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/11/decision-trees</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical21.jpg" alt="artical 21" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h3 id="section">一、开始</h3>
+<hr />
+
+<p>在介绍决策树的概念内容之前，先来初步了解一下决策树的流程。这是一个很简单的概念，通过一张简单的流程图就可以大致了解决策树是干什么的，怎么干的。</p>
+
+<p><img src="\images\a21\decisiontrees.jpg" alt="decision trees" /></p>
+
+<h3 id="section-1">二、相关概念</h3>
+<hr />
+
+<h4 id="section-2">1. 一些概念</h4>
+<hr />
+
+<ul>
+  <li>决策树学习是一种逼近离散值目标函数的方法。</li>
+  <li>决策树通过把实例从根节点排列到某个叶子节点来分类实例，叶子的节点即为实例所属的分类。</li>
+  <li>决策树上的每一个节点，指定了对实例的某一个属性的测试，并且，该节点的每一个后续分支对应该属性的一个可能值。</li>
+</ul>
+
+<h4 id="section-3">2. 分类方法</h4>
+<hr />
+<p>从树的根节点开始，测试这个节点指定的属性，然后按照给定实例的该属性值对应的分支向下移动。然后以新节点作为根节点重复上面的过程直至结束。</p>
+
+<h3 id="section-4">三、 评价</h3>
+<hr />
+
+<p>通过决策树的流程，可以发现决策树的计算复杂度不高，而且其输出的结果易于理解，并且对缺失值不敏感。</p>
+
+<p>但是，正是由于其划分过于细致，可能会导致过度匹配问题(与回归中的overfitting类似)。</p>
+
+<h3 id="section-5">四、主要的决策树算法</h3>
+<hr />
+
+<p>从决策树的流程可以看出，<strong>如何选择属性作为节点以测试实例</strong>是最为关键的一步。不同的算法采取了不同的方法，主要的决策树算法有这样几个：</p>
+
+<ul>
+  <li>ID3</li>
+  <li>C4.5 （数据挖掘十大算法之一，也是ID3算法的改进）</li>
+  <li>C5.0 （C4.5的改进，适用于处理大数据集，采用Boosting方式提高模型准确率，因而又称BoostingTrees。）</li>
+  <li>CART（数据挖掘十大算法之一）</li>
+</ul>
+
+<p>下一篇就开始讲讲一些决策树的算法。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习6: 分类之朴素贝叶斯]]></title>
@@ -481,157 +539,6 @@ plot(y_res ~ y_pred)
 <p>在上一篇中可以看到，<code>lm</code>函数加上<code>summary</code>函数会有很多的输出内容。其实，那些输出中就含有上述的假设检验的结果，很容易就可以找到，这里不做阐述！</p>
 
 <p>我自己也写了一个关于线性回归的R语言函数，托管在<a href="https://github.com/JackyCode/Data_Science/tree/master/Linear_Regression">我的github</a>上面，函数内部对于线性回归的过程大都涉及到了，有兴趣可以看看。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习2：线性回归1]]></title>
-    <link href="http://jackycode.github.io/blog/2014/03/30/machine-learning1/"/>
-    <updated>2014-03-30T19:02:30+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/03/30/machine-learning1</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical16.jpg" alt="artical 16" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<h4 id="section">一、回归分析</h4>
-
-<hr />
-
-<p>在统计分析中，最大的两支应该算是相关分析和回归分析。而回归分析应该是统计学的核心。回归分析，就是研究因变量$y$与自变量$x$之间的关系，存在条件数学期望：$f(x)=E(y|x)$。此时有：$y=f(x)+\varepsilon$，一般假设$\varepsilon \sim N(0,\sigma^2)$。</p>
-
-<p>回归分析有很多变种：简单线性回归；多项式回归；Logistic回归；非参数回归；非线性回归等等。本篇就介绍最简单的线性回归，首先来看看一元线性回归。</p>
-
-<hr />
-
-<h4 id="section-1">二、一元线性回归</h4>
-
-<hr />
-
-<p>对于一元线性回归来说，$f(x)$就是线性的，则有：$f(x)=E(y|x)=\beta_0 + \beta_1 x$。通过已知的数据，可以估计出$\beta_0,\beta_1$的估计值：$\hat{\beta}_0,\hat{\beta}_1$。那么就有$y$的预测值：$\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x$。</p>
-
-<hr />
-
-<h5 id="beta0beta1hatbeta0hatbeta1">1. 如何计算$\beta_0,\beta_1$的估计值$\hat{\beta}_0,\hat{\beta}_1$呢？</h5>
-
-<hr />
-
-<p>定义离差平方和：</p>
-
-<script type="math/tex; mode=display">Q(\beta_0,\beta_1) = \sum_{i=1}^{n}(y_i-f(x_i))^2</script>
-
-<p>显然，我们希望$f(x_i)$的值与真实值$y_i$越接近越好。那么就是需要离差平方和越小越好。则得到目标：</p>
-
-<script type="math/tex; mode=display"> \min_{\beta_0,\beta_1}{\sum_{i=1}^{n}(y_i-f(x_i))^2} </script>
-
-<p>如何寻找$\hat{\beta}_0,\hat{\beta}_1$使得上面方程达到最小呢？这个就需要对其对$\hat{\beta}_0,\hat{\beta}_1$求偏导，得到：</p>
-
-<script type="math/tex; mode=display">\frac{\partial Q}{\partial \beta_0}=-2\sum_{i=1}^{n}{(y_i-\beta_0-\beta_1x_i)}</script>
-
-<script type="math/tex; mode=display">\frac{\partial Q}{\partial \beta_1}=-2\sum_{i=1}^{n}{(y_i-\beta_0-\beta_1x_i)x_i}</script>
-
-<p>令上述两式都等于0，计算得到：</p>
-
-<script type="math/tex; mode=display">\hat{\beta}_0=\overline{y}-\hat{\beta}_1\overline{x}</script>
-
-<script type="math/tex; mode=display">\hat{\beta}_1=\frac{\sum_{i=1}^{n}{(x_i-\overline{x})(y_i-\overline{x})}}{\sum_{i=1}^{n}{(x-\overline{x})^2}}</script>
-
-<p>这样就得到$\beta_0,\beta_1$的估计值$\hat{\beta}_0,\hat{\beta}_1$。这个方法就叫做OLS，即普通最小二乘(ordinary least squares)。</p>
-
-<hr />
-
-<h5 id="r">2. R语言实现</h5>
-
-<hr />
-
-<p>在R语言中有自带的函数可以处理线性回归，那就是<code>lm</code>函数。这里使用自带的数据<code>cars</code>做演示：</p>
-
-<p>``` r
-&gt; attach(cars) # 使用数据集cars，与with函数类似
-&gt; lingre &lt;- lm(dist ~ speed)
-&gt; summary(lingre)</p>
-
-<p>Call:
-lm(formula = dist ~ speed)</p>
-
-<p>Residuals:
-    Min      1Q  Median      3Q     Max 
--29.069  -9.525  -2.272   9.215  43.201 </p>
-
-<p>Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)  <br />
-(Intercept) -17.5791     6.7584  -2.601   0.0123 *<br />
-speed         3.9324     0.4155   9.464 1.49e-12 <strong>*
-—
-Signif. codes:  0 ‘</strong><em>’ 0.001 ‘**’ 0.01 ‘</em>’ 0.05 ‘.’ 0.1 ‘ ’ 1</p>
-
-<p>Residual standard error: 15.38 on 48 degrees of freedom
-Multiple R-squared:  0.6511,	Adjusted R-squared:  0.6438 
-F-statistic: 89.57 on 1 and 48 DF,  p-value: 1.49e-12</p>
-
-<blockquote>
-  <p>plot(dist ~ speed, pch=4) # 画出散点图
-abline(lingre, col=’red’) # 添加拟合直线
-detach(cars) # 使用完记得释放
-```</p>
-</blockquote>
-
-<p>从这里可以得到回归方程：$\hat{dist} = -17.5791 + 3.9324 \times speed$。（对于其它的结果是什么意思，可以去查看线性回归的相关书籍）</p>
-
-<p>另外，得到拟合直线的图像：</p>
-
-<p><img src="\images\a16\lingre_one.jpg" alt="lingre_one" /></p>
-
-<hr />
-
-<h4 id="section-2">三、多元线性回归</h4>
-
-<hr />
-
-<p>对于多元线性回归来说，其计算方式与一元线性回归类似，区别在于，多元的时候需要利用矩阵来处理。首先看一下回归模型：</p>
-
-<script type="math/tex; mode=display"> y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_p x_p + \varepsilon </script>
-
-<p>其中$p$代表自变量的个数。</p>
-
-<p>若取$x^T_0=[1, 1, \dots, 1]_{1 \times n}$，则可将上述模型改写成：<script type="math/tex">y=X\beta+\varepsilon</script>。其中：</p>
-
-<script type="math/tex; mode=display">y^T=[y_1,y_2,\dots,y_n], X=[x_0,x_1,\dots,x_p], \beta^T=[\beta_0,\beta_1,\dots,\beta_p], \varepsilon^T=[\varepsilon_1,\varepsilon_2,\dots,\varepsilon_n]</script>
-
-<p>其中<script type="math/tex">x^T_i=[x_{1i},x_{2i},\dots,x_{ni}]</script>。</p>
-
-<p>这样我们就可以将离差平方和<script type="math/tex">\sum_{i=1}^{n}{(y_i-\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_p x_p)^2}</script>写成矩阵形式：</p>
-
-<script type="math/tex; mode=display">(y-X\beta)^T(y-X\beta)</script>
-
-<p>求导可得：<script type="math/tex">-2X^T(y-X\beta)</script>(这里用到矩阵求导的知识，一般介绍<strong>线性模型</strong>的书籍中会讲到；当然也可以直接对上面不是矩阵形式的离差平和求导)。令其等于0，可得：</p>
-
-<script type="math/tex; mode=display">\hat{\beta} = (X^TX)^{-1}X^Ty</script>
-
-<hr />
-
-<h5 id="r-1">R语言实现</h5>
-
-<hr />
-
-<p>对于R语言的实现，依旧使用<code>lm</code>函数：</p>
-
-<p><code>r
-lingre_mul &lt;- lm(y ~ x1 + x2, data=datasets)
-summary(lingre_mul)
-</code></p>
-
-<p>这里就不再用实际数据去演示了。</p>
-
-<hr />
-
-<h4 id="section-3">四、最后</h4>
-
-<hr />
-
-<p>至此，就把线性回归的基础内容介绍完了。但其实线性回归还存在很多其它的问题。比如说回归诊断（就是检查回归的效果），变量选择等等等等。感兴趣的话，可以找本讲线性回归的书看看，有很多！</p>
 ]]></content>
   </entry>
   

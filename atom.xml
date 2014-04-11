@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-08T16:33:17+08:00</updated>
+  <updated>2014-04-11T19:56:40+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,90 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[打折的Apps]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/11/apps-at-a-discount/"/>
+    <updated>2014-04-11T19:32:31+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/11/apps-at-a-discount</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical22.jpg" alt="artical 22" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>这两天，很多Mac和iPhone上的Apps都在打折，比如出名的Day one、1Password等等。</p>
+
+<p>在StackSoical上面也介绍了一些，链接如下：<a href="https://stacksocial.com/ios_bundle?utm_source=ssnetwork&amp;utm_medium=hellobar&amp;utm_campaign=iosbundle">链接</a></p>
+
+<p><img src="http://jackycode.github.io/images/a22/stack.jpg" alt="stack" /></p>
+
+<p>StackSoical上没有介绍的，就是打折的<a href="https://agilebits.com/store">1Password</a></p>
+
+<p><img src="http://jackycode.github.io/images/a22/1pass.jpg" alt="1pass" /></p>
+
+<p>这些打折的应用，都可以直接在App Store购买。我暂时不知道打折持续的时间有多少，也不知道打折的原因。没关系啦，这个打折总归是我们这些消费者福音，像1Password这样贵的应用，如果需要的，抓紧时间购买吧！！！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习7: 决策树]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/11/decision-trees/"/>
+    <updated>2014-04-11T19:00:32+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/11/decision-trees</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical21.jpg" alt="artical 21" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h3 id="section">一、开始</h3>
+<hr />
+
+<p>在介绍决策树的概念内容之前，先来初步了解一下决策树的流程。这是一个很简单的概念，通过一张简单的流程图就可以大致了解决策树是干什么的，怎么干的。</p>
+
+<p><img src="\images\a21\decisiontrees.jpg" alt="decision trees" /></p>
+
+<h3 id="section-1">二、相关概念</h3>
+<hr />
+
+<h4 id="section-2">1. 一些概念</h4>
+<hr />
+
+<ul>
+  <li>决策树学习是一种逼近离散值目标函数的方法。</li>
+  <li>决策树通过把实例从根节点排列到某个叶子节点来分类实例，叶子的节点即为实例所属的分类。</li>
+  <li>决策树上的每一个节点，指定了对实例的某一个属性的测试，并且，该节点的每一个后续分支对应该属性的一个可能值。</li>
+</ul>
+
+<h4 id="section-3">2. 分类方法</h4>
+<hr />
+<p>从树的根节点开始，测试这个节点指定的属性，然后按照给定实例的该属性值对应的分支向下移动。然后以新节点作为根节点重复上面的过程直至结束。</p>
+
+<h3 id="section-4">三、 评价</h3>
+<hr />
+
+<p>通过决策树的流程，可以发现决策树的计算复杂度不高，而且其输出的结果易于理解，并且对缺失值不敏感。</p>
+
+<p>但是，正是由于其划分过于细致，可能会导致过度匹配问题(与回归中的overfitting类似)。</p>
+
+<h3 id="section-5">四、主要的决策树算法</h3>
+<hr />
+
+<p>从决策树的流程可以看出，<strong>如何选择属性作为节点以测试实例</strong>是最为关键的一步。不同的算法采取了不同的方法，主要的决策树算法有这样几个：</p>
+
+<ul>
+  <li>ID3</li>
+  <li>C4.5 （数据挖掘十大算法之一，也是ID3算法的改进）</li>
+  <li>C5.0 （C4.5的改进，适用于处理大数据集，采用Boosting方式提高模型准确率，因而又称BoostingTrees。）</li>
+  <li>CART（数据挖掘十大算法之一）</li>
+</ul>
+
+<p>下一篇就开始讲讲一些决策树的算法。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习6: 分类之朴素贝叶斯]]></title>
@@ -3252,232 +3336,6 @@
   <li><a href="https://www.google.com.hk/search?q=Octopress%E4%B8%BB%E9%A2%98%E6%94%B9%E9%80%A0&amp;oq=Octopress%E4%B8%BB%E9%A2%98%E6%94%B9%E9%80%A0&amp;aqs=chrome..69i57&amp;sourceid=chrome&amp;espv=210&amp;es_sm=119&amp;ie=UTF-8">。。。</a></li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[记录：Octopress建站之旅]]></title>
-    <link href="http://jackycode.github.io/blog/2014/02/23/record/"/>
-    <updated>2014-02-23T10:40:38+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/02/23/record</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical2.jpg" alt="aritical 2" /></p>
-
-<!-- more -->
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>博客建立好了，花了不少时间，今天就想将自己如何建立这个博客的过程梳理一遍，写在这里，当作复习回顾的同时，也与人参考。</p>
-
-<p>自己的这个小博客是用的Octopress搭建的，托管在github上面(没有资金但又想建立一个自己独立博客的同志们可以使用GitHub，free哦)。</p>
-
-<p>使用Octopress唯一的问题在于你得学一点shell commands和Git基础(其实用的内容并不很多，照着顺序搭建部署都可以搞定）。以后发博客只需要一些<strong>简单的</strong><em>每次都一样的</em>步骤就可以搞定了，直接复制粘贴就好。但是我想你需要对这些命令不感到反感才行，正如Octopress官方文档开头说的：</p>
-
-<blockquote>
-  <p>You should be comfortable running shell commands and familiar with the basics of Git. If that sounds daunting, Octopress probably isn’t for you.</p>
-</blockquote>
-
-<p>但是shell跟Git是很好的东东，shell可以帮你很大限度地减少重复工作，而且学习shell的过程会让你对计算机有更深入的了解；Git是一个开源的分布式版本控制系统，它让我一次性放弃了CVS而投入它的怀抱（变得是不是太快了）。GitHub就是为开源项目免费提供Git存储的网站，看看现在无数的开源项目在GitHub里面活跃，你就知道不是我变得太快，而是它的优秀让你无法抗拒。</p>
-
-<hr />
-
-<h3 id="section">一、准备工作</h3>
-<p>在安装Octopress之前，你必须得先安装上Git和Ruby。安装很简单，直接百度就可以了。如果你用的是Mac，那么恭喜你，你的电脑里面已经自带了Ruby。当然你仍然可以选择用rvm或者rbenv去安装更新Ruby，这些命令在官网上都有，就不多说了。</p>
-
-<p>安装完成后，在终端中运行命令：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">git --version
-</span><span class="line">ruby --version</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>如果能正确显示版本号，类似于我的输出：分别是<code>git version 1.8.3.4 (Apple Git-47)</code>和<code>ruby 2.0.0p247 (2013-06-27 revision 41674) [universal.x86_64-darwin13]</code>，就没有问题了，继续往下吧！</p>
-
-<h3 id="octopress">二、安装Octopress</h3>
-<p>首先在终端进入你想安装Octopress的文件夹中，然后使用git命令将Octopress clone到本地：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">git clone git://github.com/imathis/octopress.git octopress</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>进入octopress文件夹：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">cd octopress</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>安装依赖项:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">gem install bundler
-</span><span class="line">rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
-</span><span class="line">bundle install</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>当然你有可能跟我一样遇到权限不足，操作无法完成的情况，那么你需要在命令前面加上<code>sudo</code>，第一次终端会要求你输入密码，输入成功后就可以正常安装了。</p>
-
-<p>安装好依赖项后，你需要安装主题：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">rake install</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>上面命令会安装默认主题，当然你可以选择安装第三方主题，在<a href="https://github.com/imathis/octopress/wiki/3rd-Party-Octopress-Themes">这里</a>有很多第三方的主题，你可以挑选自己喜欢的主题，然后安装：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">git clone GIT_URL .themes/THEME_NAME
-</span><span class="line">rake install['THEME_NAME']</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>比如我的用的是CleanPress主题：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">git clone git://github.com/macjasp/cleanpress.git .themes/cleanpress
-</span><span class="line">rake install['cleanpress']</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h3 id="github">三、注册GitHub</h3>
-<p>到<a href="https://github.com/">GitHub</a>网站上注册一个免费账户，然后新建一个repository。<strong>repository一定要使用这样的格式命名：<code>yourname.github.io</code>，其中<code>yourname</code>是你注册时的用户名。</strong></p>
-
-<h3 id="github-1">四、部署到GitHub</h3>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">rake setup_github_pages</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>输入上述的命令会要求你输入SSH(你注册GitHub时会有)或者是你的repository的url，找到复制粘贴就好。</p>
-
-<p>然后就可以开始部署了：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">rake generate
-</span><span class="line">rake deploy</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>此时可能会让你登录你的github，按照提示进行输入即可。</p>
-
-<p>到此为止，就差博客的source还没有提交了：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">git add .
-</span><span class="line">git commit -m 'your message'
-</span><span class="line">git push origin source</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h3 id="octopress-1">五、配置Octopress</h3>
-<p>我对Octopress没有做很大的配置改动，只是设置了博客名称，以及添加了Home页及其它一些页面的内容(其实就是给了一个空网页，里面神马都没有，以后再慢慢填充吧)。</p>
-
-<p>在octopress文件夹中，需要在<code>_config.yml</code>中设置自己博客的名称等等的内容：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-</pre></td><td class="code"><pre><code class=""><span class="line">url: [url of your github]
-</span><span class="line">title: [title of your blog]
-</span><span class="line">subtitle: [subtitle of your blog]
-</span><span class="line">author: [your name]
-</span><span class="line">simple_search: http://google.com/search
-</span><span class="line">description: [some other information you want to add]</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>除此之外，我还将里面有关twitter、facebook等等的社交信息全部给删除掉了(谢谢<a href="http://beyondvincent.com/">船哥</a>，这个明显的是偷师啊～)。当然你要是有这些帐号也可以设置，只是在国内用处不大呀。</p>
-
-<p>之后，我对<code>octopress/source/_includes/custom</code>下的<code>navigation.html</code>进行了简单的修改，就是添加了<code>Home</code>，以及变换了<code>About</code>的位置：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;ul&gt;</span>
-</span><span class="line">	<span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/home&quot;</span><span class="nt">&gt;</span>Home<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class="line">	<span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Blog<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class="line">	<span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/portfolio&quot;</span><span class="nt">&gt;</span>Portfolio<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class="line">	<span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/archives&quot;</span><span class="nt">&gt;</span>Archive<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class="line">	<span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/about&quot;</span><span class="nt">&gt;</span>About<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class="line"><span class="nt">&lt;/ul&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>现在添加了Home页，但是Home页其实还是不存在的，所有需要建立一个新的page：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line">rake new_page[home]
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>上述命令会在<code>octopress/source</code>文件夹下生成一个新的文件夹<code>home</code>，<code>home</code>文件夹下面有一个markdown文件<code>index.markdown</code>。编辑该文件，将你想放在Home页上的东西写进去就OK了。</p>
-
-<p>默认情况下，<code>About</code>,<code>porfolio</code>页面都是不存在的，所以需要自己设置，方法与设置<code>home</code>页面的一样，就不多说了。</p>
-
-<p>根据自己的需求，修改完成后，不要忘了：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line">rake generate
-</span><span class="line">git add .
-</span><span class="line">git commit -m &#39;customise octopress&#39;
-</span><span class="line">git push origin source
-</span><span class="line">rake deploy
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h3 id="section-1">六、发布新博客</h3>
-<p>根据Jekyll的命名规则，文章命名必须有这样的格式：<code>YYYY-MM-DD-post-title.markdown</code>，使用Octopress的rake task可以简单解决这个问题：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line">rake new_post[&quot;title&quot;]
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>命令会生成这样的文件：<code>source/_posts/YYYY-MM-DD-title.markdown</code>，然后你可以修改markdown文件，写自己的博文。写好后，别忘记部署到GitHub：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line">rake generate
-</span><span class="line">git add .
-</span><span class="line">git commit -am &#39;YYYY-MM_DD post&#39;
-</span><span class="line">git push origin source
-</span><span class="line">rake deploy
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>至此文章就部署好了，过两分钟去自己的博客看看吧。</p>
-
-<h3 id="section-2">七、最后</h3>
-<p>利用Octopress搭建一个GitHub博客的简单流程差不多就像上述。但是对于自己的博客，可能我们还需要做更多的一些配置，比如添加评论系统，社交分享啊等等。这些内容网上有很多，可以到Google里面百度一下～</p>
-
-<hr />
-
-<h4 id="octopress-2">参考资源以及更多配置Octopress的资源推荐</h4>
-<ol>
-  <li><a href="http://octopress.org/docs/setup/">Octopress官方文档</a></li>
-  <li><a href="http://beyondvincent.com/">破船之家</a>：<a href="http://beyondvincent.com/blog/2013/08/03/108-creating-a-github-blog-using-octopress/">利用Octopress搭建一个Github博客</a></li>
-  <li><a href="http://never.doubting.me/">Never Doubting Me</a>：<a href="http://never.doubting.me/2013/04/18/2013-04-18-setup-octopress-on-github-step-by-step/">教程:一步步在github上建立octopress博客</a></li>
-  <li><a href="http://williamherry.com/">William’s Blog with Octopress</a>：<a href="http://williamherry.com/blog/2012/07/20/octopress-setup/">Octopress - 像黑客一样写博客</a></li>
-  <li><a href="http://www.yanjiuyanjiu.com/">研究研究</a>：<a href="http://www.yanjiuyanjiu.com/blog/20130402/">我的Octopress配置</a></li>
-  <li><a href="http://agiledon.github.io/">简单文本</a>：<a href="http://agiledon.github.io/blog/2012/12/25/octopress-issues-solution-and-tips/">Octopress博客问题解决方案与技巧</a></li>
-  <li><a href="https://www.google.com.hk/search?newwindow=1&amp;safe=strict&amp;espv=210&amp;es_sm=119&amp;q=octopress%E6%95%99%E7%A8%8B&amp;oq=octopress%E6%95%99%E7%A8%8B&amp;gs_l=serp.12..35i39.5308.6241.0.8806.10.8.0.0.0.1.237.921.0j3j2.5.0....0...1c.1j4.35.serp..6.4.789.PMKW2jRRdPI">。。。</a></li>
-</ol>
-
-<p><strong>如果有什么问题或者建议，可以直接回复我或者给我发邮件：<code>jackycodemsc@gmail.com</code>。</strong></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Hello, my blog]]></title>
-    <link href="http://jackycode.github.io/blog/2014/02/21/hello/"/>
-    <updated>2014-02-21T14:17:35+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/02/21/hello</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical1.jpg" alt="aritical 1" /></p>
-
-<!-- more -->
-
-<p>花了一个晚上以及一个上午的时间，总算是把这个博客弄出来了(对一个数学系的孩子不容易啊！)。这里要非常感谢<a href="http://beyondvincent.com/">破船之家</a>，<a href="http://williamherry.com/">William’s Blog with Octopress</a>以及<a href="http://octopress.org/">Octopress</a>的官方文档和一些其它网站上的材料(翻了不少材料，没记住那么多，sorry！)。我大致是照着做了两遍，其中大错了一次(对Git掌握有待加强啊)，小错蛮多次(对Web这些语言实在是不甚了了，需要好好摸索学习)，一路错下来倒也是把这个小站弄出来了。非常感谢Github，不然我一个穷学生还真没钱去买个域名建博客，非常感谢Octopress，不然我也没本事弄出个博客系统来～哈哈！</p>
 ]]></content>
   </entry>
   
