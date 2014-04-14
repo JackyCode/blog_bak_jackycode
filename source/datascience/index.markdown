@@ -45,3 +45,16 @@ footer: true
 </div>
 
 </article>
+
+<article>
+  <div class="well">
+
+<h2><a href="https://github.com/JackyCode/Data_Science/tree/master/Decision_Tree/ID3">ID3</a></h2>
+
+<footer>
+  决策树之ID3
+</footer>
+
+</div>
+
+</article>
