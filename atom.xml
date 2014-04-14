@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-11T19:56:40+08:00</updated>
+  <updated>2014-04-14T16:26:47+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,181 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习8: 决策树之ID3]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/14/id3/"/>
+    <updated>2014-04-14T16:02:45+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/14/id3</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical23.jpg" alt="artical 23" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>ID3算法的核心问题就在于：选取在决策树的每个节点处要测试的属性。那么如何去选择呢？当然，我们要选取<strong>分类能力最好的属性</strong>，那么怎么去确定哪个属性是分类能力最好的呢？ID3算法中，使用<strong>信息增益</strong>作为评判标准。在看信息增益之前，我们先看看这个决策树的构造过程：</p>
+
+<h3 id="section">一、构造过程</h3>
+<hr />
+
+<ol>
+  <li>选取<strong>分类能力最好的属性</strong>作为决策树根部节点的测试；</li>
+  <li>为根节点属性的每一个可能值产生一个分支；</li>
+  <li>以各个分支节点为根节点，重复上述过程。</li>
+</ol>
+
+<h3 id="section-1">二、信息增益</h3>
+<hr />
+
+<h4 id="section-2">1. 熵</h4>
+<hr />
+
+<p>在看信息增益之前，首先需要介绍一个概念，那就是<strong>香农熵</strong>，简称为<strong>熵</strong>。相信学过物理的应该大都听过这个名词，在热力学中不就有个熵增原理嘛。其实，<strong>熵是信息论中广泛使用的一个度量标准，刻画了任意样例集合的纯度。</strong></p>
+
+<p><strong>熵是信息的期望值</strong>，所以可以用熵来刻画一个数据集的纯度。若用$x_i,i=1,2,\dots,n$来表示数据集所包含的属性，那么这个数据集的熵为：</p>
+
+<script type="math/tex; mode=display"> H = - \sum_{i=1}^{n}{p(x_i)l(x_i)} </script>
+
+<p>其中，$p(x_i)$表示选取$x_i$作为分类的最终类别的概率；$l(x_i)$为$x_i$的信息，定义为：<script type="math/tex"> l(x_i) = - \log_2p(x_i)</script>。</p>
+
+<h4 id="section-3">2. 信息增益</h4>
+<hr />
+
+<p>有了熵之后就可以刻画一个数据集的纯度，也就是熵值。那么什么信息增益呢？</p>
+
+<p>简单来说，<strong>一个属性的信息增益就是：使用这个属性分割样例集合而导致的熵值降低</strong>。那么要选取分类能力最好的属性，就是要选取使得信息增益最大的那个属性。</p>
+
+<p>一个属性A对样例集合S的信息增益定义为：</p>
+
+<script type="math/tex; mode=display"> Gain(S, A) = H(S) - \sum_{v \in A} { \frac{\# S_v}{\# S} H(S_v) } </script>
+
+<p>其中，<script type="math/tex">S_v</script>表示集合S中，属性A取值为$v$的那部分数据；<script type="math/tex">\# S_v</script>表示，集合S中，属性A取值为$v$的个数；<script type="math/tex">\# S</script>表示集合S中观测的个数。</p>
+
+<h4 id="section-4">3. 简单的例子</h4>
+<hr />
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">序号</th>
+      <th style="text-align: center">age</th>
+      <th style="text-align: center">income</th>
+      <th style="text-align: center">buy_iphone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">senior</td>
+      <td style="text-align: center">high</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">senior</td>
+      <td style="text-align: center">low</td>
+      <td style="text-align: center">no</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">youth</td>
+      <td style="text-align: center">high</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">youth</td>
+      <td style="text-align: center">low</td>
+      <td style="text-align: center">no</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">senior</td>
+      <td style="text-align: center">high</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">youth</td>
+      <td style="text-align: center">high</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">senior</td>
+      <td style="text-align: center">high</td>
+      <td style="text-align: center">no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>考虑上面这个问题，我们来计算一下各个属性的信息增益。</p>
+
+<p>首先，我们可以看到，这个数据集S最终分类buy_iphone有两种取值：$yes,no$。则数据集S的熵值为：</p>
+
+<script type="math/tex; mode=display"> H(S) = -\frac{4}{7} \log_2{\frac{4}{7} } - \frac{3}{7} \log_2{\frac{3}{7} }  \approx 0.985</script>
+
+<p>若按照age分类，age有两个属性：$senior, youth$，分别有4个和3个。age = senior时，yes有2个，no有2个则有：</p>
+
+<script type="math/tex; mode=display"> H_{age}(S_{senior}) = -\frac{2}{4} \log_2{\frac{2}{4}} - \frac{2}{4} \log_2{\frac{2}{4}} \approx 1 </script>
+
+<script type="math/tex; mode=display"> H_{age}(S_{youth}) = -\frac{2}{3} \log_2 {\frac{2}{3}} - \frac{1}{3} \log_2 {\frac{1}{3}} \approx 0.918 </script>
+
+<p>则有：</p>
+
+<script type="math/tex; mode=display"> H_{age}(S) = \frac{4}{7} \times 1 + \frac{3}{7} \times 0.918 = 0.965 </script>
+
+<p>则age属性的信息增益为：</p>
+
+<script type="math/tex; mode=display"> H(S) - H_{age}(S) = 0.985 - 0.965 = 0.020 </script>
+
+<p>那么属性income的信息增益怎么去计算，可以动手试试。</p>
+
+<h3 id="id3">三、ID3算法的伪代码</h3>
+<hr />
+
+<h5 id="section-5">定义：</h5>
+<ul>
+  <li>data：为训练样本集</li>
+  <li>label：为目标属性 （比如例子中的属性buy_iphone）</li>
+  <li>attrs：出目标属性外，供算法学习测试使用的其它属性 （比如例子中的age和income属性）</li>
+</ul>
+
+<h5 id="section-6">伪代码：</h5>
+<p>ID3(data, label, attrs)：</p>
+
+<ol>
+  <li>创建决策树的Root节点；</li>
+  <li>若lable中取值单一，则返回 <code>label=label</code> 的单节点树；</li>
+  <li>若attrs为空，则返回 <code>label=（data中取值最多的那个label）</code> 的单节点树；</li>
+  <li>否则：
+    <ol>
+      <li>选取attrs中分类能力最好的属性作为Root的决策属性，记为A；</li>
+      <li>对A的每一个可能取值vi：
+        <ol>
+          <li>在Root添加一个分支对应 <code>A = vi </code>；</li>
+          <li>data_vi = data中 <code>A = vi</code> 的子集，label_vi 表示 data_vi 所对应的目标属性取值；</li>
+          <li>若 data_vi 为空集：
+            <ol>
+              <li>在新分支下加一个叶子节点，节点 <code>label =（data中取值最多的那个label）</code> ;</li>
+              <li>否则，加一个子树：ID3(data_vi, label_vi, attrs);</li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+  <li>结束</li>
+  <li>返回Root</li>
+</ol>
+
+<h3 id="r">四、R语言实现</h3>
+<hr />
+
+<p>见<a href="http://jackycode.github.io/datascience">我的项目</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[打折的Apps]]></title>
@@ -3185,156 +3360,6 @@
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>学习这么多之后，我们就可以使用R做点小事情了。但是这还没有涉及到R语言自身的东西，毕竟上面的这些能力哪个编程语言没有。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[记录：Octopress配置修改之旅]]></title>
-    <link href="http://jackycode.github.io/blog/2014/02/26/record2/"/>
-    <updated>2014-02-26T15:40:39+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/02/26/record2</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical3.jpg" alt="aritical 3" /></p>
-
-<!-- more -->
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>花了两天的时间对主题进行了修改，由于对Web的东西了解的不多，查资料找东西修改代码着实累了一把(丫的，这些代码可读性很强，比起R，Python神马的可是容易学的多。只是要看懂框架还真是需要大大的一番功夫，而且怎么修改CSS做效果，作为门外汉的我是真心欲哭无泪啊)。</p>
-
-<p>本来想把网页做得美观大方简洁，高大上吧反正。最终出来这么个效果，虽说离高大上远了点，但我也就算是满意了，起码它是自己独有的，也算是独一无二了。</p>
-
-<hr />
-
-<p>在修改配置的过程中发现了一些东西，在这里做个小记录。</p>
-
-<h4 id="section">1. 安装第三方主题的结果</h4>
-
-<p>由于想偷懒，所以一开始就想直接使用现有的第三方主题，安装的主题多了之后，发现一个很严重的问题。那就是当我对一些配置进行修改后，发现网页根本没有作出反应。最终我在网页审查元素时发现，我做的很多修改都被其它设置覆盖掉了。很多主题同时安装会导致出现越来越多的配置文件，最终配置混乱难以修改。但是我只是遇到字体啊，颜色啊一类小的问题，大的问题倒是没有遇到。</p>
-
-<p>有了这个教训，我就将所有的内容重新部署之后，使用默认主题进行修改，这样的好处是，没有那么多杂七杂八的配置文件，找个什么东西也比较方便。</p>
-
-<h4 id="section-1">2. 统一文章的样式</h4>
-
-<p>之前发过两篇博文，第一篇很短，第二篇很长。直接发上去的结果就是列表页面太长，看起来很难受。所以就决定采用<code>read on</code>的方法，在文中加了<code>&lt;!-- more --&gt;</code>之后的确或多或少解决了这个问题。</p>
-
-<p>但是不同的文章无法控制其样式统一，保持好的视觉效果。后来在<a href="http://beyondvincent.com/">破船之家</a>网站和<a href="http://www.uiweek.com/">UIWeek</a>杂志上得到了启发；最终决定将博客的<strong>Header</strong>设定成蓝色渐变，每一篇日志都以蓝色图片的形式出现在列表，更多的内容就放到博文内部。这样一来就能够保证样式统一，而且看起来比较简洁，换个专业点的话就是学习成本低（呵呵）。</p>
-
-<h4 id="section-2">3. 隐藏侧边栏</h4>
-
-<p>对于我这种有洁癖的人来说，大部分情况下侧边栏不存在比较好(难得看到一个侧边栏存在还好看简洁的网站)，所以打一开始就是要结束它的。要想做到这个效果，需要修改<code>_config.yml</code>文件：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class=""><span class="line"># remove the sidebar
-</span><span class="line">default_asides: []
-</span><span class="line">sidebar: collapse</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>即将<code>default_asides</code>里面的东西全删掉，然后添加<code>sidebar: collapse</code>就可以了。</p>
-
-<h4 id="section-3">4. 添加多说评论</h4>
-
-<p>首先去<a href="http://duoshuo.com/">多说</a>注册帐号，然后多说会给你一段代码，如下：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="c">&lt;!-- Duoshuo Comment BEGIN --&gt;</span>
-</span><span class="line"><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;ds-thread&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
-</span><span class="line"><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
-</span><span class="line">  <span class="kd">var</span> <span class="nx">duoshuoQuery</span> <span class="o">=</span> <span class="p">{</span><span class="nx">short_name</span><span class="o">:</span><span class="s2">&quot;yourname&quot;</span><span class="p">};</span>
-</span><span class="line">  <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class="line">        <span class="kd">var</span> <span class="nx">ds</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
-</span><span class="line">	    <span class="nx">ds</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;text/javascript&#39;</span><span class="p">;</span><span class="nx">ds</span><span class="p">.</span><span class="nx">async</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class="line">		<span class="nx">ds</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">&#39;http://static.duoshuo.com/embed.js&#39;</span><span class="p">;</span>
-</span><span class="line">	    <span class="nx">ds</span><span class="p">.</span><span class="nx">charset</span> <span class="o">=</span> <span class="s1">&#39;UTF-8&#39;</span><span class="p">;</span>
-</span><span class="line">	    <span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-</span><span class="line">	     <span class="o">||</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]).</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">ds</span><span class="p">);</span>
-</span><span class="line">  <span class="p">})();</span>
-</span><span class="line"><span class="nt">&lt;/script&gt;</span>
-</span><span class="line"><span class="c">&lt;!-- Duoshuo Comment END --&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>你获得的代码跟这段唯一的区别就在于short_name不同。然后：</p>
-
-<h6 id="a-configyml">a. 在<code>_config.yml</code>文件中添加：</h6>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"># duoshuo comments
-</span><span class="line">duoshuo_comments: true
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h6 id="b-sourcelayoutsposthtml">b. 在<code>source/_layouts/post.html</code>中添加多说的模块：</h6>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line">
-</span><span class="line">  <span class="nt">&lt;section&gt;</span>
-</span><span class="line">		<span class="nt">&lt;h1&gt;</span>Comments<span class="nt">&lt;/h1&gt;</span>
-</span><span class="line">		<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;comments&quot;</span> <span class="na">aria-live=</span><span class="s">&quot;polite&quot;</span><span class="nt">&gt;</span>Included file 'post/abc.html' not found in _includes directory<span class="nt">&lt;/div&gt;</span>
-</span><span class="line">  <span class="nt">&lt;/section&gt;</span>
-</span><span class="line">
-</span><span class="line">
-</span><span class="line"><span class="c">&lt;!-- 其中`abc.html`随便你起什么名字，个人建议为`duoshuo.html`. --&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h6 id="c-sourceincludespostduoshuohtmlok">c. 创建<code>source/_includes/post/duoshuo.html</code>，并把多说给你的代码放进去就OK了。</h6>
-
-<h6 id="d-">d. 发布到博客上</h6>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line">rake generate
-</span><span class="line">git add .
-</span><span class="line">git commit -m &#39;add duoshuo comment&#39;
-</span><span class="line">git push origin source
-</span><span class="line">rake deploy
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h6 id="e-">e. 打完收工</h6>
-
-<h4 id="section-4">5. 修改样式</h4>
-<p>对于样式的修改，需要学习CSS。以前虽然在<a href="http://www.codecademy.com/">Codecademy</a>上看过一点，但是从没有自己真正用过，所以也还算是初学。我对样式的修改大致就是将<strong>Header</strong>，<strong>Navigation</strong>以及<strong>Artical</strong>这些部分分开来，对不同的部分使用了一些特效。有些代码是在网上搜到后自己稍作了修改，有些是原创，有兴趣可以直接到我的GitHub网站上去看，不要告诉我找不到它在哪哦。</p>
-
-<hr />
-
-<h3 id="section-5">总结</h3>
-<p>花了两天修改，发现其实干的事情并不很多。仔细想来大部分修改的时间都在调整不同的系数，以及在网上看材料。这两天学到的东西很多，也让我发现很多很好玩的东西，比如Web的框架，特效，还有很多很好很美的设计，大爱！</p>
-
-<h4 id="section-6">参考</h4>
-<ol>
-  <li><a href="http://beyondvincent.com/">破船之家</a></li>
-  <li><a href="http://www.uiweek.com/">UIWeek</a></li>
-  <li><a href="http://octopress.org/">Octopress官网</a></li>
-  <li><a href="http://shanewfx.github.io/blog/2012/08/13/improve-blog-theme/">Octopress主题改造</a></li>
-  <li><a href="http://www.jcodecraeer.com/a/cssjiqiaoyuguifan/2012/0628/289.html">css实现简约的纸张卷角效果</a></li>
-  <li><a href="http://www.cnblogs.com/oec2003/archive/2013/05/31/3109577.html">Octopress博客设置</a></li>
-  <li><a href="https://www.google.com.hk/search?q=Octopress%E4%B8%BB%E9%A2%98%E6%94%B9%E9%80%A0&amp;oq=Octopress%E4%B8%BB%E9%A2%98%E6%94%B9%E9%80%A0&amp;aqs=chrome..69i57&amp;sourceid=chrome&amp;espv=210&amp;es_sm=119&amp;ie=UTF-8">。。。</a></li>
-</ol>
 
 ]]></content>
   </entry>

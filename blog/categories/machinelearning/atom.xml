@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MachineLearning | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-11T19:56:40+08:00</updated>
+  <updated>2014-04-14T16:26:47+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,181 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习8: 决策树之ID3]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/14/id3/"/>
+    <updated>2014-04-14T16:02:45+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/14/id3</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical23.jpg" alt="artical 23" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>ID3算法的核心问题就在于：选取在决策树的每个节点处要测试的属性。那么如何去选择呢？当然，我们要选取<strong>分类能力最好的属性</strong>，那么怎么去确定哪个属性是分类能力最好的呢？ID3算法中，使用<strong>信息增益</strong>作为评判标准。在看信息增益之前，我们先看看这个决策树的构造过程：</p>
+
+<h3 id="section">一、构造过程</h3>
+<hr />
+
+<ol>
+  <li>选取<strong>分类能力最好的属性</strong>作为决策树根部节点的测试；</li>
+  <li>为根节点属性的每一个可能值产生一个分支；</li>
+  <li>以各个分支节点为根节点，重复上述过程。</li>
+</ol>
+
+<h3 id="section-1">二、信息增益</h3>
+<hr />
+
+<h4 id="section-2">1. 熵</h4>
+<hr />
+
+<p>在看信息增益之前，首先需要介绍一个概念，那就是<strong>香农熵</strong>，简称为<strong>熵</strong>。相信学过物理的应该大都听过这个名词，在热力学中不就有个熵增原理嘛。其实，<strong>熵是信息论中广泛使用的一个度量标准，刻画了任意样例集合的纯度。</strong></p>
+
+<p><strong>熵是信息的期望值</strong>，所以可以用熵来刻画一个数据集的纯度。若用$x_i,i=1,2,\dots,n$来表示数据集所包含的属性，那么这个数据集的熵为：</p>
+
+<script type="math/tex; mode=display"> H = - \sum_{i=1}^{n}{p(x_i)l(x_i)} </script>
+
+<p>其中，$p(x_i)$表示选取$x_i$作为分类的最终类别的概率；$l(x_i)$为$x_i$的信息，定义为：<script type="math/tex"> l(x_i) = - \log_2p(x_i)</script>。</p>
+
+<h4 id="section-3">2. 信息增益</h4>
+<hr />
+
+<p>有了熵之后就可以刻画一个数据集的纯度，也就是熵值。那么什么信息增益呢？</p>
+
+<p>简单来说，<strong>一个属性的信息增益就是：使用这个属性分割样例集合而导致的熵值降低</strong>。那么要选取分类能力最好的属性，就是要选取使得信息增益最大的那个属性。</p>
+
+<p>一个属性A对样例集合S的信息增益定义为：</p>
+
+<script type="math/tex; mode=display"> Gain(S, A) = H(S) - \sum_{v \in A} { \frac{\# S_v}{\# S} H(S_v) } </script>
+
+<p>其中，<script type="math/tex">S_v</script>表示集合S中，属性A取值为$v$的那部分数据；<script type="math/tex">\# S_v</script>表示，集合S中，属性A取值为$v$的个数；<script type="math/tex">\# S</script>表示集合S中观测的个数。</p>
+
+<h4 id="section-4">3. 简单的例子</h4>
+<hr />
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">序号</th>
+      <th style="text-align: center">age</th>
+      <th style="text-align: center">income</th>
+      <th style="text-align: center">buy_iphone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">senior</td>
+      <td style="text-align: center">high</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">senior</td>
+      <td style="text-align: center">low</td>
+      <td style="text-align: center">no</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">youth</td>
+      <td style="text-align: center">high</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">youth</td>
+      <td style="text-align: center">low</td>
+      <td style="text-align: center">no</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">senior</td>
+      <td style="text-align: center">high</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">youth</td>
+      <td style="text-align: center">high</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">senior</td>
+      <td style="text-align: center">high</td>
+      <td style="text-align: center">no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>考虑上面这个问题，我们来计算一下各个属性的信息增益。</p>
+
+<p>首先，我们可以看到，这个数据集S最终分类buy_iphone有两种取值：$yes,no$。则数据集S的熵值为：</p>
+
+<script type="math/tex; mode=display"> H(S) = -\frac{4}{7} \log_2{\frac{4}{7} } - \frac{3}{7} \log_2{\frac{3}{7} }  \approx 0.985</script>
+
+<p>若按照age分类，age有两个属性：$senior, youth$，分别有4个和3个。age = senior时，yes有2个，no有2个则有：</p>
+
+<script type="math/tex; mode=display"> H_{age}(S_{senior}) = -\frac{2}{4} \log_2{\frac{2}{4}} - \frac{2}{4} \log_2{\frac{2}{4}} \approx 1 </script>
+
+<script type="math/tex; mode=display"> H_{age}(S_{youth}) = -\frac{2}{3} \log_2 {\frac{2}{3}} - \frac{1}{3} \log_2 {\frac{1}{3}} \approx 0.918 </script>
+
+<p>则有：</p>
+
+<script type="math/tex; mode=display"> H_{age}(S) = \frac{4}{7} \times 1 + \frac{3}{7} \times 0.918 = 0.965 </script>
+
+<p>则age属性的信息增益为：</p>
+
+<script type="math/tex; mode=display"> H(S) - H_{age}(S) = 0.985 - 0.965 = 0.020 </script>
+
+<p>那么属性income的信息增益怎么去计算，可以动手试试。</p>
+
+<h3 id="id3">三、ID3算法的伪代码</h3>
+<hr />
+
+<h5 id="section-5">定义：</h5>
+<ul>
+  <li>data：为训练样本集</li>
+  <li>label：为目标属性 （比如例子中的属性buy_iphone）</li>
+  <li>attrs：出目标属性外，供算法学习测试使用的其它属性 （比如例子中的age和income属性）</li>
+</ul>
+
+<h5 id="section-6">伪代码：</h5>
+<p>ID3(data, label, attrs)：</p>
+
+<ol>
+  <li>创建决策树的Root节点；</li>
+  <li>若lable中取值单一，则返回 <code>label=label</code> 的单节点树；</li>
+  <li>若attrs为空，则返回 <code>label=（data中取值最多的那个label）</code> 的单节点树；</li>
+  <li>否则：
+    <ol>
+      <li>选取attrs中分类能力最好的属性作为Root的决策属性，记为A；</li>
+      <li>对A的每一个可能取值vi：
+        <ol>
+          <li>在Root添加一个分支对应 <code>A = vi </code>；</li>
+          <li>data_vi = data中 <code>A = vi</code> 的子集，label_vi 表示 data_vi 所对应的目标属性取值；</li>
+          <li>若 data_vi 为空集：
+            <ol>
+              <li>在新分支下加一个叶子节点，节点 <code>label =（data中取值最多的那个label）</code> ;</li>
+              <li>否则，加一个子树：ID3(data_vi, label_vi, attrs);</li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+  <li>结束</li>
+  <li>返回Root</li>
+</ol>
+
+<h3 id="r">四、R语言实现</h3>
+<hr />
+
+<p>见<a href="/datascience">我的项目</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习7: 决策树]]></title>
@@ -477,68 +652,6 @@ plot(y_res ~ y_pred)
 <hr />
 
 <p>到这里，除了变量选择问题，线性回归的内容基本上就已经梳理了一遍。变量选择问题，方法简单的非常简单，难的非常难（像lasso），所以暂时还不想写这些内容。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习3：线性回归2]]></title>
-    <link href="http://jackycode.github.io/blog/2014/04/01/linear-regression2/"/>
-    <updated>2014-04-01T16:56:57+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/04/01/linear-regression2</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical17.jpg" alt="artical 17" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>上一篇简单介绍了线性回归中系数估计的问题，给出了一元以及多元情况下，系数估计值的表达式！此外，还给出了在R语言中如何使用自带的函数计算系数估计值。</p>
-
-<p>这一篇，打算介绍一下线性回归中的一些显著性检验问题。这个就是完全属于统计学中的理论内容，不过依旧有着很强的实际意义。简单来说，显著性检验不能通过，说明你的线性回归的效果不好，可能你就需要选择其它的方式去处理你手头的数据，而不是选择线性回归了。</p>
-
-<hr />
-
-<h4 id="section">一、回归方程的显著性检验</h4>
-
-<hr />
-
-<p>考虑回归方程是否显著，意思就是查看自变量<script type="math/tex">x_1,x_2,\dots,x_p</script>从整体上是否对因变量<script type="math/tex">y</script>有显著的影响。则，我们可以考虑这样的假设检验问题：</p>
-
-<script type="math/tex; mode=display"> H_0:\beta_0=\beta_1=\dots=\beta_p=0;~H_1:\beta_0,\beta_1,\dots,\beta_p\text{不全为0}</script>
-
-<p>显然，如果原假设成立的话，自变量对因变量的影响不大，也就是用线性回归模型来解释就显得不合适了。</p>
-
-<p>在正态假设下，原假设<script type="math/tex">H_0</script>成立时，有<script type="math/tex">F</script>检验统计量：</p>
-
-<script type="math/tex; mode=display"> F = \frac{SSR/p}{SSE/(n-p-1)} \sim F(p,n-p-1) </script>
-
-<p>其中<script type="math/tex">SSR=\sum_{i=1}^{n}{(\hat{y}_i-\overline{y})^2}</script>为回归平方和，<script type="math/tex">SSE=\sum_{i=1}^{n}{(y_i-\hat{y}_i)^2}</script>为残差平方和。对于给定的显著性水平$\alpha$，拒绝域为：<script type="math/tex">\{F \geqslant F_{1-\alpha}(p,n-p-1)\}</script>。</p>
-
-<hr />
-
-<h4 id="section-1">二、回归系数的显著性检验</h4>
-
-<hr />
-
-<p>显然，线性回归中很有可能就存在某个自变量对因变量的影响很小，那么它的回归系数就会接近0.因此有如下的假设检验问题：</p>
-
-<script type="math/tex; mode=display">H_{0j}:\beta_j = 0; ~ H_{1j}:\beta_j \neq 0, ~ j=0,1,\dots,p</script>
-
-<p>在原假设成立的条件下，$t$统计量有：</p>
-
-<script type="math/tex; mode=display">t_j = \frac{\hat{\beta}_j}{\sqrt{c_{jj}}\hat{\sigma}} \sim t(n-p-1)</script>
-
-<p>其中，<script type="math/tex">(c_{ij})=(X^TX)^{-1},i,j=0,1,\dots,p;~\hat{\sigma}=\sqrt{\frac{1}{n-p-1}\sum_{i=1}^{n}{(y_i-\hat{y}_i)^2}}</script>。对于给定的显著性水平$\alpha$，拒绝域为：<script type="math/tex">\{\|t_j\| \geqslant t_{\alpha/2}\}</script>。</p>
-
-<hr />
-
-<h4 id="r">三、R语言中的实现</h4>
-
-<hr />
-
-<p>在上一篇中可以看到，<code>lm</code>函数加上<code>summary</code>函数会有很多的输出内容。其实，那些输出中就含有上述的假设检验的结果，很容易就可以找到，这里不做阐述！</p>
-
-<p>我自己也写了一个关于线性回归的R语言函数，托管在<a href="https://github.com/JackyCode/Data_Science/tree/master/Linear_Regression">我的github</a>上面，函数内部对于线性回归的过程大都涉及到了，有兴趣可以看看。</p>
 ]]></content>
   </entry>
   
