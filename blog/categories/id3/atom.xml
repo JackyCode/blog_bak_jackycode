@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ID3 | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/id3/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-14T16:26:47+08:00</updated>
+  <updated>2014-04-18T15:25:18+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -25,7 +25,7 @@
 
 <hr />
 
-<p>ID3算法的核心问题就在于：选取在决策树的每个节点处要测试的属性。那么如何去选择呢？当然，我们要选取<strong>分类能力最好的属性</strong>，那么怎么去确定哪个属性是分类能力最好的呢？ID3算法中，使用<strong>信息增益</strong>作为评判标准。在看信息增益之前，我们先看看这个决策树的构造过程：</p>
+<p>ID3算法的核心问题就在于：如何选取在决策树的每个节点处要测试的属性。那么如何去选择呢？当然，我们要选取<strong>分类能力最好的属性</strong>，那么怎么去确定哪个属性是分类能力最好的呢？ID3算法中，使用<strong>信息增益</strong>作为评判标准。在看信息增益之前，我们先看看这个决策树的构造过程：</p>
 
 <h3 id="section">一、构造过程</h3>
 <hr />
