@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-18T15:25:18+08:00</updated>
+  <updated>2014-04-19T14:24:51+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,115 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习9: 聚类算法之KMeans]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/19/kmeans/"/>
+    <updated>2014-04-19T13:01:02+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/19/kmeans</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical24.jpg" alt="artical 24" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h2 id="the-k-means-algorithm">The k-means algorithm</h2>
+<hr />
+
+<p>前面写了很多监督学习的东西，除了回归就是分类，今儿有点想换换口味，写写无监督学习的算法。k-means算法是一种聚类算法，聚类就是无监督学习里面的内容。那么先来说说聚类：</p>
+
+<h3 id="section">一、聚类简介</h3>
+<hr />
+
+<ol>
+  <li>
+    <p>聚类是一种无监督学习方法，它主要就是将相似的对象归并到一个类别中。</p>
+  </li>
+  <li>
+    <p>聚类分析的目的是把分类对象按照一定的规则，分成若干个类。这些类并不是事先给定的，而是在处理数据时，根据数据的特征确定的。因而，在处理之前无需对类的数目、结构等等作出假定(理论如此，实际应用时并不完全这样，以后讲聚类分析时再具体说)。</p>
+  </li>
+  <li>
+    <p>在同一类别中，对象具有某种意义下的相似性；不同的类别中，对象具有某种意义下的不相似。</p>
+  </li>
+  <li>
+    <p><strong>聚类与分类的最大不同</strong>：分类的目标事先已知，而聚类未知。正因为聚类产生的结构与分类相同，只是类别没有预先定义，所以聚类也被称为“无监督分类”。</p>
+  </li>
+</ol>
+
+<h3 id="k-means">二、k-means法</h3>
+<hr />
+
+<p>k-means法是由MacQueen提出并命名的一种聚类算法。其使用聚类中的均值进行聚类划分，这样说不大好理解，可以先看一下算法的基本步骤：</p>
+
+<ol>
+  <li>从n个数据对象中任意取出k个样品对象作为初始聚类点（或者将所有数据分成k份，计算每一份中的重心（均值）作为初始聚类点）；</li>
+  <li>对所有样品对象逐个归类，将每一个对象归入距离他最近的那个类（距离一般使用欧式距离），并将该类的凝聚点更新为这个类当前的均值；</li>
+  <li>重复步骤2，直至所有对象都不能再分配为止。</li>
+</ol>
+
+<h3 id="r">三、R语言实现</h3>
+<hr />
+
+<h4 id="section-1">1. 自定义函数</h4>
+<hr />
+
+<p>自定义一个函数<code>se_kmeans</code>，使用这个函数可以通过输入需要聚类的数据集以及类别数目k，即可得到每一个样品的类别以及各个类别的中心。该函数使用欧式距离作为相似性的度量（当然还有很多其它方式，之后的聚类分析中会讲到），具体的程序可以在<a href="http://jackycode.github.io/datascience">我的项目</a>中找到，也可以直接到我的<a href="https://github.com/JackyCode/Data_Science">github</a>中查看源代码。这边给出测试代码以及结果：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x1 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+</span><span class="line">x2 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+</span><span class="line">x <span class="o">&lt;-</span> rbind<span class="p">(</span>x1<span class="p">,</span> x2<span class="p">)</span>
+</span><span class="line">
+</span><span class="line">clusters <span class="o">&lt;-</span> se_kmeans<span class="p">(</span>x<span class="p">,</span> <span class="m">2</span><span class="p">)</span>
+</span><span class="line">clusters
+</span><span class="line">plot<span class="p">(</span>x<span class="p">,</span> col<span class="o">=</span>clusters<span class="o">$</span>cluster<span class="p">,</span> pch<span class="o">=</span>as.character<span class="p">(</span>clusters<span class="o">$</span>cluster<span class="p">),</span> cex<span class="o">=</span><span class="m">0.5</span><span class="p">)</span>
+</span><span class="line">points<span class="p">(</span>clusters<span class="o">$</span>center<span class="p">,</span> col<span class="o">=</span><span class="s">&#39;green&#39;</span><span class="p">,</span> pch<span class="o">=</span><span class="s">&#39;o&#39;</span><span class="p">,</span> cex <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>得到如下的一张图</p>
+
+<p><img src="\images\a24\kmeans1.jpg" alt="kmeans1" /></p>
+
+<p>可以看到，分类效果是很好的。</p>
+
+<h4 id="kmeans">2. 使用<code>kmeans</code>函数</h4>
+<hr />
+
+<p>可以使用<code>stats</code>包中的<code>kmeans</code>函数来实现，示例如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x1 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+</span><span class="line">x2 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+</span><span class="line">x <span class="o">&lt;-</span> rbind<span class="p">(</span>x1<span class="p">,</span> x2<span class="p">)</span>
+</span><span class="line">
+</span><span class="line">clusters <span class="o">&lt;-</span> kmeans<span class="p">(</span>x<span class="p">,</span> <span class="m">2</span><span class="p">)</span>
+</span><span class="line">clusters
+</span><span class="line">plot<span class="p">(</span>x<span class="p">,</span> col<span class="o">=</span>clusters<span class="o">$</span>cluster<span class="p">,</span> pch<span class="o">=</span>as.character<span class="p">(</span>clusters<span class="o">$</span>cluster<span class="p">),</span> cex<span class="o">=</span><span class="m">0.5</span><span class="p">)</span>
+</span><span class="line">points<span class="p">(</span>clusters<span class="o">$</span>centers<span class="p">,</span> col<span class="o">=</span><span class="s">&#39;green&#39;</span><span class="p">,</span> pch<span class="o">=</span><span class="s">&#39;o&#39;</span><span class="p">,</span> cex <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>得到这样一张图</p>
+
+<p><img src="\images\a24\kmeans2.jpg" alt="kmeans2" /></p>
+
+<p>从图中可以看出，kmeans的分类效果还是蛮不错的，当然我们可以计算一下误判，不过这显然是很小的。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习8: 决策树之ID3]]></title>
@@ -3180,186 +3289,6 @@
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 <p>#### 三. 小节	 
 到此为止，我们就可以在R语言中创建录入一些数据，并对数据进行一些简单的操作。利用上一节中所讲的控制语句，我们就可以编写R语言的小程序了。试试用R语言解决一些你在学习中遇到的小问题吧。下一次我将讲讲如何从文件中导入数据，以及一些其他的处理。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[R语言记录1 ：基础]]></title>
-    <link href="http://jackycode.github.io/blog/2014/03/06/rseries1/"/>
-    <updated>2014-03-06T15:27:28+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/03/06/rseries1</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical4.jpg" alt="aritical 4" /></p>
-
-<!-- more -->
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<h3 id="section">一. 配置与帮助</h3>
-
-<p>很多时候我们希望软件可以根据我们的需要输出结果，比如我想将所有的结果小数都保留三位，那么就需要自己去更改设置，这时候就需要使用函数：<code>options(...)</code>。这个函数可以用来<strong><em>显示或设置当前的选项</em></strong>。运行<code>options()</code>，可以查看选项当前的设置，<code>help(options)</code>可以显示可用选项的说明。如果想要单独查看某一个设置，则需要使用函数<code>getOption(x, default=NULL)</code>。</p>
-
-<p>可以运行这些代码以查看：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>config_set.R</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">options<span class="p">()</span>
-</span><span class="line">getOption<span class="p">(</span><span class="s">&quot;digits&quot;</span><span class="p">)</span>
-</span><span class="line">options<span class="p">(</span>digits<span class="o">=</span><span class="m">3</span><span class="p">)</span>
-</span><span class="line">getOption<span class="p">(</span><span class="s">&quot;digits&quot;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>在学习一个软件之前，最重要的是知道在哪里才能获取帮助。R语言提供了强大的帮助系统，提供了已安装包中所有函数的细节、参考文献以及使用示例。以和函数<code>sum()</code>为例，你可以直接输入<code>help(sum)或?sum</code>查看函数<code>sum</code>的帮助，也可以输入<code>help.search(sum)或??sum</code>在本地以关键词<code>sum</code>进行搜索。你甚至可以直接输入<code>sum</code>得到该函数的源代码细节（这对于学习编程来说实在是太棒了）。</p>
-
-<p>试试这些：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>help_use.R</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">help.start<span class="p">()</span> <span class="c1"># 打开帮助文档首页</span>
-</span><span class="line"><span class="o">?</span>sum
-</span><span class="line"><span class="o">??</span>sum
-</span><span class="line">sum<span class="p">()</span>
-</span><span class="line">sum
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h3 id="section-1">二. 控制语句</h3>
-
-<h4 id="section-2">1. 循环语句</h4>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="kr">for</span> <span class="p">(</span>var <span class="kr">in</span> seq<span class="p">)</span> expr
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>即变量<em>var</em>从<em>seq</em>中依次取值，计算<em>expr</em>直到结束。例如：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> c<span class="p">()</span>
-</span><span class="line"><span class="kr">for</span> <span class="p">(</span>i <span class="kr">in</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">))</span> x<span class="p">[</span>i<span class="p">]</span><span class="o">&lt;-</span>i<span class="o">*</span>i
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-<p>当然，R语言也支持<code>while</code>和<code>repeat</code>这类C语言风格的循环：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1"># while loop</span>
-</span><span class="line">i <span class="o">&lt;-</span> <span class="m">1</span>
-</span><span class="line"><span class="kr">while</span> <span class="p">(</span>i <span class="o">&lt;=</span> <span class="m">3</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	x<span class="p">[</span>i<span class="p">]</span> <span class="o">&lt;-</span> i<span class="o">*</span>i
-</span><span class="line">	i <span class="o">&lt;-</span> i<span class="m">+1</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="c1"># another while loop</span>
-</span><span class="line">i <span class="o">&lt;-</span> <span class="m">1</span>
-</span><span class="line"><span class="kr">while</span> <span class="p">(</span><span class="kc">TRUE</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">    x<span class="p">[</span>i<span class="p">]</span> <span class="o">&lt;-</span> i<span class="o">*</span>i
-</span><span class="line">    i <span class="o">&lt;-</span> i<span class="m">+1</span>
-</span><span class="line">    <span class="kr">if</span> <span class="p">(</span>i <span class="o">&gt;</span> <span class="m">3</span><span class="p">)</span> <span class="kr">break</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="c1"># repeat loop</span>
-</span><span class="line">i <span class="o">&lt;-</span> <span class="m">1</span>
-</span><span class="line"><span class="kr">repeat</span> <span class="p">{</span>
-</span><span class="line">    x<span class="p">[</span>i<span class="p">]</span> <span class="o">&lt;-</span> i<span class="o">*</span>i
-</span><span class="line">    i <span class="o">&lt;-</span> i<span class="m">+1</span>
-</span><span class="line">    <span class="kr">if</span> <span class="p">(</span>i <span class="o">&gt;</span> <span class="m">3</span><span class="p">)</span> <span class="kr">break</span>
-</span><span class="line"><span class="p">}</span>
-</span><span class="line"><span class="o">==========================</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h5 id="section-3">非向量集合上的循环</h5>
-<p>R语言并不直接支持在非向量结合上做循环，但是我们可以用函数<code>apply()</code>,<code>sapply()</code>,<code>lapply()</code>以及<code>tapply</code>来避开循环得到想要的结果。</p>
-
-<p>比如上面的例子，对集合{1, 2, 3}中每一个元素求平方得到新的集合：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">i <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">)</span>
-</span><span class="line">Fun <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	y <span class="o">&lt;-</span> x<span class="o">*</span>x
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">x <span class="o">&lt;-</span> lapply<span class="p">(</span>i<span class="p">,</span> Fun<span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>使用<code>apply()</code>函数，还可以简单地对一个矩阵按行(按列)求和(任意函数)。</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">a <span class="o">&lt;-</span> matrix<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">12</span><span class="p">,</span> nrow<span class="o">=</span><span class="m">4</span><span class="p">)</span>
-</span><span class="line">b <span class="o">&lt;-</span> apply<span class="p">(</span>a<span class="p">,</span> <span class="m">1</span><span class="p">,</span> sum<span class="p">)</span>
-</span><span class="line">c <span class="o">&lt;-</span> apply<span class="p">(</span>a<span class="p">,</span> <span class="m">2</span><span class="p">,</span> sum<span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h4 id="section-4">2. 条件语句</h4>
-
-<p>跟C语言类似：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">r <span class="o">&lt;-</span> <span class="m">3</span>
-</span><span class="line"><span class="kr">if</span> <span class="p">(</span>r <span class="o">==</span> <span class="m">4</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">    x <span class="o">&lt;-</span> <span class="m">1</span>
-</span><span class="line"><span class="p">}</span> <span class="kr">else</span> <span class="p">{</span>
-</span><span class="line">    x <span class="o">&lt;-</span> <span class="m">3</span>
-</span><span class="line"><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h4 id="section-5">3. 自定义函数</h4>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="kr">function</span> <span class="p">(</span><span class="o">&lt;</span>formal arguments<span class="o">&gt;</span><span class="p">)</span> body
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>使用上面的例子：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>controlSentence_use</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">Fun <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">)</span> <span class="p">{</span>
-</span><span class="line">	y <span class="o">&lt;-</span> x<span class="o">*</span>x
-</span><span class="line"><span class="p">}</span>
-</span><span class="line">a <span class="o">&lt;-</span> <span class="m">2</span>
-</span><span class="line">b <span class="o">&lt;-</span> Fun<span class="p">(</span>a<span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>学习这么多之后，我们就可以使用R做点小事情了。但是这还没有涉及到R语言自身的东西，毕竟上面的这些能力哪个编程语言没有。</p>
 
 ]]></content>
   </entry>

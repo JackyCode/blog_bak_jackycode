@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>数据科学之机器学习1：简介 - Jacky and MSC</title>
+  <title>数据科学之机器学习9: 聚类算法之KMeans - Jacky and MSC</title>
   <meta name="author" content="Jacky Code">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jackycode.github.io/blog/2014/03/30/data-science-an-introduction-to-machine-learning">
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/04/19/kmeans">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -99,7 +99,7 @@
   
   <header class="page-header">
     
-      <h1 class="entry-title">数据科学之机器学习1：简介</h1>
+      <h1 class="entry-title">数据科学之机器学习9: 聚类算法之KMeans</h1>
     
     
       <p class="meta">
@@ -115,73 +115,114 @@
   
 
 
-<time datetime="2014-03-30T16:39:09+08:00" pubdate data-updated="true">Mar 30<span>th</span>, 2014</time>
+<time datetime="2014-04-19T13:01:02+08:00" pubdate data-updated="true">Apr 19<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p><img src="/images/artical/artical15.jpg" alt="artical 15" />
+<div class="entry-content"><p><img src="/images/artical/artical24.jpg" alt="artical 24" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
 
 <hr />
 
-<p>上一篇“<a href="http://jackycode.github.io/blog/2014/03/27/an-introduction-to-data-science/">数据科学简介</a>”简单地说了一下数据科学是什么，以及它包罗的东西。这一篇打算简单介绍一下<strong>机器学习</strong>，并理一理机器学习中涉及的内容。</p>
-
+<h2 id="the-k-means-algorithm">The k-means algorithm</h2>
 <hr />
 
-<h4 id="section">机器学习的定义</h4>
+<p>前面写了很多监督学习的东西，除了回归就是分类，今儿有点想换换口味，写写无监督学习的算法。k-means算法是一种聚类算法，聚类就是无监督学习里面的内容。那么先来说说聚类：</p>
 
+<h3 id="section">一、聚类简介</h3>
 <hr />
 
-<p>一般来说，教科书介绍一样东西，首先会给它下一个确切的定义。不过，对于机器学习的定义，我还真不知道该怎么去下。有太多的版本，太多的述说方式，不知道用哪个好。这里就列举一些我觉得有代表性的，讲的容易懂的那些定义。对于机器学习是什么，看看这些定义，应该就能够有个大致的了解了。</p>
+<ol>
+  <li>
+    <p>聚类是一种无监督学习方法，它主要就是将相似的对象归并到一个类别中。</p>
+  </li>
+  <li>
+    <p>聚类分析的目的是把分类对象按照一定的规则，分成若干个类。这些类并不是事先给定的，而是在处理数据时，根据数据的特征确定的。因而，在处理之前无需对类的数目、结构等等作出假定(理论如此，实际应用时并不完全这样，以后讲聚类分析时再具体说)。</p>
+  </li>
+  <li>
+    <p>在同一类别中，对象具有某种意义下的相似性；不同的类别中，对象具有某种意义下的不相似。</p>
+  </li>
+  <li>
+    <p><strong>聚类与分类的最大不同</strong>：分类的目标事先已知，而聚类未知。正因为聚类产生的结构与分类相同，只是类别没有预先定义，所以聚类也被称为“无监督分类”。</p>
+  </li>
+</ol>
 
-<p>首先，在“<a href="http://www.amazon.cn/Machine-Learning-The-Art-and-Science-of-Algorithms-That-Make-Sense-of-Data-Flach-Peter/dp/1107422221/ref=tmm_pap_title_0">Machine Learning: the art and science of algorithms that make sense of data</a>”一书中，有这样一个定义：</p>
-
-<blockquote>
-  <p>Machine Learning is the systematic study of algorithms and systems that improve their knowledge or performance with experience.</p>
-</blockquote>
-
-<p>这个定义说的比较简单直白，就是说，机器学习就是研究如何通过经验(其实就是数据)去改进性能的算法(这个翻译学得不好，见谅！)。我们可以简单这样理解，机器学习就是研究这么一类算法，通过这类算法呢，系统可以从数据中获取信息来提升自己的性能。最简单的说法就是将数据转换成有用的信息。</p>
-
-<p>在“<a href="http://www.amazon.cn/Machine-Learning-The-Art-and-Science-of-Algorithms-That-Make-Sense-of-Data-Flach-Peter/dp/1107422221/ref=tmm_pap_title_0">Machine Learning: the art and science of algorithms that make sense of data</a>”书中，还有这么一句话，将机器学习的流程说的很清楚：</p>
-
-<blockquote>
-  <p>Machine learning is concerned with using the right features to build the right models that achieve the right task.</p>
-</blockquote>
-
-<p>这句话就是说，机器学习关心的就是：如何通过对特征(数据)建立模型去完成一些任务。在Andrew Ng的机器学习视频中，还列出了Tom Mitchell给出的定义，与上面的说法有些相近：</p>
-
-<blockquote>
-  <p>A computer program is said to learn from experience E with respect to some task T and some performance measure P, if its performance on T, as measured by P, improves with experience E.</p>
-</blockquote>
-
-<p><strong><em>上一篇博文里曾说，数据科学是统计、计算机科学以及专业知识的结合。而其实，机器学习就是统计与计算机科学的结合。正因如此，机器学习是数据科学的核心。</em></strong>简单来说，机器学习就是：研究让机器通过学习过去的经验，达到提高处理相同任务能力的算法。</p>
-
+<h3 id="k-means">二、k-means法</h3>
 <hr />
 
-<h4 id="section-1">机器学习的类别</h4>
+<p>k-means法是由MacQueen提出并命名的一种聚类算法。其使用聚类中的均值进行聚类划分，这样说不大好理解，可以先看一下算法的基本步骤：</p>
 
+<ol>
+  <li>从n个数据对象中任意取出k个样品对象作为初始聚类点（或者将所有数据分成k份，计算每一份中的重心（均值）作为初始聚类点）；</li>
+  <li>对所有样品对象逐个归类，将每一个对象归入距离他最近的那个类（距离一般使用欧式距离），并将该类的凝聚点更新为这个类当前的均值；</li>
+  <li>重复步骤2，直至所有对象都不能再分配为止。</li>
+</ol>
+
+<h3 id="r">三、R语言实现</h3>
 <hr />
 
-<p>机器学习大致可以分为两类：监督学习(supervised learning)和无监督学习(unsupervised learning)。</p>
-
-<p>如何区分呢？<strong>区别就在于，测试数据有没有给出确切的类别或者结果。若给出了就是监督学习，若没有则是无监督学习</strong>。</p>
-
-<p>比如说回归：其给定的测试样本中，一组自变量的值肯定对应一个确定的因变量的值；再说分类：对于给出的测试样本中的每一个数据，其都会有自己所属的类别。所以回归与分类就属于监督学习的范畴，也就是可以通过既定的数据去做预测。</p>
-
-<p>而无监督学习不同，其给出的数据不存在任何其它信息，比方说聚类，给你一批数据，没有任何信息，让你把数据分成几个类别。一般来说，这时候就需要计算数据之间的相似度(距离)，然后把距离近的归位一类。</p>
-
+<h4 id="section-1">1. 自定义函数</h4>
 <hr />
 
-<h4 id="section-2">最后</h4>
+<p>自定义一个函数<code>se_kmeans</code>，使用这个函数可以通过输入需要聚类的数据集以及类别数目k，即可得到每一个样品的类别以及各个类别的中心。该函数使用欧式距离作为相似性的度量（当然还有很多其它方式，之后的聚类分析中会讲到），具体的程序可以在<a href="/datascience">我的项目</a>中找到，也可以直接到我的<a href="https://github.com/JackyCode/Data_Science">github</a>中查看源代码。这边给出测试代码以及结果：</p>
 
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x1 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+</span><span class="line">x2 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+</span><span class="line">x <span class="o">&lt;-</span> rbind<span class="p">(</span>x1<span class="p">,</span> x2<span class="p">)</span>
+</span><span class="line">
+</span><span class="line">clusters <span class="o">&lt;-</span> se_kmeans<span class="p">(</span>x<span class="p">,</span> <span class="m">2</span><span class="p">)</span>
+</span><span class="line">clusters
+</span><span class="line">plot<span class="p">(</span>x<span class="p">,</span> col<span class="o">=</span>clusters<span class="o">$</span>cluster<span class="p">,</span> pch<span class="o">=</span>as.character<span class="p">(</span>clusters<span class="o">$</span>cluster<span class="p">),</span> cex<span class="o">=</span><span class="m">0.5</span><span class="p">)</span>
+</span><span class="line">points<span class="p">(</span>clusters<span class="o">$</span>center<span class="p">,</span> col<span class="o">=</span><span class="s">&#39;green&#39;</span><span class="p">,</span> pch<span class="o">=</span><span class="s">&#39;o&#39;</span><span class="p">,</span> cex <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>得到如下的一张图</p>
+
+<p><img src="\images\a24\kmeans1.jpg" alt="kmeans1" /></p>
+
+<p>可以看到，分类效果是很好的。</p>
+
+<h4 id="kmeans">2. 使用<code>kmeans</code>函数</h4>
 <hr />
 
-<p>到这里，基本上来说，机器学习是干什么的应该有了一些了解了。至于机器学习的分类，监督学习和无监督学习还不明白也不要紧。等弄明白了回归，分类以及聚类等等的是干什么的，自然就明白这两者之间的区别了。</p>
+<p>可以使用<code>stats</code>包中的<code>kmeans</code>函数来实现，示例如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x1 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+</span><span class="line">x2 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+</span><span class="line">x <span class="o">&lt;-</span> rbind<span class="p">(</span>x1<span class="p">,</span> x2<span class="p">)</span>
+</span><span class="line">
+</span><span class="line">clusters <span class="o">&lt;-</span> kmeans<span class="p">(</span>x<span class="p">,</span> <span class="m">2</span><span class="p">)</span>
+</span><span class="line">clusters
+</span><span class="line">plot<span class="p">(</span>x<span class="p">,</span> col<span class="o">=</span>clusters<span class="o">$</span>cluster<span class="p">,</span> pch<span class="o">=</span>as.character<span class="p">(</span>clusters<span class="o">$</span>cluster<span class="p">),</span> cex<span class="o">=</span><span class="m">0.5</span><span class="p">)</span>
+</span><span class="line">points<span class="p">(</span>clusters<span class="o">$</span>centers<span class="p">,</span> col<span class="o">=</span><span class="s">&#39;green&#39;</span><span class="p">,</span> pch<span class="o">=</span><span class="s">&#39;o&#39;</span><span class="p">,</span> cex <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>得到这样一张图</p>
+
+<p><img src="\images\a24\kmeans2.jpg" alt="kmeans2" /></p>
+
+<p>从图中可以看出，kmeans的分类效果还是蛮不错的，当然我们可以计算一下误判，不过这显然是很小的。</p>
 </div>
 
 
@@ -204,12 +245,12 @@
   
 
 
-<time datetime="2014-03-30T16:39:09+08:00" pubdate data-updated="true">Mar 30<span>th</span>, 2014</time>
+<time datetime="2014-04-19T13:01:02+08:00" pubdate data-updated="true">Apr 19<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/datascience/'>DataScience</a>, <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
+    <a class='category' href='/blog/categories/clustering/'>Clustering</a>, <a class='category' href='/blog/categories/datascience/'>DataScience</a>, <a class='category' href='/blog/categories/kmeans/'>KMeans</a>, <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
   
 </span>
 
@@ -227,14 +268,10 @@
     <ul class="pager">
       
       <li class="previous"><a class="basic-alignment left"
-        href="/blog/2014/03/27/an-introduction-to-data-science/" title="Previous Post:
-        数据科学简介">&laquo; 数据科学简介</a></li>
+        href="/blog/2014/04/14/id3/" title="Previous Post:
+        数据科学之机器学习8: 决策树之ID3">&laquo; 数据科学之机器学习8: 决策树之ID3</a></li>
       
       <li><a href="/blog/archives">Blog Archives</a></li>
-      
-      <li class="next"><a class="basic-alignment right" href="/blog/2014/03/30/machine-learning1/"
-        title="Next Post: 数据科学之机器学习2：线性回归1">数据科学之机器学习2：线性回归1
-        &raquo;</a></li>
       
     </ul>
   </footer>
