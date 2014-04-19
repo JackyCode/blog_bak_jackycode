@@ -3,7 +3,7 @@ layout: post
 title: "数据科学之机器学习7: 决策树"
 date: 2014-04-11 19:00:32 +0800
 comments: true
-categories: DataScience MachineLearning DesicionTree
+categories: DataScience MachineLearning DecisionTree
 ---
 
 ![artical 21](/images/artical/artical21.jpg)
