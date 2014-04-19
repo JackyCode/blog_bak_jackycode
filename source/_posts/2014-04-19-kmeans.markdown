@@ -1,0 +1,86 @@
+---
+layout: post
+title: "数据科学之机器学习9: 聚类算法之KMeans"
+date: 2014-04-19 13:01:02 +0800
+comments: true
+categories: DataScience MachineLearning Clustering KMeans
+---
+
+![artical 24](/images/artical/artical24.jpg)
+<!-- more -->
+
+*“文章原创，转载请注明出处”*
+
+***
+
+## The k-means algorithm
+***
+
+前面写了很多监督学习的东西，除了回归就是分类，今儿有点想换换口味，写写无监督学习的算法。k-means算法是一种聚类算法，聚类就是无监督学习里面的内容。那么先来说说聚类：
+
+### 一、聚类简介
+***
+
+1. 聚类是一种无监督学习方法，它主要就是将相似的对象归并到一个类别中。
+
+2. 聚类分析的目的是把分类对象按照一定的规则，分成若干个类。这些类并不是事先给定的，而是在处理数据时，根据数据的特征确定的。因而，在处理之前无需对类的数目、结构等等作出假定(理论如此，实际应用时并不完全这样，以后讲聚类分析时再具体说)。
+
+3. 在同一类别中，对象具有某种意义下的相似性；不同的类别中，对象具有某种意义下的不相似。
+
+4. **聚类与分类的最大不同**：分类的目标事先已知，而聚类未知。正因为聚类产生的结构与分类相同，只是类别没有预先定义，所以聚类也被称为“无监督分类”。
+
+### 二、k-means法
+***
+
+k-means法是由MacQueen提出并命名的一种聚类算法。其使用聚类中的均值进行聚类划分，这样说不大好理解，可以先看一下算法的基本步骤：
+
+1. 从n个数据对象中任意取出k个样品对象作为初始聚类点（或者将所有数据分成k份，计算每一份中的重心（均值）作为初始聚类点）；
+2. 对所有样品对象逐个归类，将每一个对象归入距离他最近的那个类（距离一般使用欧式距离），并将该类的凝聚点更新为这个类当前的均值；
+3. 重复步骤2，直至所有对象都不能再分配为止。
+
+### 三、R语言实现
+***
+
+#### 1. 自定义函数
+***
+
+自定义一个函数`se_kmeans`，使用这个函数可以通过输入需要聚类的数据集以及类别数目k，即可得到每一个样品的类别以及各个类别的中心。该函数使用欧式距离作为相似性的度量（当然还有很多其它方式，之后的聚类分析中会讲到），具体的程序可以在[我的项目]({{ root_url }}/datascience)中找到，也可以直接到我的[github](https://github.com/JackyCode/Data_Science)中查看源代码。这边给出测试代码以及结果：
+
+``` r
+x1 <- matrix(rnorm(500, 1, 0.5), 100, 5)
+x2 <- matrix(rnorm(500, 2, 0.5), 100, 5)
+x <- rbind(x1, x2)
+
+clusters <- se_kmeans(x, 2)
+clusters
+plot(x, col=clusters$cluster, pch=as.character(clusters$cluster), cex=0.5)
+points(clusters$center, col='green', pch='o', cex = 2)
+```
+
+得到如下的一张图
+
+![kmeans1](\images\a24\kmeans1.jpg)
+
+可以看到，分类效果是很好的。
+
+#### 2. 使用`kmeans`函数
+***
+
+可以使用`stats`包中的`kmeans`函数来实现，示例如下：
+
+``` r
+x1 <- matrix(rnorm(500, 1, 0.5), 100, 5)
+x2 <- matrix(rnorm(500, 2, 0.5), 100, 5)
+x <- rbind(x1, x2)
+
+clusters <- kmeans(x, 2)
+clusters
+plot(x, col=clusters$cluster, pch=as.character(clusters$cluster), cex=0.5)
+points(clusters$centers, col='green', pch='o', cex = 2)
+```
+
+得到这样一张图
+
+![kmeans2](\images\a24\kmeans2.jpg)
+
+从图中可以看出，kmeans的分类效果还是蛮不错的，当然我们可以计算一下误判，不过这显然是很小的。
