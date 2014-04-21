@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>数据科学之机器学习8: 决策树之ID3 - Jacky and MSC</title>
+  <title>数据科学之机器学习10: 聚类分析1 - Jacky and MSC</title>
   <meta name="author" content="Jacky Code">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jackycode.github.io/blog/2014/04/14/id3">
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/04/21/cluster-analysis">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -99,7 +99,7 @@
   
   <header class="page-header">
     
-      <h1 class="entry-title">数据科学之机器学习8: 决策树之ID3</h1>
+      <h1 class="entry-title">数据科学之机器学习10: 聚类分析1</h1>
     
     
       <p class="meta">
@@ -115,180 +115,150 @@
   
 
 
-<time datetime="2014-04-14T16:02:45+08:00" pubdate data-updated="true">Apr 14<span>th</span>, 2014</time>
+<time datetime="2014-04-21T18:46:04+08:00" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p><img src="/images/artical/artical23.jpg" alt="artical 23" />
+<div class="entry-content"><p><img src="/images/artical/artical25.jpg" alt="artical 25" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
 
 <hr />
 
-<p>ID3算法的核心问题就在于：如何选取在决策树的每个节点处要测试的属性。那么如何去选择呢？当然，我们要选取<strong>分类能力最好的属性</strong>，那么怎么去确定哪个属性是分类能力最好的呢？ID3算法中，使用<strong>信息增益</strong>作为评判标准。在看信息增益之前，我们先看看这个决策树的构造过程：</p>
+<p>上一篇介绍了聚类分析中的KMeans算法，这一节就来具体地说说聚类分析。聚类分析，cluster analysis，是一种研究“物以类聚”现代统计学分析方法，其目的是要把分类对象按照一定的规则分成若干个类。这些类别并非事先给定的，而是根据数据的特征确定的。</p>
 
-<h3 id="section">一、构造过程</h3>
 <hr />
+
+<h5 id="note">NOTE：聚类的划分：</h5>
 
 <ol>
-  <li>选取<strong>分类能力最好的属性</strong>作为决策树根部节点的测试；</li>
-  <li>为根节点属性的每一个可能值产生一个分支；</li>
-  <li>以各个分支节点为根节点，重复上述过程。</li>
+  <li>
+    <p>根据分类对象的不同，可以分为：<strong>Q型聚类分析</strong>和<strong>R型聚类分析</strong>。Q型是指对样品对象进行聚类；而R型则是对变量(属性)进行聚类。</p>
+  </li>
+  <li>
+    <p>按照分析方法的不同，又可以分为：<strong>系统聚类法</strong>、<strong>快速聚类法</strong>和<strong>模糊聚类法</strong>。上一篇介绍的KMeans法就是快速聚类法中的一种。</p>
+  </li>
 </ol>
 
-<h3 id="section-1">二、信息增益</h3>
 <hr />
 
-<h4 id="section-2">1. 熵</h4>
+<h4 id="section">一、相似性的度量</h4>
 <hr />
 
-<p>在看信息增益之前，首先需要介绍一个概念，那就是<strong>香农熵</strong>，简称为<strong>熵</strong>。相信学过物理的应该大都听过这个名词，在热力学中不就有个熵增原理嘛。其实，<strong>熵是信息论中广泛使用的一个度量标准，刻画了任意样例集合的纯度。</strong></p>
+<p>在上一篇中，我们已经介绍过，聚类其实就是将相似度高的样品啊属性啊合并成一个类别。但是，上一篇我们仅仅给出了一种也是最简单的一种相似性的度量方式——欧式距离。这里我们详细看看相似性有哪些度量方式：</p>
 
-<p><strong>熵是信息的期望值</strong>，所以可以用熵来刻画一个数据集的纯度。若用$x_i,i=1,2,\dots,n$来表示数据集所包含的属性，那么这个数据集的熵为：</p>
+<p>除了使用<strong>有序尺度变量</strong>（将属性划分为一级、二级等等的有次序关系的量来表示）和<strong>名义尺度变量</strong>（使用既没有等级关系，又不存在数量关系的量来表示。比如男女）之外，一般采用的测量尺度的方式就是<strong>间隔尺度变量</strong>。</p>
 
-<script type="math/tex; mode=display"> H = - \sum_{i=1}^{n}{p(x_i)l(x_i)} </script>
+<p><strong>间隔尺度变量</strong>即是使用连续的量来表示测量尺度，一般都是连续型的，比如欧式距离、重量等等。一般来讲，在应对Q型聚类时会使用<strong>距离</strong>去度量；而对R型聚类来说，则会使用<strong>相似系数</strong>这种方式去度量。下面来分别看一看：</p>
 
-<p>其中，$p(x_i)$表示选取$x_i$作为分类的最终类别的概率；$l(x_i)$为$x_i$的信息，定义为：<script type="math/tex"> l(x_i) = - \log_2p(x_i)</script>。</p>
-
-<h4 id="section-3">2. 信息增益</h4>
 <hr />
 
-<p>有了熵之后就可以刻画一个数据集的纯度，也就是熵值。那么什么信息增益呢？</p>
-
-<p>简单来说，<strong>一个属性的信息增益就是：使用这个属性分割样例集合而导致的熵值降低</strong>。那么要选取分类能力最好的属性，就是要选取使得信息增益最大的那个属性。</p>
-
-<p>一个属性A对样例集合S的信息增益定义为：</p>
-
-<script type="math/tex; mode=display"> Gain(S, A) = H(S) - \sum_{v \in A} { \frac{\# S_v}{\# S} H(S_v) } </script>
-
-<p>其中，<script type="math/tex">S_v</script>表示集合S中，属性A取值为$v$的那部分数据；<script type="math/tex">\# S_v</script>表示，集合S中，属性A取值为$v$的个数；<script type="math/tex">\# S</script>表示集合S中观测的个数。</p>
-
-<h4 id="section-4">3. 简单的例子</h4>
+<h5 id="a-">a. 距离</h5>
 <hr />
 
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: center">序号</th>
-      <th style="text-align: center">age</th>
-      <th style="text-align: center">income</th>
-      <th style="text-align: center">buy_iphone</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center">1</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">2</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">low</td>
-      <td style="text-align: center">no</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">3</td>
-      <td style="text-align: center">youth</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">4</td>
-      <td style="text-align: center">youth</td>
-      <td style="text-align: center">low</td>
-      <td style="text-align: center">no</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">5</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">6</td>
-      <td style="text-align: center">youth</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">7</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">no</td>
-    </tr>
-  </tbody>
-</table>
+<p>上一篇中使用的欧氏距离即是这里的一种，在介绍各种不同的距离定义之前，首先看看距离的定义需要满足哪些条件：</p>
 
-<p>考虑上面这个问题，我们来计算一下各个属性的信息增益。</p>
+<ol>
+  <li>首先，距离必须是非负的。即：<script type="math/tex">d_{ij} \geqslant 0, \forall i,j</script>;</li>
+  <li>对于相同取值的样品，之间的距离必须为0。即：<script type="math/tex">d_{ij} = 0</script>，当且仅当，第i个样品与第j个样品的各变量值相同；</li>
+  <li>i样品到j样品的距离与j样品到i样品的距离相等。即：<script type="math/tex">d_{ij} = d_{ji}, \forall i, j</script>；</li>
+  <li>满足：<script type="math/tex">d_{ij} \leqslant d_{ik} + d_{kj}, \forall i,j,k</script>。</li>
+</ol>
 
-<p>首先，我们可以看到，这个数据集S最终分类buy_iphone有两种取值：$yes,no$。则数据集S的熵值为：</p>
+<p>下面就来看看常用的距离定义，首先看看最常用的Minkowski距离：</p>
 
-<script type="math/tex; mode=display"> H(S) = -\frac{4}{7} \log_2{\frac{4}{7} } - \frac{3}{7} \log_2{\frac{3}{7} }  \approx 0.985</script>
-
-<p>若按照age分类，age有两个属性：$senior, youth$，分别有4个和3个。age = senior时，yes有2个，no有2个则有：</p>
-
-<script type="math/tex; mode=display"> H_{age}(S_{senior}) = -\frac{2}{4} \log_2{\frac{2}{4}} - \frac{2}{4} \log_2{\frac{2}{4}} \approx 1 </script>
-
-<script type="math/tex; mode=display"> H_{age}(S_{youth}) = -\frac{2}{3} \log_2 {\frac{2}{3}} - \frac{1}{3} \log_2 {\frac{1}{3}} \approx 0.918 </script>
-
-<p>则有：</p>
-
-<script type="math/tex; mode=display"> H_{age}(S) = \frac{4}{7} \times 1 + \frac{3}{7} \times 0.918 = 0.965 </script>
-
-<p>则age属性的信息增益为：</p>
-
-<script type="math/tex; mode=display"> H(S) - H_{age}(S) = 0.985 - 0.965 = 0.020 </script>
-
-<p>那么属性income的信息增益怎么去计算，可以动手试试。</p>
-
-<h3 id="id3">三、ID3算法的伪代码</h3>
 <hr />
 
-<h5 id="section-5">定义：</h5>
+<h6 id="minkowski">(1). Minkowski距离</h6>
+
+<script type="math/tex; mode=display"> d_{ij}(q) = [\sum_{k=1}^{p} {\mid x_{ik} - x_{jk} \mid ^ q}]^{1/q} </script>
+
+<p>观察这个距离可以看到，当$q=2$时，上面定义的距离就是常用的欧氏距离。另外：</p>
+
 <ul>
-  <li>data：为训练样本集</li>
-  <li>label：为目标属性 （比如例子中的属性buy_iphone）</li>
-  <li>attrs：出目标属性外，供算法学习测试使用的其它属性 （比如例子中的age和income属性）</li>
+  <li><script type="math/tex">q=1</script>时，<script type="math/tex">d_{ij}=\sum_{k=1}^{p} {\mid x_{ik} - x_{jk} \mid}</script>称为<strong>绝对值距离</strong>；</li>
+  <li><script type="math/tex">q=\infty</script>时，<script type="math/tex">d_{ij}=\max_{1 \leqslant k \leqslant p} {\mid x_{ik} - x_{jk} \mid}</script>称为<strong>切比雪夫距离</strong>。</li>
 </ul>
 
-<h5 id="section-6">伪代码：</h5>
-<p>ID3(data, label, attrs)：</p>
+<p>Minkowski距离存在一个问题，就是当变量的单位不同或者测量值范围相差很大时，直接使用Minkowski距离效果不佳。这个时候，应该先对数据进行<strong>标准化</strong>（就是减去均值除上标准差）之后再计算距离(这个后面还会说到)。</p>
 
-<ol>
-  <li>创建决策树的Root节点；</li>
-  <li>若lable中取值单一，则返回 <code>label=label</code> 的单节点树；</li>
-  <li>若attrs为空，则返回 <code>label=（data中取值最多的那个label）</code> 的单节点树；</li>
-  <li>否则：
-    <ol>
-      <li>选取attrs中分类能力最好的属性作为Root的决策属性，记为A；</li>
-      <li>对A的每一个可能取值vi：
-        <ol>
-          <li>在Root添加一个分支对应 <code>A = vi </code>；</li>
-          <li>data_vi = data中 <code>A = vi</code> 的子集，label_vi 表示 data_vi 所对应的目标属性取值；</li>
-          <li>若 data_vi 为空集：
-            <ol>
-              <li>在新分支下加一个叶子节点，节点 <code>label =（data中取值最多的那个label）</code> ;</li>
-              <li>否则，加一个子树：ID3(data_vi, label_vi, attrs);</li>
-            </ol>
-          </li>
-        </ol>
-      </li>
-    </ol>
-  </li>
-  <li>结束</li>
-  <li>返回Root</li>
-</ol>
-
-<h3 id="r">四、R语言实现</h3>
 <hr />
 
-<p>见<a href="/datascience">我的项目</a></p>
+<h6 id="lancelance-and-williams">(2). Lance距离(Lance and Williams)</h6>
+
+<p>当$x_{ji} &gt; 0$时，定义第i个样品到第j个样品的距离为：</p>
+
+<script type="math/tex; mode=display"> d_{ij} = \sum_{k=1}^{p} {\frac{\mid x_{ik} - x_{jk} \mid}{x_{ik} + x_{jk}}} </script>
+
+<p>从公式就可以看出来，这个距离与变量之间的单位没有什么关系；而且其对异常值也不敏感，因而适用于一些高度偏斜的数据。</p>
+
+<hr />
+
+<h6 id="mahalanobis">(3). Mahalanobis距离(马氏距离)</h6>
+
+<p>上面的两种距离都没有考虑变量之间的相关性问题，马氏距离就可以考虑到这个问题。但是由于马氏距离定义的问题，在聚类分析中使用马氏距离并不合适。但是这里也还是给出马氏距离的定义：</p>
+
+<script type="math/tex; mode=display"> d_{ij} = \sqrt{(x_i - x_j)^TS^{-1}(x_i - x_j)} </script>
+
+<p>其中<script type="math/tex">x_i = (x_{i1}, \dots, x_{ip})^T</script>，<script type="math/tex">x_j = (x_{j1}, \dots, x_{jp})^T</script>，<script type="math/tex">S</script>为样本协方差阵。</p>
+
+<p><strong><em>注：</em></strong>为什么说马氏距离不适用与聚类分析呢？</p>
+
+<p>聚类分析是无监督算法中的一种，无监督算法是什么？无监督算法是没有先验信息的，所有的数据拿过来是没有什么目标信息啊什么的。没有不同类之间的先验信息，那么协方差阵<script type="math/tex">S</script>就无法计算。因而，在实际聚类分析中，马氏距离并不适用。</p>
+
+<hr />
+
+<h6 id="section-1">(4). 斜交空间距离</h6>
+
+<script type="math/tex; mode=display"> d_{ij} = [ \frac{1}{p^2} \sum_{k=1}^{p} \sum_{l=1}^{p} (x_{ik} -x_{jk})(x_{il} - x_{jl})r_{kl} ] ^ {1/2} </script>
+
+<p>其中<script type="math/tex">r_{kl}</script>是变量<script type="math/tex">x_k</script>与变量<script type="math/tex">x_l</script>的相关系数。学过高等代数的应该可以很容易看明白这个定义。此外，当变量之间互不相关的时候，这里的<script type="math/tex">d_{ij} = [d_{ij}(2)/p]_{Minkowski}</script>，也就是退化到了欧氏距离（相差一个常数倍）。</p>
+
+<hr />
+
+<h5 id="b-">b. 相似系数</h5>
+<hr />
+
+<p>对变量进行聚类时，通常使用相似系数来考量其间的相似度。那么相似系数的定义有需要满足哪些条件呢？</p>
+
+<ol>
+  <li>完全相关。即：$c_{ij} = \pm 1$，当且仅当$x_i = ax_j + b;a(\neq 0),b$是常数；</li>
+  <li><script type="math/tex">\mid c_{ij} \mid \leqslant 1, \forall i, j </script>；</li>
+  <li><script type="math/tex">c_{ij} = c_{ji}, \forall i, j </script>。</li>
+</ol>
+
+<p>下面看看常用的两种相似系数：</p>
+
+<hr />
+
+<h6 id="section-2">(1). 夹角余弦</h6>
+<hr />
+
+<p>变量$x_i$和$x_j$的夹角余弦的定义为：</p>
+
+<script type="math/tex; mode=display"> c_{ij} = \frac{\sum_{k=1}^{n} {x_{ki}x_{kj}} }{ [ (\sum_{k=1}^{n}{ x^2_{ki} })(\sum_{k=1}^{n} {x^2_{kj}} ) ]^{1/2} } </script>
+
+<p>学过解析几何应该很容易看出这个定义的含义所在，其实<script type="math/tex">c_{ij} = \cos \theta_{ij}</script>。</p>
+
+<hr />
+
+<h6 id="section-3">(2). 相关系数</h6>
+<hr />
+
+<script type="math/tex; mode=display"> c_{ij} = \frac { \sum _{ k=1 }^{ n }{ ({ x }_{ ki }-\overline{x_i})({ x }_{ kj }-\overline{x_j}) }  }{ \{ [\sum_{k=1}^{n}({ x }_{ ki }-\overline{x_i})^2][\sum_{k=1}^{n}({ x }_{ kj }-\overline{x_j})^2] \}^{1/2} } </script>
+
+<p>这里的相关系数其实就是统计里面通常所说的相关系数。其实，如果变量都是标准化了的，那么夹角余弦就是相关系数，看出来了吗？</p>
+
+<hr />
+
+<h4 id="section-4">小节</h4>
+<hr />
+
+<p>到这边，就把统计中常用的用于度量相似性的定义讲了一些。这些定义，大都有其自身的数学背景。有些来自于几何学，有些来自于线性空间理论。对于使用者来说，搞明白什么时候选择什么样的度量方式更加重要！下一篇，我们讲一讲聚类分析中的一个常用方法：<strong>系统聚类法</strong>。</p>
 </div>
 
 
@@ -311,12 +281,12 @@
   
 
 
-<time datetime="2014-04-14T16:02:45+08:00" pubdate data-updated="true">Apr 14<span>th</span>, 2014</time>
+<time datetime="2014-04-21T18:46:04+08:00" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/datascience/'>DataScience</a>, <a class='category' href='/blog/categories/decisiontree/'>DecisionTree</a>, <a class='category' href='/blog/categories/id3/'>ID3</a>, <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
+    <a class='category' href='/blog/categories/clustering/'>Clustering</a>, <a class='category' href='/blog/categories/datascience/'>DataScience</a>, <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
   
 </span>
 
@@ -334,14 +304,10 @@
     <ul class="pager">
       
       <li class="previous"><a class="basic-alignment left"
-        href="/blog/2014/04/11/apps-at-a-discount/" title="Previous Post:
-        打折的Apps">&laquo; 打折的Apps</a></li>
+        href="/blog/2014/04/19/kmeans/" title="Previous Post:
+        数据科学之机器学习9: 聚类算法之KMeans">&laquo; 数据科学之机器学习9: 聚类算法之KMeans</a></li>
       
       <li><a href="/blog/archives">Blog Archives</a></li>
-      
-      <li class="next"><a class="basic-alignment right" href="/blog/2014/04/19/kmeans/"
-        title="Next Post: 数据科学之机器学习9: 聚类算法之KMeans">数据科学之机器学习9: 聚类算法之KMeans
-        &raquo;</a></li>
       
     </ul>
   </footer>
