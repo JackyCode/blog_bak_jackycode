@@ -3,7 +3,7 @@ layout: post
 title: "记录：Octopress建站之旅"
 date: 2014-02-23 10:40:38 +0800
 comments: true
-categories: Octopress Record
+categories: Octopress Records
 ---
 
 ![aritical 2](/images/artical/artical2.jpg)

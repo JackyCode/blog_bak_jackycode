@@ -3,7 +3,7 @@ layout: post
 title: "数据科学之机器学习9: 聚类算法之KMeans"
 date: 2014-04-19 13:01:02 +0800
 comments: true
-categories: DataScience MachineLearning Clustering KMeans
+categories: DataScience MachineLearning Clustering
 ---
 
 ![artical 24](/images/artical/artical24.jpg)

@@ -3,7 +3,7 @@ layout: post
 title: "记录：Octopress配置修改之旅"
 date: 2014-02-26 15:40:39 +0800
 comments: true
-categories: Octopress Record
+categories: Octopress Records
 ---
 
 ![aritical 3](/images/artical/artical3.jpg)

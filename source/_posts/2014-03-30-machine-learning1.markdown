@@ -3,7 +3,7 @@ layout: post
 title: "数据科学之机器学习2：线性回归1"
 date: 2014-03-30 19:02:30 +0800
 comments: true
-categories: DataScience MachineLearning
+categories: DataScience MachineLearning Regression
 ---
 
 ![artical 16](/images/artical/artical16.jpg)

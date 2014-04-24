@@ -3,7 +3,7 @@ layout: post
 title: "数据科学之机器学习8: 决策树之ID3"
 date: 2014-04-14 16:02:45 +0800
 comments: true
-categories: DataScience MachineLearning DecisionTree ID3
+categories: DataScience MachineLearning DecisionTree Classification
 ---
 
 ![artical 23](/images/artical/artical23.jpg)

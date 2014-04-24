@@ -3,7 +3,7 @@ layout: post
 title: "打折的Apps"
 date: 2014-04-11 19:32:31 +0800
 comments: true
-categories: Apps Recommend
+categories: Recommends
 ---
 
 ![artical 22](/images/artical/artical22.jpg)

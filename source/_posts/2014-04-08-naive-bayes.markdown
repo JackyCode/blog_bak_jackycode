@@ -3,7 +3,7 @@ layout: post
 title: "数据科学之机器学习6: 分类之朴素贝叶斯"
 date: 2014-04-08 15:54:37 +0800
 comments: true
-categories: DataScience MachineLearning NaiveBayes
+categories: DataScience MachineLearning Classification
 ---
 
 

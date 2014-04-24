@@ -3,7 +3,7 @@ layout: post
 title: "记录：最近对博客的一些修改"
 date: 2014-03-18 18:52:12 +0800
 comments: true
-categories: Record Octopress
+categories: Records Octopress
 ---
 
 ![aritical 11](/images/artical/artical11.jpg)
