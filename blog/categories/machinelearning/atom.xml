@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MachineLearning | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-21T19:17:46+08:00</updated>
+  <updated>2014-04-24T10:01:46+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,63 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习11: 聚类分析2]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/24/cluster-analysis2/"/>
+    <updated>2014-04-24T09:39:02+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/24/cluster-analysis2</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical26.jpg" alt="artical 26" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>上一篇介绍了聚类分析的定义，给出了很多不同的相似性的度量方法。这一篇主要想介绍一下除了快速聚类之外的另外一种聚类方法：<strong>系统聚类法</strong>。</p>
+
+<h3 id="section">二、系统聚类法</h3>
+<hr />
+
+<p>系统聚类法，hierarchical clustering method，是聚类分析方法中用的较多的一种。其具体过程如下：</p>
+
+<ol>
+  <li>对于n个样品，构造n个类，每个样品单独作为一类。计算每个类之间的距离；</li>
+  <li>合并距离最近的两个类为一个新类；</li>
+  <li>计算新类与其它类之间的距离，重复2直到所有类合并称为1个类为止。</li>
+</ol>
+
+<p>那么类与类之间的距离如何定义呢？</p>
+
+<p>其实，类与类之间的距离有很多中定义方式常见的有：</p>
+
+<ol>
+  <li>最短距离法，single linkage method，<script type="math/tex"> D_{KL} = \min_{i \in G_K,j \in G_L} d_{ij} </script>；</li>
+  <li>最长距离法，complete linkage method，<script type="math/tex"> D_{KL} = \max_{i \in G_K,j \in G_L} d_{ij} </script>；</li>
+  <li>中间距离法，median linkage method，即取最远距离与最近距离两者的中间距离；</li>
+  <li>类平均法，average linkage method，<script type="math/tex"> D_{KL} = \frac{1}{n_Kn_L} \sum_{i \in G_K,j \in G_L} d_{ij} </script>；</li>
+  <li>重心法，centroid hierarchical method，即取类重心之间的距离；</li>
+  <li>离差平方和法，Ward’s minimum variance method, 定义较为繁琐，可以自行Google；</li>
+</ol>
+
+<p><strong>注</strong>：系统聚类的方法并不困难，但是实现时会存在计算量的问题。系统聚类法一般是在样品间距离矩阵的基础上进行的，它需要计算所有点到所有点之间的距离，当样品量很大时，这个计算量会变得非常的大。因而，很多时候人们会采用动态聚类的方法去处理数据，动态聚类法中一种最常用的方法就是之前已经介绍过的KMeans方法。</p>
+
+<h4 id="r">R语言实现</h4>
+
+<p>在R语言中，自带了一个函数可以实现系统聚类：<code>hclust</code>。可以自己查阅help。</p>
+
+<h3 id="section-1">三、聚类的一些问题</h3>
+<hr />
+
+<ol>
+  <li>量纲问题。实际问题中，由于数据采用的量纲不同，很多时候需要对数据进行一些变换，最常用的就是标准化。但也有一些其它方式：极差变换（数据除以极差）；主成分变换（用主成分代替本身数据）；对数变换等等。</li>
+  <li>kmeans算法只有在类的平均值可以被定义的情况下使用，所以在一些特殊的场合，kmeans并不适用。比如分类数据等等!!</li>
+  <li>kmeans算法使用平均值作为衡量，这就造成了一个新的问题。即kmeans不适用于含有异常值的数据，非凸面的数据以及大小值相差很大的数据。</li>
+  <li>聚类的一个<strong>难点</strong>在于：确定类的个数。通过上面介绍的算法来看，所有的方法都需要自己去定义类的个数。那么如何去定义类的个数呢？这是一个到现在还没有满意解决的问题。常用的方式就是观察样品散点图，查看变化率，以及使用一些假设检验的方式（感兴趣可以翻阅专业的书籍材料，比如上海财经出版社的应用多元分析中就有讲到这部分内容）。</li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习10: 聚类分析1]]></title>
@@ -483,98 +540,6 @@ points(clusters$centers, col=’green’, pch=’o’, cex = 2)
 </ul>
 
 <p>下一篇就开始讲讲一些决策树的算法。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习6: 分类之朴素贝叶斯]]></title>
-    <link href="http://jackycode.github.io/blog/2014/04/08/naive-bayes/"/>
-    <updated>2014-04-08T15:54:37+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/04/08/naive-bayes</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical20.jpg" alt="artical 20" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<h3 id="knn">0、kNN算法的优缺点</h3>
-<p>与kNN算法一样，朴素贝叶斯算法也是数据挖掘十大算法之一。我们介绍kNN算法时，并没有讨论kNN算法的优缺点，这边首先看看这个问题。</p>
-
-<p>从构造kNN算法的过程可以看到，这个分类算法的<strong>精度很高</strong>。因为这个算法计算了所有点与待分类点之间的相似度，然后去确定带分类点的类别。由此可见，这个算法对<strong>异常值并不敏感</strong>。但是正是因为它需要计算所有点之间的距离，所以其<strong>复杂度是很高的</strong>，换句话就是，如果数据量大的话，这个算法会很费时，并不高效。</p>
-
-<h3 id="section">一、贝叶斯决策</h3>
-<hr />
-
-<p>贝叶斯定理给出了条件概率之间的关系，是一个非常重要的定理。这里直接给出贝叶斯定理的结论：</p>
-
-<script type="math/tex; mode=display"> P(B  \mid A) = \frac{P(A \mid B)P(B) }{P(A)} </script>
-
-<p>在贝叶斯决策理论里面，要判断点$x$是否属于$C_i$类，只要验证是否存在：</p>
-
-<script type="math/tex; mode=display"> p(C_i \mid x) = \max_{j} \{ P(C_j \mid x) \} </script>
-
-<p>即是，使得$p(C_i \mid x)$达到最大的那个$C_i$就是$x$所属的类别。</p>
-
-<h3 id="section-1">二、具体流程</h3>
-<hr />
-
-<p>要计算<script type="math/tex">P(C_i \mid x)</script>，那么就需要计算<script type="math/tex">\frac{P(x \mid C_i)P(C_i )}{P(x)}</script>，我们知道对于每一个<script type="math/tex">P(C_i \mid x)</script>，其计算公式中的分母都是<script type="math/tex">P(x)</script>，所以有：</p>
-
-<script type="math/tex; mode=display"> P(C_i \mid x) \propto P(x \mid C_i)P(C_i ) </script>
-
-<p>所以我们实际计算时，只需要考虑上式右侧的大小即可。首先我们来确定一些符号的意思：</p>
-
-<ul>
-  <li><script type="math/tex">x = [x_1, x_2, \dots, x_p]</script>为一个带分类的项，$x_i$为其特征；</li>
-  <li>data表示一个已知分类的数据集($n \times p$的矩阵)，其每一行代表一个观测，每一列代表一个特征；</li>
-  <li>label表示data中每一个数据对应的类别标签($ n \times 1$的矩阵)，比如data的第一行观测的类别就是label中的第一个取值；</li>
-  <li><script type="math/tex">C = [ C_1, C_2, \dots, C_m ]</script>为一个类别集合，一般来说$ m &lt; p $。</li>
-</ul>
-
-<h5 id="section-2">步骤：</h5>
-
-<ol>
-  <li>
-    <p>在已知分类的数据集data中统计：</p>
-
-<script type="math/tex; mode=display">P(C_i), i = 1, 2, \dots, m</script>
-
-<script type="math/tex; mode=display">P(x_j \mid C_i), i = 1, 2, \dots, m; j = 1, 2, \dots p</script>
-  </li>
-  <li>
-    <p>计算</p>
-
-<script type="math/tex; mode=display">P(x \mid C_i)P(C_i ) = P(C_i) \prod_{j=1}^{p} {P(x_j \mid C_i)}, i = 1, 2, \dots, m</script>
-  </li>
-  <li>
-    <p>若</p>
-
-<script type="math/tex; mode=display">P(x \mid C_k)P(C_k) = \max\{ P(x \mid C_i)P(C_i ) \}</script>
-
-    <p>则<script type="math/tex"> x \in C_k</script>。</p>
-  </li>
-</ol>
-
-<h3 id="section-3">三、一些存在的问题</h3>
-<hr />
-
-<ol>
-  <li>当步骤的第2步中，<script type="math/tex">P(x \mid C_i)P(C_i ) = P(C_i) \prod_{j=1}^{p} {P(x_j \mid C_i)}, i = 1, 2, \dots, m</script>，中<script type="math/tex">P(x_j \mid C_i)</script>可能在样本较小时取值出现0，那么就会影响乘积；</li>
-  <li>计算机计算时会出现精度问题，比如，如果<script type="math/tex">P(x_j \mid C_i)</script>的值有很多都是非常小的（像0.000001），那么计算机在计算是会将其四舍五入成0。</li>
-</ol>
-
-<p>出现上面的情况应该怎么办呢？</p>
-
-<p>学数学的应该都清楚，遇到这种问题有一个很简单的处理方式，那就是取个对数。虽说取对数后会改变值的大小，但是取对数不会改变原本数据趋势，即原来大的数，取对数后还是大的。</p>
-
-<p>此外，对于<script type="math/tex">P(x_j \mid C_i)</script>可能在样本较小时取值出现0的情况，处理也很简单，那就是将每一个$x_j$的初值都设置成1，所有特征的基数都从1开始，不会影响结果。（这时需要注意，所有特征的初值都是1，对应的总数初值也会发生变化。）</p>
-
-<h3 id="r">四、R语言实现</h3>
-<hr />
-
-<p>见<a href="/datascience">我的项目</a></p>
-
 ]]></content>
   </entry>
   

@@ -2,15 +2,15 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://jackycode.github.io/blog/2014/02/21/hello/</loc>
-        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+        <lastmod>2014-04-24T10:01:31+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/02/23/record/</loc>
-        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+        <lastmod>2014-04-24T10:01:09+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/02/26/record2/</loc>
-        <lastmod>2014-03-17T19:46:52+08:00</lastmod>
+        <lastmod>2014-04-24T10:01:38+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/03/06/rseries1/</loc>
@@ -42,7 +42,7 @@
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/03/18/record3/</loc>
-        <lastmod>2014-04-19T14:39:02+08:00</lastmod>
+        <lastmod>2014-04-24T10:01:44+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/03/21/kodingrecommended/</loc>
@@ -64,15 +64,15 @@
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/03/30/machine-learning1/</loc>
-        <lastmod>2014-04-02T18:53:04+08:00</lastmod>
+        <lastmod>2014-04-24T10:00:24+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/04/01/linear-regression2/</loc>
-        <lastmod>2014-04-02T18:52:51+08:00</lastmod>
+        <lastmod>2014-04-24T10:00:15+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/04/02/linear-regression3/</loc>
-        <lastmod>2014-04-02T19:26:00+08:00</lastmod>
+        <lastmod>2014-04-24T10:00:00+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/04/05/knn/</loc>
@@ -80,27 +80,31 @@
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/04/08/naive-bayes/</loc>
-        <lastmod>2014-04-08T16:32:57+08:00</lastmod>
+        <lastmod>2014-04-24T09:59:23+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/04/11/decision-trees/</loc>
-        <lastmod>2014-04-19T14:34:18+08:00</lastmod>
+        <lastmod>2014-04-24T09:59:31+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/04/11/apps-at-a-discount/</loc>
-        <lastmod>2014-04-11T19:42:29+08:00</lastmod>
+        <lastmod>2014-04-24T09:58:42+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/04/14/id3/</loc>
-        <lastmod>2014-04-18T15:24:59+08:00</lastmod>
+        <lastmod>2014-04-24T09:59:44+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/04/19/kmeans/</loc>
-        <lastmod>2014-04-19T14:24:51+08:00</lastmod>
+        <lastmod>2014-04-24T09:56:57+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/2014/04/21/cluster-analysis/</loc>
-        <lastmod>2014-04-21T19:16:16+08:00</lastmod>
+        <lastmod>2014-04-24T09:57:03+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jackycode.github.io/blog/2014/04/24/cluster-analysis2/</loc>
+        <lastmod>2014-04-24T09:57:10+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/about/</loc>
@@ -108,7 +112,7 @@
     </url>
     <url>
         <loc>http://jackycode.github.io/blog/archives/</loc>
-        <lastmod>2014-04-21T19:16:16+08:00</lastmod>
+        <lastmod>2014-04-24T10:01:44+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/datascience/</loc>
@@ -124,7 +128,7 @@
     </url>
     <url>
         <loc>http://jackycode.github.io/</loc>
-        <lastmod>2014-04-21T19:16:16+08:00</lastmod>
+        <lastmod>2014-04-24T10:01:44+08:00</lastmod>
     </url>
     <url>
         <loc>http://jackycode.github.io/repos/</loc>

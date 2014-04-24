@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Clustering | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/clustering/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-21T19:17:46+08:00</updated>
+  <updated>2014-04-24T10:01:46+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,63 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习11: 聚类分析2]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/24/cluster-analysis2/"/>
+    <updated>2014-04-24T09:39:02+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/24/cluster-analysis2</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical26.jpg" alt="artical 26" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>上一篇介绍了聚类分析的定义，给出了很多不同的相似性的度量方法。这一篇主要想介绍一下除了快速聚类之外的另外一种聚类方法：<strong>系统聚类法</strong>。</p>
+
+<h3 id="section">二、系统聚类法</h3>
+<hr />
+
+<p>系统聚类法，hierarchical clustering method，是聚类分析方法中用的较多的一种。其具体过程如下：</p>
+
+<ol>
+  <li>对于n个样品，构造n个类，每个样品单独作为一类。计算每个类之间的距离；</li>
+  <li>合并距离最近的两个类为一个新类；</li>
+  <li>计算新类与其它类之间的距离，重复2直到所有类合并称为1个类为止。</li>
+</ol>
+
+<p>那么类与类之间的距离如何定义呢？</p>
+
+<p>其实，类与类之间的距离有很多中定义方式常见的有：</p>
+
+<ol>
+  <li>最短距离法，single linkage method，<script type="math/tex"> D_{KL} = \min_{i \in G_K,j \in G_L} d_{ij} </script>；</li>
+  <li>最长距离法，complete linkage method，<script type="math/tex"> D_{KL} = \max_{i \in G_K,j \in G_L} d_{ij} </script>；</li>
+  <li>中间距离法，median linkage method，即取最远距离与最近距离两者的中间距离；</li>
+  <li>类平均法，average linkage method，<script type="math/tex"> D_{KL} = \frac{1}{n_Kn_L} \sum_{i \in G_K,j \in G_L} d_{ij} </script>；</li>
+  <li>重心法，centroid hierarchical method，即取类重心之间的距离；</li>
+  <li>离差平方和法，Ward’s minimum variance method, 定义较为繁琐，可以自行Google；</li>
+</ol>
+
+<p><strong>注</strong>：系统聚类的方法并不困难，但是实现时会存在计算量的问题。系统聚类法一般是在样品间距离矩阵的基础上进行的，它需要计算所有点到所有点之间的距离，当样品量很大时，这个计算量会变得非常的大。因而，很多时候人们会采用动态聚类的方法去处理数据，动态聚类法中一种最常用的方法就是之前已经介绍过的KMeans方法。</p>
+
+<h4 id="r">R语言实现</h4>
+
+<p>在R语言中，自带了一个函数可以实现系统聚类：<code>hclust</code>。可以自己查阅help。</p>
+
+<h3 id="section-1">三、聚类的一些问题</h3>
+<hr />
+
+<ol>
+  <li>量纲问题。实际问题中，由于数据采用的量纲不同，很多时候需要对数据进行一些变换，最常用的就是标准化。但也有一些其它方式：极差变换（数据除以极差）；主成分变换（用主成分代替本身数据）；对数变换等等。</li>
+  <li>kmeans算法只有在类的平均值可以被定义的情况下使用，所以在一些特殊的场合，kmeans并不适用。比如分类数据等等!!</li>
+  <li>kmeans算法使用平均值作为衡量，这就造成了一个新的问题。即kmeans不适用于含有异常值的数据，非凸面的数据以及大小值相差很大的数据。</li>
+  <li>聚类的一个<strong>难点</strong>在于：确定类的个数。通过上面介绍的算法来看，所有的方法都需要自己去定义类的个数。那么如何去定义类的个数呢？这是一个到现在还没有满意解决的问题。常用的方式就是观察样品散点图，查看变化率，以及使用一些假设检验的方式（感兴趣可以翻阅专业的书籍材料，比如上海财经出版社的应用多元分析中就有讲到这部分内容）。</li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习10: 聚类分析1]]></title>
