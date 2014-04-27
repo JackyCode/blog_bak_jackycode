@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Classification | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/classification/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-24T10:01:46+08:00</updated>
+  <updated>2014-04-27T10:58:27+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,69 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习12: Logisic回归]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/27/logistic-regression/"/>
+    <updated>2014-04-27T10:34:11+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/27/logistic-regression</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical27.jpg" alt="artical 27" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h3 id="logistic">数据科学之机器学习5：Logistic回归</h3>
+<hr />
+
+<p>在数据科学系列的开头，花了三篇介绍了线性回归。线性回归模型应该是定量分析中最常用的一种统计分析方法。但是线性回归处理数据时，要求因变量是连续型变量。但是很多时候，需要处理的数据，其因变量并不是连续的。像性别、对错等等，这种离散的因变量，一般称为分类响应变量。</p>
+
+<p>在机器学习的<a href="http://jackycode.github.io/blog/2014/03/30/data-science-an-introduction-to-machine-learning/">介绍篇</a>中，已经介绍了监督学习与非监督学习。在监督学习中，最主要的两类问题，一个就是回归，另一个就是分类。而Logistic回归就是处理二元分类的一种方法，当然其也存在自身的问题，这个后面再讲。</p>
+
+<h4 id="sigmoid">Sigmoid函数</h4>
+<hr />
+
+<p>要了解Logistic回归，首先需要了解一下Sigmoid函数。为什么呢？</p>
+
+<p>一般来说，我们会定义二元分类变量的输出为0和1，这种函数叫做单位阶跃函数，也称Heaviside step function。这个函数的特点就是其取值可以从0突变到1，反之也可。学过数分的话就知道，这种函数有时候会非常难以处理，因为带跳突变，导致了不可微不可导。在这里，就可以借助Sigmoid函数，因为这个函数可以近似地描述单位阶跃函数的特点。首先看看Sigmoid函数：</p>
+
+<script type="math/tex; mode=display"> p = \frac{exp(y)}{1+exp(y)} = \frac{1}{1 + exp(-y)}</script>
+
+<p>简单看一下这个函数，当$y=0$时，$p=0.5$；当$y$变大，趋近于无穷时，$y$趋近1；反之，$y$趋近0。而且，这种趋近的速度是非常快的。正是因为这个趋近速度非常快，我们可以使用Sigmoid函数来处理这边的单位阶跃函数。</p>
+
+<h4 id="logistic-1">Logistic回归</h4>
+<hr />
+
+<p>利用Sigmoid函数可以将单位阶跃函数做个近似，而Sigmoid函数是连续的，那么就可以利用之前的线性回归来建立模型。</p>
+
+<p>令$ y = X\beta $，又<script type="math/tex"> p = \frac{1}{1 + exp(-y)} </script>，变形可得Logistic回归模型：</p>
+
+<script type="math/tex; mode=display"> logit(p) = ln(\frac{p}{1-p}) = X\beta </script>
+
+<p>上述的$logit(p)$称为$logit$变换，此时$p$就是响应变量，$X$就是自变量。到这，我们就可以利用线性模型对参数进行估计了。</p>
+
+<h5 id="section">统计中的解释</h5>
+<hr />
+
+<p>这里面的$p$除了利用Sigmoid函数来解释之外，还可以利用统计中的二项分布来解释，而且从某种角度来说，这个解释会更便于理解。试想，我们这边需要处理的二元分类变量就是0和1。我们考虑0就是“不发生”，1就是“发生”，那么我们可以将前面的$p$理解成发生的概率。通过对已知数据建立模型，估计出参数，我们就可以利用模型去预测在不同的自变量条件下，“发生”的概率是多大，从而达到一个分类的目的。</p>
+
+<p>从这边的分析就可以看到，Logistic回归的缺点：那就是欠拟合，会导致分类的精度下降。</p>
+
+<h5 id="r">R语言实现</h5>
+<hr />
+
+<p>因为这个属于线性回归的一种变形，所以求解的方式直接<strong>借用线性回归</strong>即可。</p>
+
+<p>当然，也存在其它的方法。因为Logistic回归是属于广义线性回归模型的，在R中有专门处理广义线性模型的函数<code>glm</code>：</p>
+
+<p><code>
+model &lt;- glm(formula, family=binominal(link = logit), data=data.frame)
+</code></p>
+
+<p>这里处理的方式中，利用了连接函数(link=logit)，感兴趣的话可以找找广义线性模型的内容看看，当然，以后如果介绍统计模型的话，这个肯定也是必讲得内容。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习8: 决策树之ID3]]></title>
