@@ -13,9 +13,6 @@ categories: DataScience MachineLearning Classification Regression
 
 ***
 
-### 数据科学之机器学习5：Logistic回归
-***
-
 在数据科学系列的开头，花了三篇介绍了线性回归。线性回归模型应该是定量分析中最常用的一种统计分析方法。但是线性回归处理数据时，要求因变量是连续型变量。但是很多时候，需要处理的数据，其因变量并不是连续的。像性别、对错等等，这种离散的因变量，一般称为分类响应变量。
 
 在机器学习的[介绍篇](http://jackycode.github.io/blog/2014/03/30/data-science-an-introduction-to-machine-learning/)中，已经介绍了监督学习与非监督学习。在监督学习中，最主要的两类问题，一个就是回归，另一个就是分类。而Logistic回归就是处理二元分类的一种方法，当然其也存在自身的问题，这个后面再讲。
