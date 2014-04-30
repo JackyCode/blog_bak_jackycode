@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Records | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/records/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-27T11:02:54+08:00</updated>
+  <updated>2014-04-30T21:19:27+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,176 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Mac 系统重装]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/30/reinstall-mac/"/>
+    <updated>2014-04-30T20:57:58+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/30/reinstall-mac</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical28.jpg" alt="artical 28" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>话说Mac一般来讲不需要什么重装啊，不过世事无绝对啊，有时候人就是喜欢作死！！！比如前几天的我~~~算了，具体情况就不说了，反正就是作死，Mac系统出了问题。本来想着用Time Machine恢复一下就得了，也省事。不过仔细想了一想，很想自己安装一遍（博主的折腾精神有时候很是让自己“佩服”），然后就开始了Mac系统重装之旅！</p>
+
+<h3 id="usb">一、制作USB安装盘</h3>
+<hr />
+
+<p>要安装首先就得制作一个启动U盘，当然你也可以使用Mac的Internet Recovery，不过我试了一下，反正我是连不上！不过即使连上了，那个下载应该也需要超久的时间，不是我可以等得了的。我之前更新Mac时，已经下载好了Mavericks（OS X 10.9），所以直接拿来用了。</p>
+
+<h4 id="section">具体操作如下：</h4>
+
+<ol>
+  <li>将OS X 10.9安装文件放到桌面上，右键选择“显示包内容”；</li>
+  <li>复制”Contents/Resources/createinstallmedia”到桌面；</li>
+  <li>打开终端，执行命令：<code>sudo -s</code>，切换到root（成功的话，应该会显示<code>bash-3.2#</code>）；</li>
+  <li>将U盘（8G以上）接入Mac，用磁盘工具进行格式化，格式选择<strong>“Mac OS扩展（日志式）”</strong>，名称定为<strong>“OSX”</strong>；</li>
+  <li>
+    <p>在终端中执行下面的命令：（将其中的“username”换成你自己的用户名）</p>
+
+    <p><code>
+ /Users/username/Desktop/createinstallmedia --volume /Volumes/OSX --
+</code></p>
+
+    <p><code>
+ applicationpath /Users/username/Desktop/"Install OS X Mavericks.app"
+</code></p>
+  </li>
+  <li>等待终端完成。因为需要将安装的文件全部拷贝到U盘中，需要的时间可能有些久，不用着急，喝杯咖啡看看网页！完成后的终端会显示“Copy complete.Done.”</li>
+</ol>
+
+<p>根据上面的流程，制作的安装盘是完整的，也就是安装完成之后，Mac是有Recovery HD的（就是开机按住option可以看到得“恢复10.9”），也可以使用FileVault和find my Mac功能。网上一些直接利用磁盘工具制作的安装盘，应该是不具备这个能力的，所以不建议使用那些方法。</p>
+
+<h3 id="section-1">二、加密与备份</h3>
+<hr />
+
+<h4 id="section-2">安装之前：</h4>
+
+<p>在重装Mac系统之前，需要对Mac里面的文件进行一个备份。也建议使用Dropbox这样的网盘，将自己的一部分文件同步在网盘上，这样就不会存在丢失的情况。备份好之后，就可以开始重新安装Mac系统了。</p>
+
+<h4 id="section-3">安装之后：</h4>
+
+<ol>
+  <li>在安装好了Mac系统之后，我首先进行了一些基本的设置：触控板、输入源、iCloud账号设置等等；</li>
+  <li>在完成这些基础设置之后，你可以选择打开FileVault加密，增强电脑的安全系数（不过打开后，开机速度可能会变慢一些）；</li>
+  <li>强烈建议打开Time Machine，给电脑做个备份；</li>
+</ol>
+
+<h3 id="command-line-tools">三、安装Command Line Tools</h3>
+<hr />
+
+<p>为什么需要将这个独立出来？哎，没办法啊。。。在Mac上很多事情都靠他，离了它，估计我就没法好好生活好好学习好好过日子了！！！（夸张夸张！）</p>
+
+<p>这个的安装，我是直接下载了XCode和Command Line Tools之后安装的。用App Store下载Xcode，那个速度我实在是等不了。</p>
+
+<h3 id="java">四、安装Java</h3>
+<hr />
+
+<p>由于平时需要使用Weka，当然还有那个什么，那个什么~~~反正很多啦，都是需要Java支持的，像Matlab！嘿嘿。。。所以去安装一个Java吧，虽然我很不喜欢它！</p>
+
+<h3 id="shell">五、配置shell</h3>
+<hr />
+
+<p>Mac默认使用的时bash，表示不喜欢。在对电脑进行各种软件安装配置之前，必须把Terminal搞成我喜欢的样子，嘿嘿~~</p>
+
+<ol>
+  <li>切换shell到<code>zsh</code>：<code>chsh -s /bin/zsh</code>；</li>
+  <li>
+    <p>首先安装<code>Homebrew</code>，执行下面的命令即可：</p>
+
+    <p><code>
+ ruby &lt;(curl -fsSkL raw.github.com/mxcl/homebrew/go)
+</code></p>
+  </li>
+  <li>安装<code>wget</code>：<code>brew install wget</code></li>
+  <li>安装<code>oh-my-zsh</code>：<code>wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh</code></li>
+  <li>修改配置文件<code>.zshrc</code>；</li>
+  <li>修改主题文件，主题文件的目录为<code>~/.oh-my-zsh/themes</code>，找到自己使用的主题，进行修改即可。</li>
+</ol>
+
+<h3 id="r">六、R语言相关</h3>
+<hr />
+
+<p>每天都在使用R语言，离了这个可真是活不了！下载好了R 和 RStudio之后，直接安装就好了。不过，这边可能会出现一个问题，就是在Mac上可能会出现encoding之类的问题，这个时候就需要设置一下，打开终端运行以下的命令即可：</p>
+
+<p><code>
+defaults write org.R-project.R force.LANG en_US.UTF-8
+</code></p>
+
+<p>安装好之后，将自己常用的包下载一下就OK了！</p>
+
+<h3 id="python">七、Python</h3>
+<hr />
+
+<p>除了R语言，应该算是这货用的最多，所以安装好了R之后，就开始来弄它了。</p>
+
+<p>Mac是自带Python的，10.9自带的版本是Python 2.7.5，我一般使用的是Python 2.7.6，所以首先需要更新一个Python。以前我使用的软件包管理系统是Macports，不过现在已经叛逃到了Homebrew了！</p>
+
+<ol>
+  <li>
+    <p>执行<code>brew install python</code>就可以下载安装最新版的Python了。不过安装好了之后，还是用不了的。因为Mac还是会用自带的那个Python。这个我一般就是将Homebrew的软件包目录加入PATH中，并且将该软件包目录的位置放置于其它目录的上方。</p>
+
+    <p>可以使用<code>sudo vi etc/paths</code>打开系统的PATH，然后在里面的第一行添加Homebrew的软件包安装目录<code>\usr\local\bin</code>，第二行添加为<code>\usr\local\sbin</code>，其实只要再<code>\usr\bin</code>的上方就行了。</p>
+  </li>
+  <li>安装好这些之后，可以使用Python自带的<code>easy_install</code>安装<code>pip</code>，即：<code>easy_install pip</code>；</li>
+  <li>使用<code>pip</code>安装需要的python库：<code>pip install numpy</code>等等。我一般安装的是库有：<code>numpy, scipy, matplotlib, ipython, scikit-learn</code>等。</li>
+</ol>
+
+<h3 id="sublime-text--textmate">八、Sublime Text &amp; TextMate</h3>
+<hr />
+
+<p>我一般使用的文本编辑器就是上面两个，ST3常用，TM用的稍微少一些。配置的时候，ST3稍微麻烦一些，TM则简单地多，只要点点点就可以了。</p>
+
+<h4 id="sublime-text-3">Sublime Text 3</h4>
+
+<ol>
+  <li>
+    <p>安装好ST之后先安装Package Control，打开view -&gt; show console，在console中输入代码。可以到<a href="https://sublime.wbond.net/installation">这里</a>去查看安装的最新代码(区分ST2以及ST3)；</p>
+  </li>
+  <li>
+    <p>配置安装主题Flatland（我的最爱），使用<code>shift + cmd + P</code>打开Package Control，输入<code>install package</code>，return之后等待一下。在弹出的窗口中输入<code>Flatland</code>，安装即可。安装完成后，打开Prefereces -&gt; Settings - User，添加配置：</p>
+
+    <p><code>
+ "color_scheme": "Packages/Theme - Flatland/Flatland Monokai.tmTheme",
+ "theme": "Flatland Dark.sublime-theme"
+</code></p>
+
+    <p>当然还可以对这个主题进行其它配置，可以自行Google；</p>
+  </li>
+  <li>
+    <p>修改字体，还是在Setting-User中，添加：</p>
+
+    <p><code>
+ "font_face": "menlo",
+ "font_size": 13
+</code></p>
+  </li>
+  <li>安装一些常用的包：<code>ConvertToUTF8</code>, <code>Enhanced-R</code>, <code>SublimeLinter</code>, <code>SublimeREPL</code>, <code>OmniMarkupPreviewer</code>, <code>Markdown Extended</code>, <code>Jedi - Python autocompeltion</code>, <code>Alignment</code>, <code>BracketHighlighter</code>, <code>SendText</code>, <code>SideBarEnhancements</code>, <code>TrailingSpaces</code>等等。</li>
+  <li>对有些需要配置的包配置一下，其实我也就配置了跟R语言有关的包，以及R语言在ST的快捷键。</li>
+</ol>
+
+<h4 id="textmate">TextMate</h4>
+
+<p>这个配置起来比较容易，只需要在Preferences -&gt; Bundles下面选择需要安装的包就可以了。我安装了一些我常用的包，然后将主题更换成了<code>Made of Code</code>，将<code>show command output</code>修改成了<code>Right of text view</code>。</p>
+
+<h3 id="section-4">九、安装其它的软件</h3>
+<hr />
+
+<p>完成上面的安装，基本上就能用了，但是我需要在R中使用Knitr和Sweave，所以我得安装MacTex，顺便还装了Lyx。</p>
+
+<p>安装好了MacTex之后，我就安装了其它一些平时会用的软件，像Octave、Weka、MySQL等等！</p>
+
+<p>剩下的就是常用软件了，什么Dropbox、Evernote、iWork等等！！！iWork那个下载速度很是蛋疼啊~~~</p>
+
+<h3 id="section-5">总结</h3>
+<hr />
+
+<p>因为是隔了好几天才动笔写这个记录的，所以应该记录之中不免会有些遗漏！当然，中间或多或少肯定也存在一些问题，欢迎指正！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[记录：最近对博客的一些修改]]></title>
