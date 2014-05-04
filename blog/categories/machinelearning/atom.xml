@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MachineLearning | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-04-30T21:19:27+08:00</updated>
+  <updated>2014-05-04T10:42:14+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,134 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习13: 关联分析]]></title>
+    <link href="http://jackycode.github.io/blog/2014/05/04/associationg-ananlysis/"/>
+    <updated>2014-05-04T10:12:50+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/05/04/associationg-ananlysis</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical29.jpg" alt="artical 29" />
+<!-- more --></p>
+
+<p>标题图片出处：<a href="http://www.hypertextbookshop.com/dataminingbook/public_version/contents/chapters/chapter002/section003/blue/page002.html">Rule Generation</a></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h4 id="section">一、简介</h4>
+<hr />
+
+<p>在统计学中，变量与变量之间的关系是统计结构的重要参数，统计的核心问题也就是研究变量与变量之间的关系。如果变量与变量之间不独立，那么这两个变量之间肯定存在一定的关联性，那么如何处理度量这个关联性，在统计中就称为关联分析。</p>
+
+<p>列联表是传统统计学中度量两个分类变量之间关系强弱的方法，但是这个方法是对于两个固定的变量进行的一种测量。在机器学习中，常常会遇到大规模的变量，这时候更倾向于从众多的变量中最快地找到关联性最强的两组或多组变量。那么使用列联表就显得不太合适了，此时应该使用什么方法呢？</p>
+
+<hr />
+
+<h4 id="section-1">二、关联规则</h4>
+<hr />
+
+<p>首先介绍2个定义：</p>
+
+<ol>
+  <li><strong>k项集：</strong>设<script type="math/tex">I = \{ i_1, i_2, \dots, i_m \}</script>是$m$个待研究的项构成的有限项集，对于给定的事物数据表<script type="math/tex">T = \{ T_1, T_2, \dots, T_n \}</script>，其中任意的$T_i$是$I$中的$k$项组成的集合，称之为<strong>k项集</strong>。</li>
+  <li><strong>关联规则</strong>：形如<script type="math/tex"> X \rightarrow Y</script>的形式，其中<script type="math/tex"> X \subseteq I </script>, <script type="math/tex">Y \subseteq I</script>，且有<script type="math/tex"> X \bigcap Y = \emptyset </script>。</li>
+</ol>
+
+<hr />
+
+<h5 id="section-2">度量方式</h5>
+<hr />
+
+<p>对于一个项集，我们正常用支持度来度量它的频繁程度，其实就是其在数据集中出现的比例，这个很容易理解，就不多说了。</p>
+
+<p>那么下面要讨论的就是：<strong>如何度量一个关联规则</strong>。一般使用下面两个概念：</p>
+
+<ol>
+  <li><strong>支持度S</strong>：定义为X和Y同时出现在一个事务中得可能性，即：
+ <script type="math/tex"> S(X \Rightarrow Y) = \mid T(X \vee Y) \mid / \mid T \mid </script>
+ 其中，<script type="math/tex">\mid T(X \vee Y) \mid</script>表示同时包含X和Y的事务数，<script type="math/tex">\mid T \mid</script>表示总事务数。</li>
+  <li><strong>支持度C</strong>：定义为出现在关联规则前项中得事务中出现关联规则后项的比例，即：
+ <script type="math/tex"> C(X \Rightarrow Y) = \mid T(X \vee Y) \mid / \mid T(X) \mid </script>
+ 其中，<script type="math/tex"> \mid T(X) \mid</script>表示包含X的事务数。</li>
+</ol>
+
+<hr />
+
+<h5 id="section-3">例子</h5>
+
+<hr />
+
+<p>这边举个简单地例子，方便理解上面的概念。比如设计一个购物数据：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">id</th>
+      <th style="text-align: center">items</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">AB</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">AC</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">C</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">ABC</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">BC</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>上面数据的意思，比如第一行就表示，id为1的人购买了A和B两个物品，其他的意思类似。那么这个AB就是一个2项集，因为存在ABC三种物品，这边就有6种关联规则：<script type="math/tex">A \Rightarrow B</script>, <script type="math/tex">A \Rightarrow C</script>, <script type="math/tex"> B \Rightarrow C</script>, <script type="math/tex"> B \Rightarrow A </script>, <script type="math/tex"> C \Rightarrow A</script>, <script type="math/tex"> C \Rightarrow B </script>。</p>
+
+<p>那么如何计算一个关联规则的支持度与可信度呢？</p>
+
+<p>试试关联规则<script type="math/tex">A \Rightarrow B</script>：</p>
+
+<script type="math/tex; mode=display"> S(A \Rightarrow B) =  \mid T(A \vee B) \mid / \mid T \mid = 2/5 </script>
+
+<script type="math/tex; mode=display"> C(A \Rightarrow B) =  \mid T(A \vee B) \mid / \mid T(A) \mid = 2/3 </script>
+
+<p>是不是很简单呢。试试计算一下其他的关联规则，多算几次就能够很了解其中的含义了。</p>
+
+<hr />
+
+<h5 id="section-4">关联规则的作用</h5>
+<hr />
+
+<ol>
+  <li>
+    <p>关联规则的目的在于，找到变量之间支持度和可信度都比较高的那些关联规则。</p>
+  </li>
+  <li>
+    <p>关联规则的支持度，用于度量关联规则在数据库中得普适程度，是对关联规则重要性(适用性)的一种度量。</p>
+  </li>
+  <li>
+    <p>关联规则的可信度，这是一个相对指标，是对关联规则准确度的一个度量。值越高，代表这个关联规则的后项依赖前项的可能性比较高。</p>
+  </li>
+</ol>
+
+<hr />
+
+<h4 id="section-5">小节</h4>
+<hr />
+
+<p>这篇简单介绍了一下关联分析的一些概念问题，以及如何度量一个关联规则。但是，试想一想，要是$I$中包含的项很多，事物数据表$T$也很大，那么要计算所有关联规则的支持度和可信度，难度可想而知！这时候就需要使用一些算法去解决这个问题，现在比较流行的算法就是：处理静态关联规则的Apriori算法和处理动态关联规则的Carma算法。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习12: Logisic回归]]></title>
@@ -367,181 +495,6 @@ points(clusters$centers, col=’green’, pch=’o’, cex = 2)
 <p><img src="\images\a24\kmeans2.jpg" alt="kmeans2" /></p>
 
 <p>从图中可以看出，kmeans的分类效果还是蛮不错的，当然我们可以计算一下误判，不过这显然是很小的。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习8: 决策树之ID3]]></title>
-    <link href="http://jackycode.github.io/blog/2014/04/14/id3/"/>
-    <updated>2014-04-14T16:02:45+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/04/14/id3</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical23.jpg" alt="artical 23" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>ID3算法的核心问题就在于：如何选取在决策树的每个节点处要测试的属性。那么如何去选择呢？当然，我们要选取<strong>分类能力最好的属性</strong>，那么怎么去确定哪个属性是分类能力最好的呢？ID3算法中，使用<strong>信息增益</strong>作为评判标准。在看信息增益之前，我们先看看这个决策树的构造过程：</p>
-
-<h3 id="section">一、构造过程</h3>
-<hr />
-
-<ol>
-  <li>选取<strong>分类能力最好的属性</strong>作为决策树根部节点的测试；</li>
-  <li>为根节点属性的每一个可能值产生一个分支；</li>
-  <li>以各个分支节点为根节点，重复上述过程。</li>
-</ol>
-
-<h3 id="section-1">二、信息增益</h3>
-<hr />
-
-<h4 id="section-2">1. 熵</h4>
-<hr />
-
-<p>在看信息增益之前，首先需要介绍一个概念，那就是<strong>香农熵</strong>，简称为<strong>熵</strong>。相信学过物理的应该大都听过这个名词，在热力学中不就有个熵增原理嘛。其实，<strong>熵是信息论中广泛使用的一个度量标准，刻画了任意样例集合的纯度。</strong></p>
-
-<p><strong>熵是信息的期望值</strong>，所以可以用熵来刻画一个数据集的纯度。若用$x_i,i=1,2,\dots,n$来表示数据集所包含的属性，那么这个数据集的熵为：</p>
-
-<script type="math/tex; mode=display"> H = - \sum_{i=1}^{n}{p(x_i)l(x_i)} </script>
-
-<p>其中，$p(x_i)$表示选取$x_i$作为分类的最终类别的概率；$l(x_i)$为$x_i$的信息，定义为：<script type="math/tex"> l(x_i) = - \log_2p(x_i)</script>。</p>
-
-<h4 id="section-3">2. 信息增益</h4>
-<hr />
-
-<p>有了熵之后就可以刻画一个数据集的纯度，也就是熵值。那么什么信息增益呢？</p>
-
-<p>简单来说，<strong>一个属性的信息增益就是：使用这个属性分割样例集合而导致的熵值降低</strong>。那么要选取分类能力最好的属性，就是要选取使得信息增益最大的那个属性。</p>
-
-<p>一个属性A对样例集合S的信息增益定义为：</p>
-
-<script type="math/tex; mode=display"> Gain(S, A) = H(S) - \sum_{v \in A} { \frac{\# S_v}{\# S} H(S_v) } </script>
-
-<p>其中，<script type="math/tex">S_v</script>表示集合S中，属性A取值为$v$的那部分数据；<script type="math/tex">\# S_v</script>表示，集合S中，属性A取值为$v$的个数；<script type="math/tex">\# S</script>表示集合S中观测的个数。</p>
-
-<h4 id="section-4">3. 简单的例子</h4>
-<hr />
-
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: center">序号</th>
-      <th style="text-align: center">age</th>
-      <th style="text-align: center">income</th>
-      <th style="text-align: center">buy_iphone</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center">1</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">2</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">low</td>
-      <td style="text-align: center">no</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">3</td>
-      <td style="text-align: center">youth</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">4</td>
-      <td style="text-align: center">youth</td>
-      <td style="text-align: center">low</td>
-      <td style="text-align: center">no</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">5</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">6</td>
-      <td style="text-align: center">youth</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">7</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">no</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>考虑上面这个问题，我们来计算一下各个属性的信息增益。</p>
-
-<p>首先，我们可以看到，这个数据集S最终分类buy_iphone有两种取值：$yes,no$。则数据集S的熵值为：</p>
-
-<script type="math/tex; mode=display"> H(S) = -\frac{4}{7} \log_2{\frac{4}{7} } - \frac{3}{7} \log_2{\frac{3}{7} }  \approx 0.985</script>
-
-<p>若按照age分类，age有两个属性：$senior, youth$，分别有4个和3个。age = senior时，yes有2个，no有2个则有：</p>
-
-<script type="math/tex; mode=display"> H_{age}(S_{senior}) = -\frac{2}{4} \log_2{\frac{2}{4}} - \frac{2}{4} \log_2{\frac{2}{4}} \approx 1 </script>
-
-<script type="math/tex; mode=display"> H_{age}(S_{youth}) = -\frac{2}{3} \log_2 {\frac{2}{3}} - \frac{1}{3} \log_2 {\frac{1}{3}} \approx 0.918 </script>
-
-<p>则有：</p>
-
-<script type="math/tex; mode=display"> H_{age}(S) = \frac{4}{7} \times 1 + \frac{3}{7} \times 0.918 = 0.965 </script>
-
-<p>则age属性的信息增益为：</p>
-
-<script type="math/tex; mode=display"> H(S) - H_{age}(S) = 0.985 - 0.965 = 0.020 </script>
-
-<p>那么属性income的信息增益怎么去计算，可以动手试试。</p>
-
-<h3 id="id3">三、ID3算法的伪代码</h3>
-<hr />
-
-<h5 id="section-5">定义：</h5>
-<ul>
-  <li>data：为训练样本集</li>
-  <li>label：为目标属性 （比如例子中的属性buy_iphone）</li>
-  <li>attrs：出目标属性外，供算法学习测试使用的其它属性 （比如例子中的age和income属性）</li>
-</ul>
-
-<h5 id="section-6">伪代码：</h5>
-<p>ID3(data, label, attrs)：</p>
-
-<ol>
-  <li>创建决策树的Root节点；</li>
-  <li>若lable中取值单一，则返回 <code>label=label</code> 的单节点树；</li>
-  <li>若attrs为空，则返回 <code>label=（data中取值最多的那个label）</code> 的单节点树；</li>
-  <li>否则：
-    <ol>
-      <li>选取attrs中分类能力最好的属性作为Root的决策属性，记为A；</li>
-      <li>对A的每一个可能取值vi：
-        <ol>
-          <li>在Root添加一个分支对应 <code>A = vi </code>；</li>
-          <li>data_vi = data中 <code>A = vi</code> 的子集，label_vi 表示 data_vi 所对应的目标属性取值；</li>
-          <li>若 data_vi 为空集：
-            <ol>
-              <li>在新分支下加一个叶子节点，节点 <code>label =（data中取值最多的那个label）</code> ;</li>
-              <li>否则，加一个子树：ID3(data_vi, label_vi, attrs);</li>
-            </ol>
-          </li>
-        </ol>
-      </li>
-    </ol>
-  </li>
-  <li>结束</li>
-  <li>返回Root</li>
-</ol>
-
-<h3 id="r">四、R语言实现</h3>
-<hr />
-
-<p>见<a href="/datascience">我的项目</a></p>
 ]]></content>
   </entry>
   
