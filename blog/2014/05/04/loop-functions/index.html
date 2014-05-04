@@ -1,0 +1,708 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>R语言记录8：Loop Functions - Jacky and MSC</title>
+  <meta name="author" content="Jacky Code">
+
+  
+  <meta name="description" content="">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/05/04/loop-functions">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Jacky and MSC" type="application/atom+xml">
+  
+  
+  <!-- 
+ -->
+  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-48812316-1', 'jackycode.github.io');ga('send', 'pageview');</script>
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">Jacky and MSC</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">文章归档</a></li>
+  <li><a href="/repos">我的项目</a></li>
+  <li><a href="/about">关于我</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:jackycode.github.io" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">R语言记录8：Loop Functions</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-04T14:56:40+08:00" pubdate data-updated="true">May 4<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/artical/artical30.jpg" alt="aritical 30" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>循环对于编程的重要性不言而喻，但是大量的使用<code>for</code>语句、<code>while</code>语句在R语言这种交互式命令行上，其实并不和谐。而且，很多时候，我们希望使用更短更少的代码去完成一个事情。这就需要用到R语言中自带的一些函数，使用这些函数可以把循环变得容易表述。不过，这当然是有学习成本的，要想掌握得多尝试多思考。</p>
+
+<p>在RSeries系列中，我之前也介绍过<code>tapply</code>这样的Loop function，但是并没有很全面地去说这个问题。没有介绍这块内容呢，总觉得对于R语言编程来说缺少了点什么，今天就来详细地说说R语言中的Loop Functions。</p>
+
+<p>在R语言中，处理循环的函数常用的大致有这么几个：<code>lapply</code>, <code>sapply</code>, <code>apply</code>, <code>tapply</code>, <code>mapply</code>。每一个函数都有其自身的特性与用途，下面我们来一个一个地说。</p>
+
+<hr />
+
+<h4 id="lapply">1. <code>lapply</code>函数</h4>
+<hr />
+
+<p><code>lapply</code>函数：<strong>对list的每一个元素(list[[i]])执行指定的函数操作，其返回值总是一个列表</strong>。举个简单地例子，比如：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> list<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span> <span class="m">2</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="m">10</span><span class="o">:</span><span class="m">14</span><span class="p">)</span>
+</span><span class="line">lapply<span class="p">(</span>x<span class="p">,</span> mean<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] 2.5</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1] 3.5</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] 12</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>也就是对列表x的每一个元素<code>x[[i]]</code>执行指定的函数操作，这边就是求均值<code>mean</code>。</p>
+
+<p>当然，<code>lapply</code>函数不仅仅可以对列表做出处理，也可以是向量，不过这个情况并不适用于任何地方。比如，你想生成随机数，第一次生成1个，第二次生成3个，第三次5个，那么可以试试这个函数：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">lapply<span class="p">(</span>c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">5</span><span class="p">),</span> rnorm<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] -0.5622</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1] -0.8519  0.3671  0.4243</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1]  0.09395 -1.19474  1.52337 -1.97529  0.47370</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这样使用的情况非常少，使用时需要特别注意一下。</p>
+
+<p>当然，在<code>lapply</code>中你也可以使用自定义的函数，比如：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> list<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span> <span class="m">2</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="m">10</span><span class="o">:</span><span class="m">14</span><span class="p">)</span>
+</span><span class="line">lapply<span class="p">(</span>x<span class="p">,</span> <span class="kr">function</span><span class="p">(</span>item<span class="p">)</span> any<span class="p">(</span>item <span class="o">==</span> <span class="m">5</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] FALSE</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1] TRUE</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] FALSE</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这边，自定义函数中使用<code>item</code>代表<code>x</code>的每一个元素，你也可以使用任何你想用的字符表示。</p>
+
+<hr />
+
+<h4 id="sapply">2. <code>sapply</code>函数</h4>
+<hr />
+
+<p><code>sapply</code>函数与<code>lapply</code>函数使用与处理上完全相同，唯一不同的是，<code>sapply</code>会尽可能地简化输出地结果。如果可能，<code>sapply</code>会输出向量或者矩阵；当然，如果实在不行，它就会输出列表，这个时候就与<code>lapply</code>函数一模一样了。接着上面一个例子看看：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> list<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span> <span class="m">2</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="m">10</span><span class="o">:</span><span class="m">14</span><span class="p">)</span>
+</span><span class="line">sapply<span class="p">(</span>x<span class="p">,</span> <span class="kr">function</span><span class="p">(</span>item<span class="p">)</span> any<span class="p">(</span>item <span class="o">==</span> <span class="m">5</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1] FALSE  TRUE FALSE</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<hr />
+
+<h4 id="apply">3. <code>apply</code>函数</h4>
+<hr />
+
+<p><code>apply</code>函数：对数组或矩阵，按行或者按列进行指定的函数操作。看个简单地例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> matrix<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">12</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">3</span><span class="p">)</span>
+</span><span class="line">x
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##      [,1] [,2] [,3]</span>
+</span><span class="line"><span class="c1">## [1,]    1    5    9</span>
+</span><span class="line"><span class="c1">## [2,]    2    6   10</span>
+</span><span class="line"><span class="c1">## [3,]    3    7   11</span>
+</span><span class="line"><span class="c1">## [4,]    4    8   12</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">apply<span class="p">(</span>x<span class="p">,</span> <span class="m">1</span><span class="p">,</span> mean<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1] 5 6 7 8</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">apply<span class="p">(</span>x<span class="p">,</span> <span class="m">2</span><span class="p">,</span> mean<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1]  2.5  6.5 10.5</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>其中，<code>apply(data, margin, fun)</code>，<code>margin=1</code>即是按行求；<code>margin=2</code>即是按列求。</p>
+
+<hr />
+
+<h4 id="tapply">4. <code>tapply</code>函数</h4>
+<hr />
+
+<p><code>tapply</code>函数：对向量的一个子集执行指定的函数。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">str<span class="p">(</span>tapply<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## function (X, INDEX, FUN = NULL, ..., simplify = TRUE)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>其中<code>x</code>是需要处理的向量，<code>INDEX</code>是因子(因子列表)，<code>FUN</code>是需要执行的函数，<code>simplify</code>指是否简化输入结果(考虑sapply对于lapply的简化)。</p>
+
+<p>看个简单地例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> <span class="m">1</span><span class="o">:</span><span class="m">12</span>
+</span><span class="line">x
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  [1]  1  2  3  4  5  6  7  8  9 10 11 12</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">Index <span class="o">&lt;-</span> gl<span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">)</span>
+</span><span class="line">Index
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  [1] 1 1 1 1 2 2 2 2 3 3 3 3</span>
+</span><span class="line"><span class="c1">## Levels: 1 2 3</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">Index2 <span class="o">&lt;-</span> gl<span class="p">(</span><span class="m">4</span><span class="p">,</span> <span class="m">3</span><span class="p">)</span>
+</span><span class="line">Index2
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  [1] 1 1 1 2 2 2 3 3 3 4 4 4</span>
+</span><span class="line"><span class="c1">## Levels: 1 2 3 4</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">tapply<span class="p">(</span>x<span class="p">,</span> Index<span class="p">,</span> sum<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  1  2  3 </span>
+</span><span class="line"><span class="c1">## 10 26 42</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">tapply<span class="p">(</span>x<span class="p">,</span> Index2<span class="p">,</span> sum<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  1  2  3  4 </span>
+</span><span class="line"><span class="c1">##  6 15 24 33</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>不简化输出结果：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">tapply<span class="p">(</span>x<span class="p">,</span> Index2<span class="p">,</span> sum<span class="p">,</span> simplify <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## $`1`</span>
+</span><span class="line"><span class="c1">## [1] 6</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## $`2`</span>
+</span><span class="line"><span class="c1">## [1] 15</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## $`3`</span>
+</span><span class="line"><span class="c1">## [1] 24</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## $`4`</span>
+</span><span class="line"><span class="c1">## [1] 33</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="mapply">5. <code>mapply</code>函数</h4>
+<hr />
+
+<p><code>mapply</code>函数：对一个函数，使用指定的参数集合进行运算。看个简单地例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">mapply<span class="p">(</span>mean<span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span> <span class="m">5</span><span class="o">:</span><span class="m">8</span><span class="p">,</span> <span class="m">3</span><span class="o">:</span><span class="m">6</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1] 1 2 3 4</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>上面这个指令进行了什么运算呢？就是计算了集合(1,5,3),(2,6,4),(3,7,5),(4,8,6)四个集合各自的平均值。</p>
+
+<h5 id="section">如何处理其他参数</h5>
+
+<p>很多时候，函数并非只有一个输入参数，有一些其它的参数怎么处理呢？</p>
+
+<p>使用<code>rnorm</code>函数来举个例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">set.seed<span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</span><span class="line">mapply<span class="p">(</span>rnorm<span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span> mean <span class="o">=</span> <span class="m">2</span><span class="p">,</span> sd <span class="o">=</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] 2.019</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1]  1.6315 -0.7427</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] 0.2025 2.8836 3.1694</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">set.seed<span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</span><span class="line">mapply<span class="p">(</span>rnorm<span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span> mean <span class="o">=</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span> sd <span class="o">=</span> <span class="m">1</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] 1.019</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1] 1.8157 0.6287</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] 2.401 3.295 3.390</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>上述的命令应该与下面的命令效果相同：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">set.seed<span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</span><span class="line">list<span class="p">(</span>rnorm<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> rnorm<span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">),</span> rnorm<span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] 2.019</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1]  1.6315 -0.7427</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] 0.2025 2.8836 3.1694</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">set.seed<span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</span><span class="line">list<span class="p">(</span>rnorm<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> rnorm<span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> rnorm<span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">1</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] 1.019</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1] 1.8157 0.6287</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] 2.401 3.295 3.390</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-1">小节</h4>
+<hr />
+
+<p>Loop Functions可以在很大程度上简化我们所写的代码，能够帮我们简化很多操作，比如重复地输入一些东西等等！学好它可能对于程序运行本身没有多大的帮助，但是代码并不只是写给计算机看的，也是写给人看的！我认为，好的代码应该是简洁舒适的，阅读起来让自己和别人都觉得是一种美的享受！</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacky Code</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-04T14:56:40+08:00" pubdate data-updated="true">May 4<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rseries/'>RSeries</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2014/05/04/associationg-ananlysis/" title="Previous Post:
+        数据科学之机器学习13: 关联分析">&laquo; 数据科学之机器学习13: 关联分析</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+	<ul id="about" class='nav nav-list'>
+		<li class="nav-header"><a href="/about">关于我</a></li>
+	    <p>概率统计专业的在读研究生</p>
+	    <p>喜欢看书，思考，然后写点什么</p>
+	    <p>能折腾，崇尚效率，喜爱精美</p>
+	    <p>喜欢Apple，离不了Google</p>
+	    <p>新浪微博: <a href="http://weibo.com/jackycode">Jacky130</a></p>
+	    <p>邮箱: <code>jackycodemsc@gmail.com</code></p>
+	</ul>
+</section>
+<section class="well">
+	<ul id="category_list" class="nav nav-list">
+		<li class="nav-header">文章分类</li>
+			<li id="categories">
+    			<li class='category'><a href='/blog/categories/associationanalysis/'>AssociationAnalysis (1)</a></li>
+<li class='category'><a href='/blog/categories/classification/'>Classification (5)</a></li>
+<li class='category'><a href='/blog/categories/clustering/'>Clustering (3)</a></li>
+<li class='category'><a href='/blog/categories/datascience/'>DataScience (14)</a></li>
+<li class='category'><a href='/blog/categories/decisiontree/'>DecisionTree (2)</a></li>
+<li class='category'><a href='/blog/categories/kindle/'>Kindle (1)</a></li>
+<li class='category'><a href='/blog/categories/koding/'>Koding (1)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>Mac (2)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>MachineLearning (14)</a></li>
+<li class='category'><a href='/blog/categories/octopress/'>Octopress (4)</a></li>
+<li class='category'><a href='/blog/categories/rseries/'>RSeries (8)</a></li>
+<li class='category'><a href='/blog/categories/recommends/'>Recommends (1)</a></li>
+<li class='category'><a href='/blog/categories/records/'>Records (4)</a></li>
+<li class='category'><a href='/blog/categories/regression/'>Regression (4)</a></li>
+<li class='category'><a href='/blog/categories/vps/'>VPS (1)</a></li>
+
+  			</li>
+  	</ul>
+</section><section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">最近文章</li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/04/loop-functions/">R语言记录8：Loop Functions</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/04/associationg-ananlysis/">数据科学之机器学习13: 关联分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/30/reinstall-mac/">Mac 系统重装</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/27/logistic-regression/">数据科学之机器学习12: Logisic回归</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/24/cluster-analysis2/">数据科学之机器学习11: 聚类分析2</a>
+      </li>
+    
+  </ul>
+</section>
+<section class="well">
+  <ul id="links" class="nav nav-list">
+    <li class="nav-header">推荐站点</li>
+    <li>
+      <a href="http://macshuo.com/">MacTalk-池建强的随想录</a>
+    </li>
+    <li>
+      <a href="http://yihui.name/">Yihui Xie</a>
+    </li>
+    <li>
+      <a href="http://www.liaoxuefeng.com/">廖雪峰的官方网站</a>
+    </li>
+    <li>
+      <a href="http://irising.me/">Page to Page</a>
+    </li>
+    <li>
+      <a href="http://www.dongwm.com/">小明明s à domicile</a>
+    </li>
+    <li>
+      <a href="http://beyondvincent.com/">破船之家</a>
+    </li>
+    <li>
+      <a href="http://lucifr.com/">Lucifr</a>
+    </li>
+</ul>
+</section><section class="well">
+	<li class="nav-header">License</li>
+<ul id="license" class='nav nav-list'>
+	
+		<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">
+			<img alt="知识共享许可协议" style="border-width:0" src="/images/license_CC.png" />
+		</a>
+	<br />本站作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">知识共享署名-非商业性使用-相同方式共享 2.5 中国大陆许可协议</a>进行许可。
+</ul>
+</section>
+
+  
+</aside>
+
+
+  <section>  
+  <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jacky130"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>  
+</section>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><!-- mathjax config similar to math.stackexchange --> 
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ jax: ["input/TeX", "output/HTML-CSS"], tex2jax: { inlineMath: [ ['$', '$'] ], displayMath: [ ['$$', '$$']], processEscapes: true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }, messageStyle: "none", "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] } }); </script> <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+<hr>
+<p>
+  Copyright &copy; 2014 - Jacky Code -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

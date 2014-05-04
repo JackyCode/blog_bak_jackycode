@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-05-04T10:42:14+08:00</updated>
+  <updated>2014-05-04T15:12:49+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,400 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[R语言记录8：Loop Functions]]></title>
+    <link href="http://jackycode.github.io/blog/2014/05/04/loop-functions/"/>
+    <updated>2014-05-04T14:56:40+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/05/04/loop-functions</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical30.jpg" alt="aritical 30" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>循环对于编程的重要性不言而喻，但是大量的使用<code>for</code>语句、<code>while</code>语句在R语言这种交互式命令行上，其实并不和谐。而且，很多时候，我们希望使用更短更少的代码去完成一个事情。这就需要用到R语言中自带的一些函数，使用这些函数可以把循环变得容易表述。不过，这当然是有学习成本的，要想掌握得多尝试多思考。</p>
+
+<p>在RSeries系列中，我之前也介绍过<code>tapply</code>这样的Loop function，但是并没有很全面地去说这个问题。没有介绍这块内容呢，总觉得对于R语言编程来说缺少了点什么，今天就来详细地说说R语言中的Loop Functions。</p>
+
+<p>在R语言中，处理循环的函数常用的大致有这么几个：<code>lapply</code>, <code>sapply</code>, <code>apply</code>, <code>tapply</code>, <code>mapply</code>。每一个函数都有其自身的特性与用途，下面我们来一个一个地说。</p>
+
+<hr />
+
+<h4 id="lapply">1. <code>lapply</code>函数</h4>
+<hr />
+
+<p><code>lapply</code>函数：<strong>对list的每一个元素(list[[i]])执行指定的函数操作，其返回值总是一个列表</strong>。举个简单地例子，比如：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> list<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span> <span class="m">2</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="m">10</span><span class="o">:</span><span class="m">14</span><span class="p">)</span>
+</span><span class="line">lapply<span class="p">(</span>x<span class="p">,</span> mean<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] 2.5</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1] 3.5</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] 12</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>也就是对列表x的每一个元素<code>x[[i]]</code>执行指定的函数操作，这边就是求均值<code>mean</code>。</p>
+
+<p>当然，<code>lapply</code>函数不仅仅可以对列表做出处理，也可以是向量，不过这个情况并不适用于任何地方。比如，你想生成随机数，第一次生成1个，第二次生成3个，第三次5个，那么可以试试这个函数：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">lapply<span class="p">(</span>c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">5</span><span class="p">),</span> rnorm<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] -0.5622</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1] -0.8519  0.3671  0.4243</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1]  0.09395 -1.19474  1.52337 -1.97529  0.47370</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这样使用的情况非常少，使用时需要特别注意一下。</p>
+
+<p>当然，在<code>lapply</code>中你也可以使用自定义的函数，比如：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> list<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span> <span class="m">2</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="m">10</span><span class="o">:</span><span class="m">14</span><span class="p">)</span>
+</span><span class="line">lapply<span class="p">(</span>x<span class="p">,</span> <span class="kr">function</span><span class="p">(</span>item<span class="p">)</span> any<span class="p">(</span>item <span class="o">==</span> <span class="m">5</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] FALSE</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1] TRUE</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] FALSE</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这边，自定义函数中使用<code>item</code>代表<code>x</code>的每一个元素，你也可以使用任何你想用的字符表示。</p>
+
+<hr />
+
+<h4 id="sapply">2. <code>sapply</code>函数</h4>
+<hr />
+
+<p><code>sapply</code>函数与<code>lapply</code>函数使用与处理上完全相同，唯一不同的是，<code>sapply</code>会尽可能地简化输出地结果。如果可能，<code>sapply</code>会输出向量或者矩阵；当然，如果实在不行，它就会输出列表，这个时候就与<code>lapply</code>函数一模一样了。接着上面一个例子看看：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> list<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span> <span class="m">2</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="m">10</span><span class="o">:</span><span class="m">14</span><span class="p">)</span>
+</span><span class="line">sapply<span class="p">(</span>x<span class="p">,</span> <span class="kr">function</span><span class="p">(</span>item<span class="p">)</span> any<span class="p">(</span>item <span class="o">==</span> <span class="m">5</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1] FALSE  TRUE FALSE</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<hr />
+
+<h4 id="apply">3. <code>apply</code>函数</h4>
+<hr />
+
+<p><code>apply</code>函数：对数组或矩阵，按行或者按列进行指定的函数操作。看个简单地例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> matrix<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">12</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">3</span><span class="p">)</span>
+</span><span class="line">x
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##      [,1] [,2] [,3]</span>
+</span><span class="line"><span class="c1">## [1,]    1    5    9</span>
+</span><span class="line"><span class="c1">## [2,]    2    6   10</span>
+</span><span class="line"><span class="c1">## [3,]    3    7   11</span>
+</span><span class="line"><span class="c1">## [4,]    4    8   12</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">apply<span class="p">(</span>x<span class="p">,</span> <span class="m">1</span><span class="p">,</span> mean<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1] 5 6 7 8</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">apply<span class="p">(</span>x<span class="p">,</span> <span class="m">2</span><span class="p">,</span> mean<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1]  2.5  6.5 10.5</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>其中，<code>apply(data, margin, fun)</code>，<code>margin=1</code>即是按行求；<code>margin=2</code>即是按列求。</p>
+
+<hr />
+
+<h4 id="tapply">4. <code>tapply</code>函数</h4>
+<hr />
+
+<p><code>tapply</code>函数：对向量的一个子集执行指定的函数。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">str<span class="p">(</span>tapply<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## function (X, INDEX, FUN = NULL, ..., simplify = TRUE)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>其中<code>x</code>是需要处理的向量，<code>INDEX</code>是因子(因子列表)，<code>FUN</code>是需要执行的函数，<code>simplify</code>指是否简化输入结果(考虑sapply对于lapply的简化)。</p>
+
+<p>看个简单地例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">x <span class="o">&lt;-</span> <span class="m">1</span><span class="o">:</span><span class="m">12</span>
+</span><span class="line">x
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  [1]  1  2  3  4  5  6  7  8  9 10 11 12</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">Index <span class="o">&lt;-</span> gl<span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">)</span>
+</span><span class="line">Index
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  [1] 1 1 1 1 2 2 2 2 3 3 3 3</span>
+</span><span class="line"><span class="c1">## Levels: 1 2 3</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">Index2 <span class="o">&lt;-</span> gl<span class="p">(</span><span class="m">4</span><span class="p">,</span> <span class="m">3</span><span class="p">)</span>
+</span><span class="line">Index2
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  [1] 1 1 1 2 2 2 3 3 3 4 4 4</span>
+</span><span class="line"><span class="c1">## Levels: 1 2 3 4</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">tapply<span class="p">(</span>x<span class="p">,</span> Index<span class="p">,</span> sum<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  1  2  3 </span>
+</span><span class="line"><span class="c1">## 10 26 42</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">tapply<span class="p">(</span>x<span class="p">,</span> Index2<span class="p">,</span> sum<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  1  2  3  4 </span>
+</span><span class="line"><span class="c1">##  6 15 24 33</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>不简化输出结果：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">tapply<span class="p">(</span>x<span class="p">,</span> Index2<span class="p">,</span> sum<span class="p">,</span> simplify <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## $`1`</span>
+</span><span class="line"><span class="c1">## [1] 6</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## $`2`</span>
+</span><span class="line"><span class="c1">## [1] 15</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## $`3`</span>
+</span><span class="line"><span class="c1">## [1] 24</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## $`4`</span>
+</span><span class="line"><span class="c1">## [1] 33</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="mapply">5. <code>mapply</code>函数</h4>
+<hr />
+
+<p><code>mapply</code>函数：对一个函数，使用指定的参数集合进行运算。看个简单地例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">mapply<span class="p">(</span>mean<span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span> <span class="m">5</span><span class="o">:</span><span class="m">8</span><span class="p">,</span> <span class="m">3</span><span class="o">:</span><span class="m">6</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1] 1 2 3 4</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>上面这个指令进行了什么运算呢？就是计算了集合(1,5,3),(2,6,4),(3,7,5),(4,8,6)四个集合各自的平均值。</p>
+
+<h5 id="section">如何处理其他参数</h5>
+
+<p>很多时候，函数并非只有一个输入参数，有一些其它的参数怎么处理呢？</p>
+
+<p>使用<code>rnorm</code>函数来举个例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">set.seed<span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</span><span class="line">mapply<span class="p">(</span>rnorm<span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span> mean <span class="o">=</span> <span class="m">2</span><span class="p">,</span> sd <span class="o">=</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] 2.019</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1]  1.6315 -0.7427</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] 0.2025 2.8836 3.1694</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">set.seed<span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</span><span class="line">mapply<span class="p">(</span>rnorm<span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span> mean <span class="o">=</span> <span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span> sd <span class="o">=</span> <span class="m">1</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] 1.019</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1] 1.8157 0.6287</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] 2.401 3.295 3.390</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>上述的命令应该与下面的命令效果相同：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">set.seed<span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</span><span class="line">list<span class="p">(</span>rnorm<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> rnorm<span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">),</span> rnorm<span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] 2.019</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1]  1.6315 -0.7427</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] 0.2025 2.8836 3.1694</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">set.seed<span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</span><span class="line">list<span class="p">(</span>rnorm<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> rnorm<span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> rnorm<span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">1</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
+</span><span class="line"><span class="c1">## [1] 1.019</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[2]]</span>
+</span><span class="line"><span class="c1">## [1] 1.8157 0.6287</span>
+</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">## [[3]]</span>
+</span><span class="line"><span class="c1">## [1] 2.401 3.295 3.390</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-1">小节</h4>
+<hr />
+
+<p>Loop Functions可以在很大程度上简化我们所写的代码，能够帮我们简化很多操作，比如重复地输入一些东西等等！学好它可能对于程序运行本身没有多大的帮助，但是代码并不只是写给计算机看的，也是写给人看的！我认为，好的代码应该是简洁舒适的，阅读起来让自己和别人都觉得是一种美的享受！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习13: 关联分析]]></title>
@@ -2036,147 +2430,6 @@
     <p><a href="https://www.google.com.hk/search?newwindow=1&amp;safe=strict&amp;espv=210&amp;es_sm=119&amp;q=octopress%E6%95%99%E7%A8%8B&amp;oq=octopress%E6%95%99%E7%A8%8B&amp;gs_l=serp.12..35i39.5308.6241.0.8806.10.8.0.0.0.1.237.921.0j3j2.5.0....0...1c.1j4.35.serp..6.4.789.PMKW2jRRdPI">。。。</a></p>
   </li>
 </ol>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[R语言记录7：相关分析]]></title>
-    <link href="http://jackycode.github.io/blog/2014/03/17/rseries7/"/>
-    <updated>2014-03-17T16:46:47+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/03/17/rseries7</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical10.jpg" alt="aritical 10" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>变量之间的关系，大致可分为两种：<em>函数关系</em>和<em>相关关系</em>。</p>
-
-<p>函数关系，简单来说就是可以将变量之间的关系用方程(其实就是函数)来描述：$y=f(x)$，处理这种关系对应的统计方法就是<strong><em>回归分析</em></strong>。</p>
-
-<p>相关关系，就是指变量之间存在不完全确定的依赖关系，其数值不能够使用函数表示出来，这个对应的就是<strong><em>相关分析</em></strong>。</p>
-
-<p>判断变量之间是否存在相关关系，最直接简单的方法就是画出两个变量之间的散点图。</p>
-
-<h4 id="section">1. 散点图</h4>
-<p>我们使用<code>cars</code>数据集中的数据进行演示,<code>cars</code>数据集中包含了汽车速度与制动距离的数据，显然直观感觉这两个变量之间肯定存在相关关系。画个散点图看看：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Correlation_Analysis.r</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> head<span class="p">(</span>cars<span class="p">)</span>
-</span><span class="line">  speed dist
-</span><span class="line"><span class="m">1</span>     <span class="m">4</span>    <span class="m">2</span>
-</span><span class="line"><span class="m">2</span>     <span class="m">4</span>   <span class="m">10</span>
-</span><span class="line"><span class="m">3</span>     <span class="m">7</span>    <span class="m">4</span>
-</span><span class="line"><span class="m">4</span>     <span class="m">7</span>   <span class="m">22</span>
-</span><span class="line"><span class="m">5</span>     <span class="m">8</span>   <span class="m">16</span>
-</span><span class="line"><span class="m">6</span>     <span class="m">9</span>   <span class="m">10</span>
-</span><span class="line"><span class="o">&gt;</span> with <span class="p">(</span>cars<span class="p">,</span> <span class="p">{</span>
-</span><span class="line"><span class="o">+</span> 	plot<span class="p">(</span>speed<span class="p">,</span> dist<span class="p">)</span>
-</span><span class="line"><span class="o">+</span> <span class="p">})</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>得到如下图形：</p>
-
-<p><img src="http://jackycode.github.io/images/RSeries7/scatter.jpg" alt="scatter" /></p>
-
-<p>从散点图看，汽车速度与其制动距离存在相关关系。但是，仅仅从图像来看，我们只能得到大概是否相关，而不能给出一个确切的描述。那么就希望能够找到一个方法，能够描述变量之间有多相关，程度有多大。</p>
-
-<h4 id="section-1">2. 相关的种类</h4>
-<p>根据相关程度，我们可以给相关进行分类：完全相关，不完全相关，完全不相关；而根据相关方向的不同，又可以分类：正相关(一个变大另一个也变大)，负相关。那么怎么用数学的方式去描述这些种类呢，那就需要用到相关系数。</p>
-
-<h5 id="section-2">(1). 相关系数</h5>
-<p>相关系数的符号用来代表正负相关($+$ -&gt; 正；$-$ -&gt; 负)，其值的大小用来描述相关程度的大小(0~1:完全不相关~完全相关)。相关系数的定义有很多，常用的有Person相关系数、Spearman相关系数等等。这里给出最常用的Person相关系数的计算方法：</p>
-
-<script type="math/tex; mode=display">\gamma=\frac{\sum_{i=1}^{n}{(x_i-\overline{x})(y_i-\overline{y})}}{\sqrt{\sum_{i=1}^{n}{(x_i-\overline{x})^2}\sum_{i=1}^{n}{(y_i-\overline{y})^2}}}</script>
-
-<p>当样本个数充分大时，样本相关系数可以作为总体相关系数的估计。</p>
-
-<p>在R中，可以使用<code>cor</code>函数来得到变量间的相关系数矩阵：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Correlation_Analysis.r</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> cor<span class="p">(</span>cars<span class="p">)</span>
-</span><span class="line">          speed      dist
-</span><span class="line">speed <span class="m">1.0000000</span> <span class="m">0.8068949</span>
-</span><span class="line">dist  <span class="m">0.8068949</span> <span class="m">1.0000000</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>可以看到，$corr(speed, dist)=0.8068949$，说明汽车速度与其制动距离之间存在较强的正相关关系。</p>
-
-<h6 id="section-3">注：</h6>
-<p>可以指定<code>cor</code>的参数得到不同的相关系数：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Correlation_Analysis.r</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> cor<span class="p">(</span>cars<span class="p">,</span> method<span class="o">=</span><span class="s">&#39;spearman&#39;</span><span class="p">)</span>
-</span><span class="line">          speed      dist
-</span><span class="line">speed <span class="m">1.0000000</span> <span class="m">0.8303568</span>
-</span><span class="line">dist  <span class="m">0.8303568</span> <span class="m">1.0000000</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h5 id="section-4">(2). 相关性的显著性检验</h5>
-<p>得到了两个变量之间的相关系数，那就需要检验，得到的结果是否能够通过显著性检验。即相关性到底显著与否。</p>
-
-<p>这里需要建立假设检验：$H_0:$ 变量X和Y不相关；那么可以构造检验统计量如下：</p>
-
-<script type="math/tex; mode=display">T = \frac{\gamma(X,Y)\sqrt{n-2}}{\sqrt{1-\gamma(X,Y)^2}}</script>
-
-<p>在零假设成立的条件下，<script type="math/tex">T \sim t(n-2)</script>。那么若有$T &gt; t_{1-\alpha}(n-2)$，则拒绝原假设，说明变量X和Y存在显著的相关关系。</p>
-
-<h6 id="section-5">注：这里提到的内容可以到参数统计的书籍上寻找。</h6>
-
-<p>在R中，我们可以使用<code>cor.test</code>函数很轻松地对此进行检验：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Correlation_Analysis.r</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> with<span class="p">(</span>cars<span class="p">,</span> <span class="p">{</span>
-</span><span class="line"><span class="o">+</span> 	cor.test<span class="p">(</span>speed<span class="p">,</span> dist<span class="p">)</span>
-</span><span class="line"><span class="o">+</span> <span class="p">})</span>
-</span><span class="line">
-</span><span class="line">	Pearson<span class="s">&#39;</span><span class="err">s product-moment correlation</span>
-</span><span class="line">
-</span><span class="line">data<span class="o">:</span>  speed and dist
-</span><span class="line">t <span class="o">=</span> <span class="m">9.464</span><span class="p">,</span> df <span class="o">=</span> <span class="m">48</span><span class="p">,</span> p<span class="o">-</span>value <span class="o">=</span> <span class="m">1.49e-12</span>
-</span><span class="line">alternative hypothesis<span class="o">:</span> true correlation is not equal to <span class="m">0</span>
-</span><span class="line"><span class="m">95</span> percent confidence interval<span class="o">:</span>
-</span><span class="line"> <span class="m">0.6816422</span> <span class="m">0.8862036</span>
-</span><span class="line">sample estimates<span class="o">:</span>
-</span><span class="line">      cor
-</span><span class="line"><span class="m">0.8068949</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>从结果可以看到，$t=9.464$这个不容易看出来结果，因为还需要查表。我们可以选择直接看$p$值：1.49e-12，比0.05小太多了。故而拒绝原假设，认为汽车速度与制动距离存在高度相关关系。</p>
-
-<h6 id="spearman">注：这里如何修改，使得其使用spearman相关系数呢？</h6>
-
-<p>到此，就将相关分析的大致内容进行了阐述。但是，相关分析也还有很多其它内容，比如偏相关等等。</p>
 ]]></content>
   </entry>
   
