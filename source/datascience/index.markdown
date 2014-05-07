@@ -71,3 +71,16 @@ footer: true
 </div>
 
 </article>
+
+<article>
+  <div class="well">
+
+<h2><a href="https://github.com/JackyCode/Data_Science/tree/master/Apriori">Apriori</a></h2>
+
+<footer>
+  关联分析之Apriori算法
+</footer>
+
+</div>
+
+</article>
