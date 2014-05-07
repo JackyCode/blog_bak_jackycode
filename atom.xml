@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-05-04T15:12:49+08:00</updated>
+  <updated>2014-05-07T19:11:25+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,133 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习14: 关联分析之apriori算法]]></title>
+    <link href="http://jackycode.github.io/blog/2014/05/07/apriori/"/>
+    <updated>2014-05-07T17:00:48+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/05/07/apriori</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical31.jpg" alt="artical 31" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>在上一篇中，我们介绍了关联分析相关的概念，这一节来看看如何使用Apriori算法去寻找满足条件的项集。</p>
+
+<p>首先回顾一个概念，<strong>一个项集的支持度</strong>就是数据集中该项集所占的比例。Apriori算法就是用于寻找数据集中，支持度和可信度超过某一给定值的项集和关联规则。</p>
+
+<hr />
+
+<h4 id="section">一、原理</h4>
+<hr />
+
+<p>在介绍算法之前，首先了解一个集合论中的性质定理：集合的向下封闭性。</p>
+
+<p>我们通过一个例子来看看这个定理，见下图：</p>
+
+<p><img src="http://jackycode.github.io/images/a31/apriori_1.jpg" alt="" /></p>
+
+<p>集合的向下封闭性，在这边解释的话，也就是说，<strong>如果一个项集的支持度低于某一个值，那么该项集超集的支持度也必定低于这个值。如果一个项集的支持度高于某一个值，那么该项集子集的支持度也必定高于某一个值。</strong></p>
+
+<p><strong>超集</strong>：就是指包含这个集合中所以元素的集合（不包括自身），比如集合ABC就是集合AB的超集。</p>
+
+<p>那么这个定理放在上一个图当中，就有这样的含义：</p>
+
+<p><img src="http://jackycode.github.io/images/a31/apriori_2.jpg" alt="" /></p>
+
+<hr />
+
+<h4 id="section-1">二、算法构成</h4>
+<hr />
+
+<p>有了上面这个原理，那么就可以利用这个原理去减少我们寻找频繁集的计算量。因为，只要我们找到一个项集，其支持度低于给定的值，那么这个项集的所有超集就可以直接忽略不计了。如上图，项集A的支持度低于指定的值，那么其超集就都不用再考虑了。</p>
+
+<p><strong>Apriori算法由两部分构成：</strong></p>
+
+<ol>
+  <li>找到满足最小支持度的项集；</li>
+  <li>找到可信度超过最小可信度的关联规则。</li>
+</ol>
+
+<p>下面，我们一个一个地解决：</p>
+
+<hr />
+
+<h5 id="section-2">2.1. 寻找频繁项集</h5>
+<hr />
+
+<p>利用上面所讲的原理，我们来整理一下这个步骤的流程：</p>
+
+<ol>
+  <li>从数据集中构造集合C1，C1满足：大小为1的所有候选项集的集合，例如上图中的：C1 = {A, B, C};</li>
+  <li>计算C1中所有项集（单元素项集）是否满足最小支持度，满足的项集构成集合L1，例如上图中的：L1 = {B, C};</li>
+  <li>利用L1生成新的候选项集C2，C2满足：大小为2的所有候选项集的集合，例如上图中得：C2 = {BC};</li>
+  <li>计算C2中所有项集（双元素项集）是否满足最小支持度，满足的项集构成集合L2；</li>
+  <li>重复直到Lk中得元素个数为1。</li>
+</ol>
+
+<hr />
+
+<h5 id="section-3">2.2. 寻找关联规则</h5>
+<hr />
+
+<p>在得到频繁项集之后，要寻找关联规则就容易多了。可以直接从频繁项集中构造初始的关联规则，计算该关联规则的可信度，然后与给定的最小可信度作比较，若值大于最小可信度，则记录该关联规则。</p>
+
+<p>在实际编程时，需要注意使用<strong>集合的向下封闭性</strong>！！！想想看，在关联规则中，这个性质应该怎样去实现？(可以到Machine Learning in Action中找答案！)</p>
+
+<h4 id="r">三、R语言实现</h4>
+
+<h5 id="section-4">1. 使用自带的程序</h5>
+
+<p>在R语言的<code>arules</code>这个包里面，提供了一个实现Apriori算法的函数：<code>apriori()</code>：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1"># 构造数据集</span>
+</span><span class="line">dataSet <span class="o">&lt;-</span> matrix<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">3</span><span class="p">)</span>
+</span><span class="line">rownames<span class="p">(</span>dataSet<span class="p">)</span> <span class="o">&lt;-</span> paste<span class="p">(</span><span class="s">&quot;item&quot;</span><span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> sep<span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+</span><span class="line">colnames<span class="p">(</span>dataSet<span class="p">)</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="s">&quot;B&quot;</span><span class="p">,</span> <span class="s">&quot;C&quot;</span><span class="p">)</span>
+</span><span class="line">dataSet<span class="p">[</span><span class="m">1</span><span class="p">,]</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+</span><span class="line">dataSet<span class="p">[</span><span class="m">2</span><span class="p">,]</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+</span><span class="line">dataSet<span class="p">[</span><span class="m">3</span><span class="p">,]</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+</span><span class="line">dataSet<span class="p">[</span><span class="m">4</span><span class="p">,]</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+</span><span class="line">dataSet<span class="p">[</span><span class="m">5</span><span class="p">,]</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+</span><span class="line">dataSet
+</span><span class="line"><span class="c1"># 转换数据格式(可以?apriori查看数据格式)</span>
+</span><span class="line">dataSet_class <span class="o">&lt;-</span> as<span class="p">(</span>dataSet<span class="p">,</span><span class="s">&quot;transactions&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="c1"># 构造频繁项集</span>
+</span><span class="line">rules<span class="o">&lt;-</span>apriori<span class="p">(</span>dataSet_class<span class="p">,</span>parameter<span class="o">=</span>list<span class="p">(</span>supp<span class="o">=</span><span class="m">0.5</span><span class="p">,</span>conf<span class="o">=</span><span class="m">0.6</span><span class="p">,</span>target<span class="o">=</span><span class="s">&quot;rules&quot;</span><span class="p">))</span>
+</span><span class="line"><span class="c1"># 查看结果</span>
+</span><span class="line">summary<span class="p">(</span>rules<span class="p">)</span>
+</span><span class="line"><span class="c1"># 构造关联规则</span>
+</span><span class="line">inspect<span class="p">(</span>rules<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="section-5">2. 自定义函数解决</h5>
+
+<p>相对而言，Apriori算法的函数比较难以编写，原因可想而知，肯定是因为数据结构的问题！但是也只是比其他函数难编一点，毕竟其自带的数据结构功能还是非常强大的。我在<a href="http://jackycode.github.io/datascience">我的项目</a>中给出的一种编写方式，是利用R语言的list来实现的。不过，我想，利用Matrix或者data.frame，当然如果你还懂<code>data.table</code>的话，那么肯定也是可以编写的，而且我想应该会比用list简单！(没有亲手编写，只是猜想！)</p>
+
+<p>详见<a href="http://jackycode.github.io/datascience">我的项目</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[R语言记录8：Loop Functions]]></title>
@@ -2199,237 +2326,6 @@
 <h3 id="section-3">其它</h3>
 <hr />
 <p>看了一下，Koding也是支持Octopress的，而且配置很简单，跟在自己机器上差不多。具体还有什么，就靠自己去慢慢摸索了。可以肯定的是，这个平台还是很不错的，值得推荐哦！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[记录：最近对博客的一些修改]]></title>
-    <link href="http://jackycode.github.io/blog/2014/03/18/record3/"/>
-    <updated>2014-03-18T18:52:12+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/03/18/record3</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical11.jpg" alt="aritical 11" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>前两天发现了一款很不错的主题<code>bootstrap</code>，心中一直很是惦记，终于还是在昨天晚上换了主题。趁着换主题的时间，我也顺便为我的博客添加了一些其它的功能，也设置了一下侧边栏，详情如下。</p>
-
-<h4 id="google-analytics">1. 加入Google Analytics</h4>
-<p>对于自己的博客，总是想了解它的现状的。起码我希望知道我的博客有没人来看，所以加了这个功能。</p>
-
-<p>加入这个功能的方法很简单，就是去<a href="http://www.google.com/analytics/">Google Analytics</a>注册个帐号，然后把你的帐号填到<code>_config.yml</code>中对应的位置就OK啦。</p>
-
-<p>当然我就遇到了一个问题，就是填入帐号之后，Google Analytics总是跟踪不到。最后我只能把<code>_config.yml</code>中的帐号注释掉，然后进入<code>source/_includes/head.html</code>中，添加了申请帐号之后给出的脚本。等了大概几分钟，Google Analytics就显示跟踪到了。如果你遇到类似的问题，可以试一下这个方法。</p>
-
-<h4 id="section">2. 加入数学公式支持</h4>
-
-<p>首先启用MathJax，即在<code>source/_includes/custom/footer.html</code>的第一行添加代码：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="c">&lt;!--</span> <span class="nx">mathjax</span> <span class="nx">config</span> <span class="nx">similar</span> <span class="nx">to</span> <span class="nx">math</span><span class="p">.</span><span class="nx">stackexchange</span> <span class="o">--&gt;</span>
-</span><span class="line"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/x-mathjax-config&quot;</span><span class="o">&gt;</span>
-</span><span class="line">  <span class="nx">MathJax</span><span class="p">.</span><span class="nx">Hub</span><span class="p">.</span><span class="nx">Config</span><span class="p">({</span>
-</span><span class="line">    <span class="nx">jax</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;input/TeX&quot;</span><span class="p">,</span> <span class="s2">&quot;output/HTML-CSS&quot;</span><span class="p">],</span>
-</span><span class="line">    <span class="nx">tex2jax</span><span class="o">:</span> <span class="p">{</span>
-</span><span class="line">    	<span class="nx">inlineMath</span><span class="o">:</span> <span class="p">[</span> <span class="p">[</span><span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">]</span> <span class="p">],</span>
-</span><span class="line">    	<span class="nx">displayMath</span><span class="o">:</span> <span class="p">[</span> <span class="p">[</span><span class="s1">&#39;$$&#39;</span><span class="p">,</span> <span class="s1">&#39;$$&#39;</span><span class="p">]],</span>
-</span><span class="line">    	<span class="nx">processEscapes</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class="line">    	<span class="nx">skipTags</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;script&#39;</span><span class="p">,</span> <span class="s1">&#39;noscript&#39;</span><span class="p">,</span> <span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="s1">&#39;textarea&#39;</span><span class="p">,</span> <span class="s1">&#39;pre&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">]</span> <span class="p">},</span>
-</span><span class="line">    	<span class="nx">messageStyle</span><span class="o">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
-</span><span class="line">    	<span class="s2">&quot;HTML-CSS&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="nx">preferredFont</span><span class="o">:</span> <span class="s2">&quot;TeX&quot;</span><span class="p">,</span> <span class="nx">availableFonts</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;STIX&quot;</span><span class="p">,</span><span class="s2">&quot;TeX&quot;</span><span class="p">]</span> <span class="p">}</span> <span class="p">});</span>
-</span><span class="line"><span class="o">&lt;</span><span class="err">/script&gt;</span>
-</span><span class="line"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML&quot;</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>添加之后，就在博客里面引入了MathJax，那么就可以在markdown里面直接输入公式了，例如：<code>$n^2$</code>就可以解析成$n^2$。</p>
-
-<p>在引入MathJax之后，我更换了解析器，因为自带的<code>rdiscount</code>解析器对于MathJax的细节处理存在一些小问题。更换解析器，可以到<code>Gemfile</code>中添加：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">gem</span> <span class="s1">&#39;kramdown&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 0.13.8&#39;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然后在终端运行：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">bundle</span> <span class="n">install</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>最后，在<code>_config.yml</code>文件中，将解析器更换：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="ss">markdown</span><span class="p">:</span><span class="n">kramdown</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>使用kramdown，有两点需要注意：</p>
-
-<ol>
-  <li>公式无论行内行间都以<code>$$</code>开头；行间公式，必须独占一行；</li>
-  <li>代码块开头必须空一行，否则代码高亮会失效。</li>
-</ol>
-
-<p>至于其它的，可以去<a href="http://kramdown.rubyforge.org/syntax.html">官方文档</a>查看。</p>
-
-<h4 id="section-1">3. 更换主题</h4>
-<p>如何更换主题，在之前的文章里面早已说过。这次就是将主题更换成了<code>bootstrap</code>。</p>
-
-<h4 id="section-2">4. 侧边栏的修改</h4>
-
-<h5 id="a-">a. 关于我</h5>
-<p>添加自己的简介，可以在<code>custom/asides/</code>文件夹下添加<code>about.html</code>，然后添加内容：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;section</span> <span class="na">class=</span><span class="s">&quot;well&quot;</span><span class="nt">&gt;</span>
-</span><span class="line">  <span class="nt">&lt;ul</span> <span class="na">id=</span><span class="s">&quot;about&quot;</span> <span class="na">class=</span><span class="s">&#39;nav nav-list&#39;</span><span class="nt">&gt;</span>
-</span><span class="line">    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;nav-header&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/about&quot;</span><span class="nt">&gt;</span>关于我<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
-</span><span class="line">      <span class="nt">&lt;p&gt;</span>介绍一下自己<span class="nt">&lt;/p&gt;</span>
-</span><span class="line">      <span class="nt">&lt;p&gt;</span>可以留下联系方式，比如微博等等<span class="nt">&lt;/p&gt;</span>
-</span><span class="line">  <span class="nt">&lt;/ul&gt;</span>
-</span><span class="line"><span class="nt">&lt;/section&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>这里我使用了我博客主题的样式，就是里面的<code>class</code>和<code>id</code>的值。这些值需要你根据自己博客的主题样式设定，可以参看其自带的侧边栏的一些网页，比如<code>_includes/asides/recent_post.html</code>。</p>
-
-<h5 id="b-">b. 文章分类</h5>
-<p>给自己的文章分类，需要的操作稍微麻烦一些。首先需要在<code>plugins</code>目录下创建<code>category_list_tag.rb</code>文件：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">module</span> <span class="nn">Jekyll</span>
-</span><span class="line">  <span class="k">class</span> <span class="nc">CategoryListTag</span> <span class="o">&lt;</span> <span class="ss">Liquid</span><span class="p">:</span><span class="ss">:Tag</span>
-</span><span class="line">    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-</span><span class="line">      <span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span class="line">      <span class="n">categories</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">categories</span><span class="o">.</span><span class="n">keys</span>
-</span><span class="line">      <span class="n">categories</span><span class="o">.</span><span class="n">sort</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">category</span><span class="o">|</span>
-</span><span class="line">        <span class="n">posts_in_category</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">categories</span><span class="o">[</span><span class="n">category</span><span class="o">].</span><span class="n">size</span>
-</span><span class="line">        <span class="n">category_dir</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registers</span><span class="o">[</span><span class="ss">:site</span><span class="o">].</span><span class="n">config</span><span class="o">[</span><span class="s1">&#39;category_dir&#39;</span><span class="o">]</span>
-</span><span class="line">        <span class="n">category_url</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">category_dir</span><span class="p">,</span> <span class="n">category</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/_|\P{Word}/</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/-{2,}/</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">downcase</span><span class="p">)</span>
-</span><span class="line">        <span class="n">html</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;&lt;li class=&#39;category&#39;&gt;&lt;a href=&#39;/</span><span class="si">#{</span><span class="n">category_url</span><span class="si">}</span><span class="s2">/&#39;&gt;</span><span class="si">#{</span><span class="n">category</span><span class="si">}</span><span class="s2"> (</span><span class="si">#{</span><span class="n">posts_in_category</span><span class="si">}</span><span class="s2">)&lt;/a&gt;&lt;/li&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
-</span><span class="line">      <span class="k">end</span>
-</span><span class="line">      <span class="n">html</span>
-</span><span class="line">    <span class="k">end</span>
-</span><span class="line">  <span class="k">end</span>
-</span><span class="line"><span class="k">end</span>
-</span><span class="line">
-</span><span class="line"><span class="ss">Liquid</span><span class="p">:</span><span class="ss">:Template</span><span class="o">.</span><span class="n">register_tag</span><span class="p">(</span><span class="s1">&#39;category_list&#39;</span><span class="p">,</span> <span class="ss">Jekyll</span><span class="p">:</span><span class="ss">:CategoryListTag</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>然后新建<code>source/_includes/asides/category_list.html</code>：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;section</span> <span class="na">class=</span><span class="s">&quot;well&quot;</span><span class="nt">&gt;</span>
-</span><span class="line">  <span class="nt">&lt;ul</span> <span class="na">id=</span><span class="s">&quot;category_list&quot;</span> <span class="na">class=</span><span class="s">&quot;nav nav-list&quot;</span><span class="nt">&gt;</span>
-</span><span class="line">    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;nav-header&quot;</span><span class="nt">&gt;</span>文章分类<span class="nt">&lt;/li&gt;</span>
-</span><span class="line">      <span class="nt">&lt;li</span> <span class="na">id=</span><span class="s">&quot;categories&quot;</span><span class="nt">&gt;</span>% category_list %}<span class="nt">&lt;/li&gt;</span>
-</span><span class="line">  <span class="nt">&lt;/ul&gt;</span>
-</span><span class="line"><span class="nt">&lt;/section&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>这样就可以了。</p>
-
-<h5 id="c-">c. 推荐站点</h5>
-<p>跟添加<strong>关于我</strong>类似，可以直接在<code>custom/asides/</code>目录下添加<code>links.html</code>：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;section</span> <span class="na">class=</span><span class="s">&quot;well&quot;</span><span class="nt">&gt;</span>
-</span><span class="line">  <span class="nt">&lt;ul</span> <span class="na">id=</span><span class="s">&quot;links&quot;</span> <span class="na">class=</span><span class="s">&quot;nav nav-list&quot;</span><span class="nt">&gt;</span>
-</span><span class="line">    <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;nav-header&quot;</span><span class="nt">&gt;</span>推荐站点<span class="nt">&lt;/li&gt;</span>
-</span><span class="line">    <span class="nt">&lt;li&gt;</span>
-</span><span class="line">      <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://macshuo.com/&quot;</span><span class="nt">&gt;</span>MacTalk-池建强的随想录<span class="nt">&lt;/a&gt;</span>
-</span><span class="line">    <span class="nt">&lt;/li&gt;</span>
-</span><span class="line">    <span class="nt">&lt;li&gt;</span>
-</span><span class="line">      <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://yihui.name/&quot;</span><span class="nt">&gt;</span>Yihui Xie<span class="nt">&lt;/a&gt;</span>
-</span><span class="line">    <span class="nt">&lt;/li&gt;</span>
-</span><span class="line"><span class="nt">&lt;/ul&gt;</span>
-</span><span class="line"><span class="nt">&lt;/section&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h5 id="d-license">d. License</h5>
-<p>与推荐站点一样，可以在<code>custom/asides/</code>目录下添加<code>license.html</code>。然后到<a href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">署名-非商业性使用-相同方式共享 2.5 中国大陆</a>网页获取license的网页代码。</p>
-
-<p><strong>建好这些文件后，别忘了在<code>_config.yml</code>中修改侧边栏项：</strong></p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="html"><span class="line">default_asides: [custom/asides/about.html, asides/category_list.html]
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h4 id="section-3">5. 其它一些修改</h4>
-
-<ol>
-  <li>将博客大部分文字换成了中文；</li>
-  <li>去除了之前的Home页；</li>
-  <li>修改各篇文章内部的图片大小，统一使用8cm*8cm；</li>
-  <li>将所有的头部的导图长度加长。</li>
-</ol>
-
-<hr />
-
-<h4 id="section-4">参考资源</h4>
-
-<ol>
-  <li>
-    <p><a href="http://www.yanjiuyanjiu.com/blog/20130402/">研究研究: 我的Octopress配置</a></p>
-  </li>
-  <li>
-    <p><a href="http://www.cnblogs.com/oec2003/archive/2013/05/31/3109577.html">冯威的学习专栏: Octopress博客设置</a></p>
-  </li>
-  <li>
-    <p><a href="http://shanewfx.github.io/blog/2012/08/13/improve-blog-theme/">思考的轨迹: Octopress主题改造</a></p>
-  </li>
-  <li>
-    <p><a href="https://www.google.com.hk/search?newwindow=1&amp;safe=strict&amp;espv=210&amp;es_sm=119&amp;q=octopress%E6%95%99%E7%A8%8B&amp;oq=octopress%E6%95%99%E7%A8%8B&amp;gs_l=serp.12..35i39.5308.6241.0.8806.10.8.0.0.0.1.237.921.0j3j2.5.0....0...1c.1j4.35.serp..6.4.789.PMKW2jRRdPI">。。。</a></p>
-  </li>
-</ol>
 ]]></content>
   </entry>
   

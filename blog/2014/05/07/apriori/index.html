@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>数据科学之机器学习9: 聚类算法之KMeans - Jacky and MSC</title>
+  <title>数据科学之机器学习14: 关联分析之apriori算法 - Jacky and MSC</title>
   <meta name="author" content="Jacky Code">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jackycode.github.io/blog/2014/04/19/kmeans">
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/05/07/apriori">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -99,7 +99,7 @@
   
   <header class="page-header">
     
-      <h1 class="entry-title">数据科学之机器学习9: 聚类算法之KMeans</h1>
+      <h1 class="entry-title">数据科学之机器学习14: 关联分析之apriori算法</h1>
     
     
       <p class="meta">
@@ -115,61 +115,88 @@
   
 
 
-<time datetime="2014-04-19T13:01:02+08:00" pubdate data-updated="true">Apr 19<span>th</span>, 2014</time>
+<time datetime="2014-05-07T17:00:48+08:00" pubdate data-updated="true">May 7<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p><img src="/images/artical/artical24.jpg" alt="artical 24" />
+<div class="entry-content"><p><img src="/images/artical/artical31.jpg" alt="artical 31" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
 
 <hr />
 
-<h2 id="the-k-means-algorithm">The k-means algorithm</h2>
+<p>在上一篇中，我们介绍了关联分析相关的概念，这一节来看看如何使用Apriori算法去寻找满足条件的项集。</p>
+
+<p>首先回顾一个概念，<strong>一个项集的支持度</strong>就是数据集中该项集所占的比例。Apriori算法就是用于寻找数据集中，支持度和可信度超过某一给定值的项集和关联规则。</p>
+
 <hr />
 
-<p>前面写了很多监督学习的东西，除了回归就是分类，今儿有点想换换口味，写写无监督学习的算法。k-means算法是一种聚类算法，聚类就是无监督学习里面的内容。那么先来说说聚类：</p>
-
-<h3 id="section">一、聚类简介</h3>
+<h4 id="section">一、原理</h4>
 <hr />
+
+<p>在介绍算法之前，首先了解一个集合论中的性质定理：集合的向下封闭性。</p>
+
+<p>我们通过一个例子来看看这个定理，见下图：</p>
+
+<p><img src="/images/a31/apriori_1.jpg" alt="" /></p>
+
+<p>集合的向下封闭性，在这边解释的话，也就是说，<strong>如果一个项集的支持度低于某一个值，那么该项集超集的支持度也必定低于这个值。如果一个项集的支持度高于某一个值，那么该项集子集的支持度也必定高于某一个值。</strong></p>
+
+<p><strong>超集</strong>：就是指包含这个集合中所以元素的集合（不包括自身），比如集合ABC就是集合AB的超集。</p>
+
+<p>那么这个定理放在上一个图当中，就有这样的含义：</p>
+
+<p><img src="/images/a31/apriori_2.jpg" alt="" /></p>
+
+<hr />
+
+<h4 id="section-1">二、算法构成</h4>
+<hr />
+
+<p>有了上面这个原理，那么就可以利用这个原理去减少我们寻找频繁集的计算量。因为，只要我们找到一个项集，其支持度低于给定的值，那么这个项集的所有超集就可以直接忽略不计了。如上图，项集A的支持度低于指定的值，那么其超集就都不用再考虑了。</p>
+
+<p><strong>Apriori算法由两部分构成：</strong></p>
 
 <ol>
-  <li>
-    <p>聚类是一种无监督学习方法，它主要就是将相似的对象归并到一个类别中。</p>
-  </li>
-  <li>
-    <p>聚类分析的目的是把分类对象按照一定的规则，分成若干个类。这些类并不是事先给定的，而是在处理数据时，根据数据的特征确定的。因而，在处理之前无需对类的数目、结构等等作出假定(理论如此，实际应用时并不完全这样，以后讲聚类分析时再具体说)。</p>
-  </li>
-  <li>
-    <p>在同一类别中，对象具有某种意义下的相似性；不同的类别中，对象具有某种意义下的不相似。</p>
-  </li>
-  <li>
-    <p><strong>聚类与分类的最大不同</strong>：分类的目标事先已知，而聚类未知。正因为聚类产生的结构与分类相同，只是类别没有预先定义，所以聚类也被称为“无监督分类”。</p>
-  </li>
+  <li>找到满足最小支持度的项集；</li>
+  <li>找到可信度超过最小可信度的关联规则。</li>
 </ol>
 
-<h3 id="k-means">二、k-means法</h3>
+<p>下面，我们一个一个地解决：</p>
+
 <hr />
 
-<p>k-means法是由MacQueen提出并命名的一种聚类算法。其使用聚类中的均值进行聚类划分，这样说不大好理解，可以先看一下算法的基本步骤：</p>
+<h5 id="section-2">2.1. 寻找频繁项集</h5>
+<hr />
+
+<p>利用上面所讲的原理，我们来整理一下这个步骤的流程：</p>
 
 <ol>
-  <li>从n个数据对象中任意取出k个样品对象作为初始聚类点（或者将所有数据分成k份，计算每一份中的重心（均值）作为初始聚类点）；</li>
-  <li>对所有样品对象逐个归类，将每一个对象归入距离他最近的那个类（距离一般使用欧式距离），并将该类的凝聚点更新为这个类当前的均值；</li>
-  <li>重复步骤2，直至所有对象都不能再分配为止。</li>
+  <li>从数据集中构造集合C1，C1满足：大小为1的所有候选项集的集合，例如上图中的：C1 = {A, B, C};</li>
+  <li>计算C1中所有项集（单元素项集）是否满足最小支持度，满足的项集构成集合L1，例如上图中的：L1 = {B, C};</li>
+  <li>利用L1生成新的候选项集C2，C2满足：大小为2的所有候选项集的集合，例如上图中得：C2 = {BC};</li>
+  <li>计算C2中所有项集（双元素项集）是否满足最小支持度，满足的项集构成集合L2；</li>
+  <li>重复直到Lk中得元素个数为1。</li>
 </ol>
 
-<h3 id="r">三、R语言实现</h3>
 <hr />
 
-<h4 id="section-1">1. 自定义函数</h4>
+<h5 id="section-3">2.2. 寻找关联规则</h5>
 <hr />
 
-<p>自定义一个函数<code>se_kmeans</code>，使用这个函数可以通过输入需要聚类的数据集以及类别数目k，即可得到每一个样品的类别以及各个类别的中心。该函数使用欧式距离作为相似性的度量（当然还有很多其它方式，之后的聚类分析中会讲到），具体的程序可以在<a href="/datascience">我的项目</a>中找到，也可以直接到我的<a href="https://github.com/JackyCode/Data_Science">github</a>中查看源代码。这边给出测试代码以及结果：</p>
+<p>在得到频繁项集之后，要寻找关联规则就容易多了。可以直接从频繁项集中构造初始的关联规则，计算该关联规则的可信度，然后与给定的最小可信度作比较，若值大于最小可信度，则记录该关联规则。</p>
+
+<p>在实际编程时，需要注意使用<strong>集合的向下封闭性</strong>！！！想想看，在关联规则中，这个性质应该怎样去实现？(可以到Machine Learning in Action中找答案！)</p>
+
+<h4 id="r">三、R语言实现</h4>
+
+<h5 id="section-4">1. 使用自带的程序</h5>
+
+<p>在R语言的<code>arules</code>这个包里面，提供了一个实现Apriori算法的函数：<code>apriori()</code>：</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
@@ -179,50 +206,41 @@
 <span class="line-number">6</span>
 <span class="line-number">7</span>
 <span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">x1 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
-</span><span class="line">x2 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
-</span><span class="line">x <span class="o">&lt;-</span> rbind<span class="p">(</span>x1<span class="p">,</span> x2<span class="p">)</span>
-</span><span class="line">
-</span><span class="line">clusters <span class="o">&lt;-</span> se_kmeans<span class="p">(</span>x<span class="p">,</span> <span class="m">2</span><span class="p">)</span>
-</span><span class="line">clusters
-</span><span class="line">plot<span class="p">(</span>x<span class="p">,</span> col<span class="o">=</span>clusters<span class="o">$</span>cluster<span class="p">,</span> pch<span class="o">=</span>as.character<span class="p">(</span>clusters<span class="o">$</span>cluster<span class="p">),</span> cex<span class="o">=</span><span class="m">0.5</span><span class="p">)</span>
-</span><span class="line">points<span class="p">(</span>clusters<span class="o">$</span>center<span class="p">,</span> col<span class="o">=</span><span class="s">&#39;green&#39;</span><span class="p">,</span> pch<span class="o">=</span><span class="s">&#39;o&#39;</span><span class="p">,</span> cex <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1"># 构造数据集</span>
+</span><span class="line">dataSet <span class="o">&lt;-</span> matrix<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">3</span><span class="p">)</span>
+</span><span class="line">rownames<span class="p">(</span>dataSet<span class="p">)</span> <span class="o">&lt;-</span> paste<span class="p">(</span><span class="s">&quot;item&quot;</span><span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> sep<span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+</span><span class="line">colnames<span class="p">(</span>dataSet<span class="p">)</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="s">&quot;B&quot;</span><span class="p">,</span> <span class="s">&quot;C&quot;</span><span class="p">)</span>
+</span><span class="line">dataSet<span class="p">[</span><span class="m">1</span><span class="p">,]</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+</span><span class="line">dataSet<span class="p">[</span><span class="m">2</span><span class="p">,]</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+</span><span class="line">dataSet<span class="p">[</span><span class="m">3</span><span class="p">,]</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+</span><span class="line">dataSet<span class="p">[</span><span class="m">4</span><span class="p">,]</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+</span><span class="line">dataSet<span class="p">[</span><span class="m">5</span><span class="p">,]</span> <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+</span><span class="line">dataSet
+</span><span class="line"><span class="c1"># 转换数据格式(可以?apriori查看数据格式)</span>
+</span><span class="line">dataSet_class <span class="o">&lt;-</span> as<span class="p">(</span>dataSet<span class="p">,</span><span class="s">&quot;transactions&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="c1"># 构造频繁项集</span>
+</span><span class="line">rules<span class="o">&lt;-</span>apriori<span class="p">(</span>dataSet_class<span class="p">,</span>parameter<span class="o">=</span>list<span class="p">(</span>supp<span class="o">=</span><span class="m">0.5</span><span class="p">,</span>conf<span class="o">=</span><span class="m">0.6</span><span class="p">,</span>target<span class="o">=</span><span class="s">&quot;rules&quot;</span><span class="p">))</span>
+</span><span class="line"><span class="c1"># 查看结果</span>
+</span><span class="line">summary<span class="p">(</span>rules<span class="p">)</span>
+</span><span class="line"><span class="c1"># 构造关联规则</span>
+</span><span class="line">inspect<span class="p">(</span>rules<span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>得到如下的一张图</p>
+<h5 id="section-5">2. 自定义函数解决</h5>
 
-<p><img src="\images\a24\kmeans1.jpg" alt="kmeans1" /></p>
+<p>相对而言，Apriori算法的函数比较难以编写，原因可想而知，肯定是因为数据结构的问题！但是也只是比其他函数难编一点，毕竟其自带的数据结构功能还是非常强大的。我在<a href="/datascience">我的项目</a>中给出的一种编写方式，是利用R语言的list来实现的。不过，我想，利用Matrix或者data.frame，当然如果你还懂<code>data.table</code>的话，那么肯定也是可以编写的，而且我想应该会比用list简单！(没有亲手编写，只是猜想！)</p>
 
-<p>可以看到，分类效果是很好的。</p>
-
-<h4 id="kmeans">2. 使用<code>kmeans</code>函数</h4>
-<hr />
-
-<p>可以使用<code>stats</code>包中的<code>kmeans</code>函数来实现，示例如下：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">x1 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
-</span><span class="line">x2 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
-</span><span class="line">x <span class="o">&lt;-</span> rbind<span class="p">(</span>x1<span class="p">,</span> x2<span class="p">)</span>
-</span><span class="line">
-</span><span class="line">clusters <span class="o">&lt;-</span> kmeans<span class="p">(</span>x<span class="p">,</span> <span class="m">2</span><span class="p">)</span>
-</span><span class="line">clusters
-</span><span class="line">plot<span class="p">(</span>x<span class="p">,</span> col<span class="o">=</span>clusters<span class="o">$</span>cluster<span class="p">,</span> pch<span class="o">=</span>as.character<span class="p">(</span>clusters<span class="o">$</span>cluster<span class="p">),</span> cex<span class="o">=</span><span class="m">0.5</span><span class="p">)</span>
-</span><span class="line">points<span class="p">(</span>clusters<span class="o">$</span>centers<span class="p">,</span> col<span class="o">=</span><span class="s">&#39;green&#39;</span><span class="p">,</span> pch<span class="o">=</span><span class="s">&#39;o&#39;</span><span class="p">,</span> cex <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>得到这样一张图</p>
-
-<p><img src="\images\a24\kmeans2.jpg" alt="kmeans2" /></p>
-
-<p>从图中可以看出，kmeans的分类效果还是蛮不错的，当然我们可以计算一下误判，不过这显然是很小的。</p>
+<p>详见<a href="/datascience">我的项目</a></p>
 </div>
 
 
@@ -245,12 +263,12 @@
   
 
 
-<time datetime="2014-04-19T13:01:02+08:00" pubdate data-updated="true">Apr 19<span>th</span>, 2014</time>
+<time datetime="2014-05-07T17:00:48+08:00" pubdate data-updated="true">May 7<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/clustering/'>Clustering</a>, <a class='category' href='/blog/categories/datascience/'>DataScience</a>, <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
+    <a class='category' href='/blog/categories/associationanalysis/'>AssociationAnalysis</a>, <a class='category' href='/blog/categories/datascience/'>DataScience</a>, <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
   
 </span>
 
@@ -268,14 +286,10 @@
     <ul class="pager">
       
       <li class="previous"><a class="basic-alignment left"
-        href="/blog/2014/04/14/id3/" title="Previous Post:
-        数据科学之机器学习8: 决策树之ID3">&laquo; 数据科学之机器学习8: 决策树之ID3</a></li>
+        href="/blog/2014/05/04/loop-functions/" title="Previous Post:
+        R语言记录8：Loop Functions">&laquo; R语言记录8：Loop Functions</a></li>
       
       <li><a href="/blog/archives">Blog Archives</a></li>
-      
-      <li class="next"><a class="basic-alignment right" href="/blog/2014/04/21/cluster-analysis/"
-        title="Next Post: 数据科学之机器学习10: 聚类分析1">数据科学之机器学习10: 聚类分析1
-        &raquo;</a></li>
       
     </ul>
   </footer>
