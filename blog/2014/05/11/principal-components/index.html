@@ -1,0 +1,454 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>数据科学之机器学习15: 主成分分析 - Jacky and MSC</title>
+  <meta name="author" content="Jacky Code">
+
+  
+  <meta name="description" content="">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/05/11/principal-components">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Jacky and MSC" type="application/atom+xml">
+  
+  
+  <!-- 
+ -->
+  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-48812316-1', 'jackycode.github.io');ga('send', 'pageview');</script>
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">Jacky and MSC</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">文章归档</a></li>
+  <li><a href="/repos">我的项目</a></li>
+  <li><a href="/about">关于我</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:jackycode.github.io" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">数据科学之机器学习15: 主成分分析</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-11T11:35:10+08:00" pubdate data-updated="true">May 11<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/artical/artical33.jpg" alt="artical 33" />
+<!-- more --></p>
+
+<p>图片为：本文实例数据得到的，前两个主成分的散点图！</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>在之前<a href="http://jackycode.github.io/blog/2014/04/02/linear-regression3/">线性回归3</a>提到多重共线性问题，当时说了一些解决这个问题的办法，其中一种就是今天要说的<strong>主成分分析</strong>。</p>
+
+<p><strong>主成分分析</strong>，Principal Components Analysis，简称PCA，是变量选择的一种方法。其一般的目的就是：变量的降维和主成分的解释！当主成分用于聚类或者回归，这个时候就是在做变量的降维；而当用来分析变量，尤其是使用前两个主成分进行散点图的绘制时，此时就是在对变量利用主成分做出一些解释。在了解主成分分析的原理之后，相信对这两个目的就可以很容易直观的理解了！</p>
+
+<hr />
+
+<h4 id="section">一、原理初窥</h4>
+<hr />
+
+<p>在用数学公式和概率统计知识推导其原理之前，不妨先直观地看看主成分分析到底是要干嘛，以及大致是怎么干的！</p>
+
+<p>我们就用两个变量来说这个问题，变量分别记作<script type="math/tex">x_1,x_2</script>。那么，我们先画个散点图吧，也许它们的散点图是这个样子的：</p>
+
+<p><img src="/images/a33/images1.jpg" alt="" /></p>
+
+<p>我们可以看到，这两个变量明显呈现一种线性关系，如果在做线性回归时，将这两个变量都用作自变量，然后对某一个因变量进行线性拟合，那必定会存在一些问题。那么主成分分析是要做什么呢？其实主成分分析就是要寻找变量<script type="math/tex">y_1,y_2</script>去替代<script type="math/tex">x_1,x_2</script>，而且满足<script type="math/tex">y_1,y_2</script>几乎不相关，同时<script type="math/tex">y_1,y_2</script>能够保留<script type="math/tex">x_1,x_2</script>所包含的信息。</p>
+
+<p>那么主成分分析是如何做的呢？这个时候就需要考虑旋转坐标轴，当我们像下图那样旋转过坐标轴之后，上面提出的要求就得到了实现。</p>
+
+<p><img src="/images/a33/images2.jpg" alt="" /></p>
+
+<p>从这张图我们就可以看出，数据投影到<script type="math/tex">y_1,y_2</script>两轴后，数据基本不相关，而且在<script type="math/tex">y_1</script>轴就保留了原本数据的大部分信息，<script type="math/tex">y_2</script>保留了数据的另外一部分信息。由此可见，数据越是集中在<script type="math/tex">y_1</script>轴两侧，数据映射到<script type="math/tex">y_1</script>轴后保留的信息就越多，而<script type="math/tex">y_2</script>就越少。当<script type="math/tex">y_2</script>含有的信息非常少，少到接近于0时，那么此时就到达了变量选择的目的，因为此时只要保留<script type="math/tex">y_1</script>就可以了。</p>
+
+<hr />
+
+<h4 id="section-1">二、原理</h4>
+<hr />
+
+<p>我们将数据映射到<script type="math/tex">y_1,y_2</script>轴，其实就是将原数据做个线性变换。利用上面的内容举个简单地例子就是：</p>
+
+<p><img align="center" src="/images/a33/eq1.jpg" /></p>
+
+<p>其中的系数满足：<script type="math/tex">a_{11}^2 + a_{21}^2=1,a_{12}^2 + a_{22}^2=1</script>。这样就可以成功地将数据投影到<script type="math/tex">y_1,y_2</script>轴。这里我们考虑更一般的情况，考虑<script type="math/tex">p</script>维的情况：</p>
+
+<p><img align="center" src="/images/a33/eq2.jpg" /></p>
+
+<p>其中<script type="math/tex">a_i=(a_{1i},a_{2i},\dots,a_{pi})', i=1,2,\dots,p</script>，且满足<script type="math/tex">a_i'a_1=1</script>。</p>
+
+<p>下面要考虑的就是，如何选择<script type="math/tex">a_1</script>，使得<script type="math/tex">V(y_1)</script>到达最大，找到之后，<script type="math/tex">y_1</script>就是<strong>第一主成分</strong>。</p>
+
+<p>首先，<script type="math/tex">V(y_1)=a_1' \Sigma a_1</script>，其中<script type="math/tex">\Sigma=V(x)</script>为协方差矩阵。我们知道<script type="math/tex">\Sigma</script>是非负定的，那么其所有的特征值必定都是大于等于0的，我们可以排个序：<script type="math/tex">\lambda _{ 1 }\geqslant \lambda _{ 2 }\geqslant \dots \geqslant \lambda_p \geqslant 0</script>，其对应的特征向量记为：<script type="math/tex">t_1, t_2, \dots, t_p</script>，显然这些特征向量是相互正交的。记<script type="math/tex">T=(t_1, t_2, \dots, t_p)=(t_{ik}), \Lambda=diag(\lambda_1,\lambda_2,\dots,\lambda_p)</script>。</p>
+
+<p>那么根据谱分解就有：<script type="math/tex">\Sigma=T \Lambda T'=\sum_{i=1}^{p}\lambda_it_it_i'</script>。那么带入到<script type="math/tex">V(y_1)</script>中就有：</p>
+
+<script type="math/tex; mode=display">V(y_1)=\sum_{i=1}^{p} \lambda_i a_1' t_it_i' a_1 = \sum_{i=1}^{p} \lambda_i(a_1't_i)^2</script>
+
+<p>由于特征值中<script type="math/tex">\lambda_1</script>是最大的，那么就有：</p>
+
+<script type="math/tex; mode=display">V(y_1) \leqslant \lambda_1 \sum_{i=1}^{p} (a_1't_i)^2 = \lambda_1 \sum_{i=1}^{p} {a_1't_it_i'a_1} = \lambda_1 a_1' TT'a_1 = \lambda_1</script>
+
+<p>可以看到最终的结果是：<script type="math/tex">V(y_1) \leqslant \lambda_1</script>。那么什么时候取等号呢？取<script type="math/tex">a_1 = t_1</script>，则有：</p>
+
+<script type="math/tex; mode=display">t_1'\Sigma t_1 = t_1' (\lambda_1t_1) = \lambda_1</script>
+
+<p>到止为止，就可以看到。当<script type="math/tex">y_1=t_1'x</script>时就有其<script type="math/tex">V(y_1)</script>达到最大，为<script type="math/tex">\lambda_1</script>。那么此时<script type="math/tex">y_1=t_1'x</script>就是该数据第一主成分。</p>
+
+<p>同理可以求解第二主成分直至最后。<strong>但是，在求解第二第三主成分的时候，需要注意一个新的问题：主成分之间不相关，即<script type="math/tex">Cov(y_i,y_k)=0,i \neq k</script></strong>，如何证明非常简单，我就不说了，自己动动手吧。</p>
+
+<hr />
+
+<h4 id="section-2">三、具体实例</h4>
+<hr />
+
+<p>我们使用R语言来做个小例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1"># 构造一个数据集</span>
+</span><span class="line">set.seed<span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</span><span class="line">x1 <span class="o">&lt;-</span> seq<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">50</span><span class="p">,</span> <span class="m">2</span><span class="p">)</span> <span class="o">+</span> rnorm<span class="p">(</span><span class="m">25</span><span class="p">,</span> mean<span class="o">=</span><span class="m">1</span><span class="p">,</span> sd<span class="o">=</span><span class="m">1</span><span class="p">)</span>
+</span><span class="line">x2 <span class="o">&lt;-</span> <span class="m">2</span><span class="o">*</span>x1 <span class="o">+</span> rnorm<span class="p">(</span><span class="m">25</span><span class="p">,</span> mean<span class="o">=</span><span class="m">1</span><span class="p">,</span> sd<span class="o">=</span><span class="m">1</span><span class="p">)</span>
+</span><span class="line">x3 <span class="o">&lt;-</span> x1<span class="o">/</span><span class="m">2</span> <span class="o">+</span> x2 <span class="o">+</span> rnorm<span class="p">(</span><span class="m">25</span><span class="p">,</span> mean<span class="o">=</span><span class="m">1</span><span class="p">,</span> sd<span class="o">=</span><span class="m">1</span><span class="p">)</span>
+</span><span class="line">x <span class="o">&lt;-</span> data.frame<span class="p">(</span>x1<span class="o">=</span>x1<span class="p">,</span> x2<span class="o">=</span>x2<span class="p">,</span> x3<span class="o">=</span>x3<span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># 计算协方差矩阵</span>
+</span><span class="line">Sig <span class="o">&lt;-</span> cov<span class="p">(</span>x<span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># 计算特征值和特征向量</span>
+</span><span class="line">eigen<span class="p">(</span>Sig<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>得到结果如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">$</span>values
+</span><span class="line"><span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="m">2381.3724526</span>    <span class="m">0.3681085</span>    <span class="m">0.1165201</span>
+</span><span class="line">
+</span><span class="line"><span class="o">$</span>vectors
+</span><span class="line">           <span class="p">[,</span><span class="m">1</span><span class="p">]</span>       <span class="p">[,</span><span class="m">2</span><span class="p">]</span>        <span class="p">[,</span><span class="m">3</span><span class="p">]</span>
+</span><span class="line"><span class="p">[</span><span class="m">1</span><span class="p">,]</span> <span class="m">-0.2982259</span> <span class="m">-0.4601189</span>  <span class="m">0.83627265</span>
+</span><span class="line"><span class="p">[</span><span class="m">2</span><span class="p">,]</span> <span class="m">-0.6002191</span> <span class="m">-0.5908325</span> <span class="m">-0.53912331</span>
+</span><span class="line"><span class="p">[</span><span class="m">3</span><span class="p">,]</span> <span class="m">-0.7421579</span>  <span class="m">0.6627273</span>  <span class="m">0.09997061</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>得到了特征值为：<script type="math/tex">\lambda_1=238.372, \lambda_2=0.368, \lambda_3=0.11652</script>，可以看到第一主成分<script type="math/tex">y_1=t_1'x=-0.298x_1-0.600x_2-0.742x_3</script>的特征值<script type="math/tex">\lambda_1</script>的值远大于其余的(由于数据构造时就是以<script type="math/tex">x_1</script>为底的)。说明第一主成分能够解释数据的大部分信息，那么如何衡量呢？</p>
+
+<p>这时候就需要使用到<strong>贡献率</strong>这个概念，某一个主成分<script type="math/tex">y_i</script>的贡献率定义为：<script type="math/tex">\frac{\lambda_i}{\sum_{i=1}^{p} \lambda_i}</script>。</p>
+
+<p>贡献率越大说明这个主成分能够解释数据的信息就越多，在具体的问题中，还常常用到一个概念，就是<strong>累积贡献率</strong>。前<script type="math/tex">k</script>个主成分的累计贡献率就是：<script type="math/tex">\frac{\sum_{i=1}^{k} \lambda_i}{\sum_{i=1}^{p} \lambda_i}</script>。实际中，当前<script type="math/tex">k</script>个主成分的累积贡献率达到某个临界值，比如<script type="math/tex">80\%</script>，就选择前<script type="math/tex">k</script>个主成分进行下一步操作(比如说聚类，回归或者单纯地做分析等等)</p>
+
+<h4 id="section-3">四、基于相关矩阵</h4>
+<hr />
+
+<p>考虑这样两种情况：各个变量的单位不全相同，也就是数据的量纲不同；各变量之间的单位相同，但是变量的方差较大，也就是数值大小相差较大。那么这个时候，如果从协方差矩阵出发求解主成分，就显得不大合适了。</p>
+
+<p>在之前的文章中提到过，当所有的变量都进行了标准化之后，协方差矩阵<script type="math/tex">\Sigma</script>就转换成了相关矩阵<script type="math/tex">R</script>！</p>
+
+<p>那么，剩下的求解过程就与上面相同了，这里不再叙述。需要指出的是，标准化与否，所得到的结果可能会有很大的不同，所以，判断一批数据是否需要标准化是很有必要的！</p>
+
+<h4 id="r">五、R语言实现</h4>
+<hr />
+
+<p>主成分分析的R语言实现比较简单，可以直接使用<code>eigen()</code>函数求出特征值特征向量。当然也有自带的函数：<code>princomp()</code>以及<code>psych</code>包中的<code>principal()</code>函数，可以自己查找一下帮助文档，这里就不做介绍了。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacky Code</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-11T11:35:10+08:00" pubdate data-updated="true">May 11<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2014/05/09/books-recommended/" title="Previous Post:
+        书籍推荐">&laquo; 书籍推荐</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+	<ul id="about" class='nav nav-list'>
+		<li class="nav-header"><a href="/about">关于我</a></li>
+	    <p>概率统计专业的在读研究生</p>
+	    <p>喜欢看书，思考，然后写点什么</p>
+	    <p>能折腾，崇尚效率，喜爱精美</p>
+	    <p>喜欢Apple，离不了Google</p>
+	    <p>新浪微博: <a href="http://weibo.com/jackycode">Jacky130</a></p>
+	    <p>邮箱: <code>jackycodemsc@gmail.com</code></p>
+	</ul>
+</section>
+<section class="well">
+	<ul id="category_list" class="nav nav-list">
+		<li class="nav-header">文章分类</li>
+			<li id="categories">
+    			<li class='category'><a href='/blog/categories/associationanalysis/'>AssociationAnalysis (2)</a></li>
+<li class='category'><a href='/blog/categories/classification/'>Classification (5)</a></li>
+<li class='category'><a href='/blog/categories/clustering/'>Clustering (3)</a></li>
+<li class='category'><a href='/blog/categories/datascience/'>DataScience (15)</a></li>
+<li class='category'><a href='/blog/categories/decisiontree/'>DecisionTree (2)</a></li>
+<li class='category'><a href='/blog/categories/kindle/'>Kindle (1)</a></li>
+<li class='category'><a href='/blog/categories/koding/'>Koding (1)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>Mac (2)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>MachineLearning (15)</a></li>
+<li class='category'><a href='/blog/categories/octopress/'>Octopress (4)</a></li>
+<li class='category'><a href='/blog/categories/rseries/'>RSeries (8)</a></li>
+<li class='category'><a href='/blog/categories/recommends/'>Recommends (2)</a></li>
+<li class='category'><a href='/blog/categories/records/'>Records (4)</a></li>
+<li class='category'><a href='/blog/categories/regression/'>Regression (4)</a></li>
+<li class='category'><a href='/blog/categories/vps/'>VPS (1)</a></li>
+
+  			</li>
+  	</ul>
+</section><section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">最近文章</li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/11/principal-components/">数据科学之机器学习15: 主成分分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/09/books-recommended/">书籍推荐</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/07/apriori/">数据科学之机器学习14: 关联分析之apriori算法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/04/loop-functions/">R语言记录8：Loop Functions</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/04/associationg-ananlysis/">数据科学之机器学习13: 关联分析</a>
+      </li>
+    
+  </ul>
+</section>
+<section class="well">
+  <ul id="links" class="nav nav-list">
+    <li class="nav-header">推荐站点</li>
+    <li>
+      <a href="http://macshuo.com/">MacTalk-池建强的随想录</a>
+    </li>
+    <li>
+      <a href="http://yihui.name/">Yihui Xie</a>
+    </li>
+    <li>
+      <a href="http://www.liaoxuefeng.com/">廖雪峰的官方网站</a>
+    </li>
+    <li>
+      <a href="http://irising.me/">Page to Page</a>
+    </li>
+    <li>
+      <a href="http://www.dongwm.com/">小明明s à domicile</a>
+    </li>
+    <li>
+      <a href="http://beyondvincent.com/">破船之家</a>
+    </li>
+    <li>
+      <a href="http://lucifr.com/">Lucifr</a>
+    </li>
+</ul>
+</section><section class="well">
+	<li class="nav-header">License</li>
+<ul id="license" class='nav nav-list'>
+	
+		<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">
+			<img alt="知识共享许可协议" style="border-width:0" src="/images/license_CC.png" />
+		</a>
+	<br />本站作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">知识共享署名-非商业性使用-相同方式共享 2.5 中国大陆许可协议</a>进行许可。
+</ul>
+</section>
+
+  
+</aside>
+
+
+  <section>  
+  <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jacky130"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>  
+</section>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><!-- mathjax config similar to math.stackexchange --> 
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ jax: ["input/TeX", "output/HTML-CSS"], tex2jax: { inlineMath: [ ['$', '$'] ], displayMath: [ ['$$', '$$']], processEscapes: true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }, messageStyle: "none", "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] } }); </script> <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+<hr>
+<p>
+  Copyright &copy; 2014 - Jacky Code -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
