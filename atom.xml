@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-05-11T12:45:11+08:00</updated>
+  <updated>2014-05-14T16:42:58+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,103 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习16:因子分析1]]></title>
+    <link href="http://jackycode.github.io/blog/2014/05/14/factor-analysis1/"/>
+    <updated>2014-05-14T16:05:45+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/05/14/factor-analysis1</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical34.jpg" alt="artical 34" />
+<!-- more --></p>
+
+<p>图片来源于<a href="http://software.ssri.co.jp/statweb2/column/column0811.html">网址</a></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>前一篇介绍的主成分分析(PCA)，是一种降维技术；这一篇介绍的因子分析也是一种降维的方法，不仅如此，还可以将因子分析看作是主成分分析的一种推广和发展。与之主成分分析相比较，因子分析更为灵活，对变量降维后的解释能够更加清楚。</p>
+
+<p>但因子分析和主成分分析有非常多的不同点。</p>
+
+<ol>
+  <li>主成分分析不能作为一个模型来描述，主成分是观测变量的线性组合；</li>
+  <li>因子分析需要构造因子模型，观测的原始变量是因子的线性组合。</li>
+</ol>
+
+<hr />
+
+<h4 id="section">初窥</h4>
+<hr />
+
+<p>在介绍因子模型之前，可以先看看这个因子分析到底是要干什么，以及是怎么干的！</p>
+
+<p>在二维空间中，主成分分析，它想做的是寻找一组新的变量<script type="math/tex">y_1,y_2</script>，用它去替代原来的变量<script type="math/tex">x_1,x_2</script>，并且满足<script type="math/tex">y_1</script>和<script type="math/tex">y_2</script>这两个变量都是<script type="math/tex">x_1,x_2</script>两个变量的线性组合！即：</p>
+
+<p><img src="http://jackycode.github.io/images/a34/eq1.jpg" alt="" /></p>
+
+<p>而在因子模型中，我们需要做的跟此不同。我们需要找到一组潜在变量(不可观测)，用这组潜在变量的线性组合去表示原始变量<script type="math/tex">x_1,x_2</script>。这里假设有1个潜在变量<script type="math/tex">f_1</script>，那么因子模型可以描述成：</p>
+
+<p><img src="http://jackycode.github.io/images/a34/eq2.png" alt="" /></p>
+
+<p>其中，<script type="math/tex">f_1</script>就是因子，称为<strong>公共因子</strong>；<script type="math/tex">a_{ij}</script>称之为变量<script type="math/tex">x_i</script>在因子<script type="math/tex">f_j</script>上的<strong>载荷</strong>；<script type="math/tex">\mu_i</script>是<script type="math/tex">x_i</script>的均值；<script type="math/tex">\varepsilon_i</script>为特殊因子，即不能被公共因子解释的部分。</p>
+
+<hr />
+
+<h4 id="section-1">正交因子模型</h4>
+<hr />
+
+<p>首先看看最基础的因子模型，就是正交假设下的因子模型：</p>
+
+<p><img src="http://jackycode.github.io/images/a34/eq3.png" alt="" /></p>
+
+<p>在给出假定之前，我们先将上面式子转换成矩阵形式：</p>
+
+<script type="math/tex; mode=display"> x = \mu + Af + \varepsilon </script>
+
+<p>其中，<script type="math/tex">x = (x_1, x_2, \dots, x_p)'</script>，<script type="math/tex">\mu = (\mu_1, \mu_2, \dots, \mu_p)'</script>为均值向量，<script type="math/tex">\varepsilon = (\varepsilon_1, \varepsilon_2, \dots, \varepsilon_p)'</script>为特殊因子向量, <script type="math/tex">f = (f_1, f_2, \dots, f_p)'</script>为公共因子向量，<script type="math/tex"> A = (a_{ij}):p \times m </script>为载荷矩阵。那么我们就可以给出如下的正交假设：</p>
+
+<p><img src="http://jackycode.github.io/images/a34/eq4.png" alt="" /></p>
+
+<p>在这样的假定下，我们首先来计算一下，原始变量<script type="math/tex">x</script>的协方差：</p>
+
+<script type="math/tex; mode=display"> \Sigma = V(x) = V(Af+\varepsilon) = Cov(Af+\varepsilon,Af+\varepsilon) </script>
+
+<p>又：<script type="math/tex">Cov(Af+\varepsilon,Af+\varepsilon)=AV(f)A'+ACov(f,\varepsilon)+Cov(\varepsilon,f)A'+V(\varepsilon)</script></p>
+
+<p>由于<script type="math/tex">V(f) = I, Cov(f, \varepsilon) = Cov(\varepsilon, f) = 0</script>，所以：</p>
+
+<script type="math/tex; mode=display"> \Sigma = AA' + V(\varepsilon) = AA' + D </script>
+
+<p><strong>显然，我们要处理正交因子模型，最重要的就是求解<script type="math/tex">A,D</script>的估计值，那么这里就给出了这两个量与原始变量的协方差矩阵间的关系。</strong></p>
+
+<p><strong>那么我们开始所说的，因子分析也是一种降维手段体现在哪里呢？</strong>这个就体现在，公共因子的数量上，当公共因子的数量少于原始变量的数量时，使用因子去解释原始变量就达到了一种降维的目的！</p>
+
+<hr />
+
+<p><strong><em>载荷矩阵</em></strong></p>
+
+<p>显然，载荷矩阵<script type="math/tex">A</script>是我们关心的一个重点。首先，我们想弄明白<script type="math/tex">A</script>中的元素<script type="math/tex">a_{ij}</script>是否有什么具体的含义：</p>
+
+<script type="math/tex; mode=display">Cov(x_i,f_j)=Cov(\sum_{k=1}^{m}a_{ik}f_k + \varepsilon_i, f_j) =a_{ij}Cov(f_j,f_j) = a_{ij} </script>
+
+<p>那么可以看到，<script type="math/tex">a_{ij}</script>是<script type="math/tex">x_i</script>和<script type="math/tex">f_j</script>之间的协方差函数。</p>
+
+<p>经过上面的计算，我们容易得到：</p>
+
+<script type="math/tex; mode=display">V(x_i) = a_{i1}^2 + a_{i2}^2 + \dots + a_{1m}^2 + V(\varepsilon_i)</script>
+
+<p>记<script type="math/tex">h_i^2 = \sum_{j=1}^{m}a_{ij}^2</script>，那么上式可转化为：</p>
+
+<script type="math/tex; mode=display"> (V(x_i) =) \sigma_{ii} = h_i^2 + \sigma_i^2, i=1,2,\dots,p</script>
+
+<p>这样就将<script type="math/tex">x_i</script>的方差进行了一个分解，一部分由公共因子解释，即<script type="math/tex">h_i^2</script>，称为<strong>共性方差</strong>；另一部分由特殊因子解释，即<script type="math/tex">\sigma_i^2</script>，称为<strong>特殊方差</strong>。</p>
+
+<hr />
+
+<p>至此，因子分析的基础模型就介绍完了，下面剩下的就是如何去进行参数的估计，这一般有三种方法：主成分法、主因子法以及极大似然法。下一篇，我们就来详细说说因子分析的参数估计问题。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习15: 主成分分析]]></title>
@@ -2538,49 +2635,6 @@
 <hr />
 
 <p>到这里，基本上来说，机器学习是干什么的应该有了一些了解了。至于机器学习的分类，监督学习和无监督学习还不明白也不要紧。等弄明白了回归，分类以及聚类等等的是干什么的，自然就明白这两者之间的区别了。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学简介]]></title>
-    <link href="http://jackycode.github.io/blog/2014/03/27/an-introduction-to-data-science/"/>
-    <updated>2014-03-27T14:39:21+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/03/27/an-introduction-to-data-science</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical14.jpg" alt="artical 14" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>对于这两年渐渐兴起的大数据，云计算之类的技术，相信没有人会陌生。即便不知道这个东西是什么，但也是应该听得耳朵起茧子了。归结原因呢，出现这些技术实在是因为现在的数据越来越多，以前的很多数据分析技术越来越不合适。即便是简单的最小二乘线性回归，直接放到大数据上用，跑起来也是够累的。这时候，各种处理大数据的技术就纷纷崛起了，和之前的云计算相同的就是，大数据也改变了计算机原本的使用方式。</p>
-
-<p>OK，说说数据科学吧。数据科学，Data Science，这个玩意儿最早有一本书，叫做“What is Data Science”，O’Reilly出版的（不得不说其出版了太多太牛太厉害的书籍材料，牛得不需要解释）。数据科学就像是一个综合体，包罗的东西非常多，大致有三个方面。</p>
-
-<h5 id="section">第一，概率统计（数学）</h5>
-<p>这个提供了大数据的很多理论基础。大数据的处理技术，需要用到非常之多的概率统计学知识。而要想学好概率统计，那你数学得先学学好才行。简单罗列一下：概率论基础，统计学基础，高等概率论，测度论，高等参数统计，随机过程等等等等。这些内容都是理论基础，要是理论学的不咋样，估计折腾大数据也就是玩玩工具，弄点儿结果出来。话说，如果真没学好理论，能不能把结果解释清楚还需要质疑，更何况自己去设计改进一个技术算法呢。</p>
-
-<p>嗯，说到这，回过头去看看泛函分析吧~</p>
-
-<h5 id="section-1">第二，计算机科学</h5>
-<p>这个就提供了大数据处理的工具平台了。那么多的数据，你就是理论学得再牛，没有计算机，你自己手算试试！你说你要处理数据，OK，计算机提供了工具平台，那么你就得学习如何运用这些系统环境吧，那么就得学习<strong>分布式计算机系统环境</strong>，这个主流的有：Hadoop(鼎鼎大名吧); Spark(也听说过吧); Cassandra等等。</p>
-
-<p>好了，环境搞明白了，下面你就得发号施令，让计算机去处理数据了。计算可不是人类，你可以跟他讲普通话，讲英文让他帮你干活。你要想它听你的，你得先学会点它能懂的、能听明白的话。OK，编程语言就降临了。一般来说，用于数据处理的语言有R，Python，Octave（与Matlab类似，只是这个开源免费），Matlab等等。为了使用各个平台，说不得你也得学点Java，C，C++。</p>
-
-<p>写到这边，估计已经头大了，这么多东西，这数据科学是不是恐怖了点，谁能受得了啊！！！是的，包含的东西的确多了点，但是学习起来还是很好玩的，我保证(当然，前提你得跟我一样，看见数学不会头晕)！</p>
-
-<p>当然除了上面提到的，数据科学包含的计算机知识还有很多，像数据结构啊，数据库啊，Mahout这样的架构啊等等。</p>
-
-<h5 id="section-2">第三，专业</h5>
-<p>这个也就是应用啦。练就了一身绝世内功（理论基础），找到了一把趁手的绝世神兵（计算机科学），现在需要决定的就是出山之后是想做个武林盟主呢，还是独创一个门派，也就是想把这些东西用到哪些地方去。像生物学，跟统计一结合就成了生物统计，要是再加上点计算机科学，那就成了生物学数据科学。OK，这么说应该是很明白的了。</p>
-
-<hr />
-
-<p>数据科学家Drew Conway绘制过一幅图，很好地描述了我上面所说的东西：</p>
-
-<p><img src="http://jackycode.github.io/images/a14/drew-conway-data-science-venn-diagram.jpg" alt="Venn diagram" /></p>
-
-<p>前几天图灵上出了一本书，叫做“<a href="http://www.ituring.com.cn/book/1268">Software Design 中文版 01</a>”。里面介绍了数据科学的很多基础内容，也给出了很多的学习材料，大部分都是网上的视频教程。此外书中还介绍了一些如何使用Excel，R以及Mahout这些工具的基础知识，有兴趣倒是可以入手一本，作为学习数据科学的开始。</p>
 ]]></content>
   </entry>
   

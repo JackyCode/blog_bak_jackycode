@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: RSeries - Jacky and MSC</title>
+  <title>数据科学之机器学习16:因子分析1 - Jacky and MSC</title>
   <meta name="author" content="Jacky Code">
 
   
-  <meta name="description" content="Category: RSeries">
+  <meta name="description" content="">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jackycode.github.ioblog/categories/rseries">
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/05/14/factor-analysis1">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -94,150 +94,175 @@
   <div class="container">
     <div class="row-fluid">
       
-<article role="article" class="span9">
+<article class="hentry span9" role="article">
 
   
   <header class="page-header">
-    <h1 class="entry-title">Category: RSeries</h1>
+    
+      <h1 class="entry-title">数据科学之机器学习16:因子分析1</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-14T16:05:45+08:00" pubdate data-updated="true">May 14<span>th</span>, 2014</time>
+        
+      </p>
     
   </header>
+
+
+<div class="entry-content"><p><img src="/images/artical/artical34.jpg" alt="artical 34" />
+<!-- more --></p>
+
+<p>图片来源于<a href="http://software.ssri.co.jp/statweb2/column/column0811.html">网址</a></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>前一篇介绍的主成分分析(PCA)，是一种降维技术；这一篇介绍的因子分析也是一种降维的方法，不仅如此，还可以将因子分析看作是主成分分析的一种推广和发展。与之主成分分析相比较，因子分析更为灵活，对变量降维后的解释能够更加清楚。</p>
+
+<p>但因子分析和主成分分析有非常多的不同点。</p>
+
+<ol>
+  <li>主成分分析不能作为一个模型来描述，主成分是观测变量的线性组合；</li>
+  <li>因子分析需要构造因子模型，观测的原始变量是因子的线性组合。</li>
+</ol>
+
+<hr />
+
+<h4 id="section">初窥</h4>
+<hr />
+
+<p>在介绍因子模型之前，可以先看看这个因子分析到底是要干什么，以及是怎么干的！</p>
+
+<p>在二维空间中，主成分分析，它想做的是寻找一组新的变量<script type="math/tex">y_1,y_2</script>，用它去替代原来的变量<script type="math/tex">x_1,x_2</script>，并且满足<script type="math/tex">y_1</script>和<script type="math/tex">y_2</script>这两个变量都是<script type="math/tex">x_1,x_2</script>两个变量的线性组合！即：</p>
+
+<p><img src="/images/a34/eq1.jpg" alt="" /></p>
+
+<p>而在因子模型中，我们需要做的跟此不同。我们需要找到一组潜在变量(不可观测)，用这组潜在变量的线性组合去表示原始变量<script type="math/tex">x_1,x_2</script>。这里假设有1个潜在变量<script type="math/tex">f_1</script>，那么因子模型可以描述成：</p>
+
+<p><img src="/images/a34/eq2.png" alt="" /></p>
+
+<p>其中，<script type="math/tex">f_1</script>就是因子，称为<strong>公共因子</strong>；<script type="math/tex">a_{ij}</script>称之为变量<script type="math/tex">x_i</script>在因子<script type="math/tex">f_j</script>上的<strong>载荷</strong>；<script type="math/tex">\mu_i</script>是<script type="math/tex">x_i</script>的均值；<script type="math/tex">\varepsilon_i</script>为特殊因子，即不能被公共因子解释的部分。</p>
+
+<hr />
+
+<h4 id="section-1">正交因子模型</h4>
+<hr />
+
+<p>首先看看最基础的因子模型，就是正交假设下的因子模型：</p>
+
+<p><img src="/images/a34/eq3.png" alt="" /></p>
+
+<p>在给出假定之前，我们先将上面式子转换成矩阵形式：</p>
+
+<script type="math/tex; mode=display"> x = \mu + Af + \varepsilon </script>
+
+<p>其中，<script type="math/tex">x = (x_1, x_2, \dots, x_p)'</script>，<script type="math/tex">\mu = (\mu_1, \mu_2, \dots, \mu_p)'</script>为均值向量，<script type="math/tex">\varepsilon = (\varepsilon_1, \varepsilon_2, \dots, \varepsilon_p)'</script>为特殊因子向量, <script type="math/tex">f = (f_1, f_2, \dots, f_p)'</script>为公共因子向量，<script type="math/tex"> A = (a_{ij}):p \times m </script>为载荷矩阵。那么我们就可以给出如下的正交假设：</p>
+
+<p><img src="/images/a34/eq4.png" alt="" /></p>
+
+<p>在这样的假定下，我们首先来计算一下，原始变量<script type="math/tex">x</script>的协方差：</p>
+
+<script type="math/tex; mode=display"> \Sigma = V(x) = V(Af+\varepsilon) = Cov(Af+\varepsilon,Af+\varepsilon) </script>
+
+<p>又：<script type="math/tex">Cov(Af+\varepsilon,Af+\varepsilon)=AV(f)A'+ACov(f,\varepsilon)+Cov(\varepsilon,f)A'+V(\varepsilon)</script></p>
+
+<p>由于<script type="math/tex">V(f) = I, Cov(f, \varepsilon) = Cov(\varepsilon, f) = 0</script>，所以：</p>
+
+<script type="math/tex; mode=display"> \Sigma = AA' + V(\varepsilon) = AA' + D </script>
+
+<p><strong>显然，我们要处理正交因子模型，最重要的就是求解<script type="math/tex">A,D</script>的估计值，那么这里就给出了这两个量与原始变量的协方差矩阵间的关系。</strong></p>
+
+<p><strong>那么我们开始所说的，因子分析也是一种降维手段体现在哪里呢？</strong>这个就体现在，公共因子的数量上，当公共因子的数量少于原始变量的数量时，使用因子去解释原始变量就达到了一种降维的目的！</p>
+
+<hr />
+
+<p><strong><em>载荷矩阵</em></strong></p>
+
+<p>显然，载荷矩阵<script type="math/tex">A</script>是我们关心的一个重点。首先，我们想弄明白<script type="math/tex">A</script>中的元素<script type="math/tex">a_{ij}</script>是否有什么具体的含义：</p>
+
+<script type="math/tex; mode=display">Cov(x_i,f_j)=Cov(\sum_{k=1}^{m}a_{ik}f_k + \varepsilon_i, f_j) =a_{ij}Cov(f_j,f_j) = a_{ij} </script>
+
+<p>那么可以看到，<script type="math/tex">a_{ij}</script>是<script type="math/tex">x_i</script>和<script type="math/tex">f_j</script>之间的协方差函数。</p>
+
+<p>经过上面的计算，我们容易得到：</p>
+
+<script type="math/tex; mode=display">V(x_i) = a_{i1}^2 + a_{i2}^2 + \dots + a_{1m}^2 + V(\varepsilon_i)</script>
+
+<p>记<script type="math/tex">h_i^2 = \sum_{j=1}^{m}a_{ij}^2</script>，那么上式可转化为：</p>
+
+<script type="math/tex; mode=display"> (V(x_i) =) \sigma_{ii} = h_i^2 + \sigma_i^2, i=1,2,\dots,p</script>
+
+<p>这样就将<script type="math/tex">x_i</script>的方差进行了一个分解，一部分由公共因子解释，即<script type="math/tex">h_i^2</script>，称为<strong>共性方差</strong>；另一部分由特殊因子解释，即<script type="math/tex">\sigma_i^2</script>，称为<strong>特殊方差</strong>。</p>
+
+<hr />
+
+<p>至此，因子分析的基础模型就介绍完了，下面剩下的就是如何去进行参数的估计，这一般有三种方法：主成分法、主因子法以及极大似然法。下一篇，我们就来详细说说因子分析的参数估计问题。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <div id="blog-archives" class="category">
+
+<span class="byline author vcard">Posted by <span class="fn">Jacky Code</span></span>
+
+      
 
 
 
-  
-  <h1>2014</h1>
-
-<article>
-  <div class="well">
-
-<h2><a href="/blog/2014/05/04/loop-functions/">R语言记录8：Loop Functions</a></h2>
-<time datetime="2014-05-04T14:56:40+08:00" pubdate><span class='month'>May</span> <span class='day'>04</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rseries/'>RSeries</a></span>
-</footer>
-
-</div>
-
-</article>
 
 
 
-<article>
-  <div class="well">
 
-<h2><a href="/blog/2014/03/17/rseries7/">R语言记录7：相关分析</a></h2>
-<time datetime="2014-03-17T16:46:47+08:00" pubdate><span class='month'>Mar</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rseries/'>RSeries</a></span>
-</footer>
-
-</div>
-
-</article>
-
-
-
-<article>
-  <div class="well">
-
-<h2><a href="/blog/2014/03/14/rseries6/">R语言记录6：描述统计2</a></h2>
-<time datetime="2014-03-14T16:31:26+08:00" pubdate><span class='month'>Mar</span> <span class='day'>14</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rseries/'>RSeries</a></span>
-</footer>
-
-</div>
-
-</article>
-
-
-
-<article>
-  <div class="well">
-
-<h2><a href="/blog/2014/03/12/rseries5/">R语言记录5：描述统计1</a></h2>
-<time datetime="2014-03-12T15:57:02+08:00" pubdate><span class='month'>Mar</span> <span class='day'>12</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rseries/'>RSeries</a></span>
-</footer>
-
-</div>
-
-</article>
-
-
-
-<article>
-  <div class="well">
-
-<h2><a href="/blog/2014/03/10/rseries4/">R语言记录4：自定义函数的深入</a></h2>
-<time datetime="2014-03-10T16:50:29+08:00" pubdate><span class='month'>Mar</span> <span class='day'>10</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rseries/'>RSeries</a></span>
-</footer>
-
-</div>
-
-</article>
-
-
-
-<article>
-  <div class="well">
-
-<h2><a href="/blog/2014/03/09/rseries3/">R语言记录3:数据的导入及复杂操作</a></h2>
-<time datetime="2014-03-09T11:16:58+08:00" pubdate><span class='month'>Mar</span> <span class='day'>09</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rseries/'>RSeries</a></span>
-</footer>
-
-</div>
-
-</article>
-
-
-
-<article>
-  <div class="well">
-
-<h2><a href="/blog/2014/03/07/rseries2/">R语言记录2 ：R语言中的数据</a></h2>
-<time datetime="2014-03-07T17:03:58+08:00" pubdate><span class='month'>Mar</span> <span class='day'>07</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rseries/'>RSeries</a></span>
-</footer>
-
-</div>
-
-</article>
-
-
-
-<article>
-  <div class="well">
-
-<h2><a href="/blog/2014/03/06/rseries1/">R语言记录1 ：基础</a></h2>
-<time datetime="2014-03-06T15:27:28+08:00" pubdate><span class='month'>Mar</span> <span class='day'>06</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rseries/'>RSeries</a></span>
-</footer>
-
-</div>
-
-</article>
-
-</div>
 
   
+
+
+<time datetime="2014-05-14T16:05:45+08:00" pubdate data-updated="true">May 14<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/datascience/'>DataScience</a>, <a class='category' href='/blog/categories/machinelearning/'>MachineLearning</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2014/05/11/principal-components/" title="Previous Post:
+        数据科学之机器学习15: 主成分分析">&laquo; 数据科学之机器学习15: 主成分分析</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+    </ul>
+  </footer>
 </article>
 
 <aside class="sidebar-nav span3">
@@ -339,6 +364,24 @@
 
   
 </aside>
+
+
+  <section>  
+  <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jacky130"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>  
+</section>
 
 
     </div>
