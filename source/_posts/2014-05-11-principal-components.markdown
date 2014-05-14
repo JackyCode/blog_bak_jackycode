@@ -3,7 +3,7 @@ layout: post
 title: "数据科学之机器学习15: 主成分分析"
 date: 2014-05-11 11:35:10 +0800
 comments: true
-categories:
+categories: DataScience MachineLearning
 ---
 
 ![artical 33](/images/artical/artical33.jpg)
