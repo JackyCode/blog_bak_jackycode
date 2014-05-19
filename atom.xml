@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-05-14T16:42:58+08:00</updated>
+  <updated>2014-05-19T15:22:29+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,92 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习17:因子分析2]]></title>
+    <link href="http://jackycode.github.io/blog/2014/05/19/factor-analysis2/"/>
+    <updated>2014-05-19T15:00:02+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/05/19/factor-analysis2</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical35.jpg" alt="artical 35" />
+<!-- more --></p>
+
+<p>图片来源于<a href="http://software.ssri.co.jp/statweb2/column/column0811.html">网址</a></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>这两天来了个同学，大家聚了聚，我也乘机休息了两天（好奢侈！）。这两天属于什么都没有写，就翻看了两本书。一本是二月河的<a href="http://www.amazon.cn/gp/product/B0032K0X6Q/ref=olp_product_details?ie=UTF8&amp;me=&amp;seller=">康熙大帝</a>，另外一本是<a href="http://www.ituring.com.cn/book/894">推荐系统实践</a>，这本书的电子版，图灵正在打折，有兴趣可以买本看看。</p>
+
+<hr />
+
+<p>好了，不废话了，下面就接着上一篇讲的继续！上一篇简单介绍了因子分析的一些概念，以及最基础的因子模型：<strong>正交因子模型</strong>。那么这一篇，就来说说正交因子模型的<strong>参数估计问题</strong>。</p>
+
+<p>对于一组p维样本，有n个观测值：<script type="math/tex">x_1, x_2, \dots, x_n</script>，则其均值和协方差矩阵可以使用样本均值和样本协方差矩阵来估计：</p>
+
+<script type="math/tex; mode=display"> \hat{\mu} = \overline{x} = \frac{1}{n} {\sum_{i=1}^{n} x_i} </script>
+
+<script type="math/tex; mode=display"> \hat{\Sigma} = S = \frac{1}{n-1} {\sum_{i=1}^{n} (x_i-\overline{x})(x_i-\overline{x})'} </script>
+
+<p>在因子模型中，需要估计的有两个参数：<strong>因子载荷矩阵</strong><script type="math/tex">A=(a_{ij}:p \times m)</script>以及<strong>特殊方差矩阵</strong><script type="math/tex">D = diag(\sigma_1^2, \sigma_2^2, \dots, \sigma_p^2)</script>。</p>
+
+<hr />
+
+<h4 id="section">1. 主成分法</h4>
+<hr />
+
+<p>主成分法的思想取自于主成分分析，即是取出前m个成分作为主成分，然后以此来得到因子载荷矩阵的估计；然后再以协方差阵和因子载荷矩阵为条件，直接推出特殊方差矩阵。具体如下：</p>
+
+<ol>
+  <li>求出协方差矩阵<script type="math/tex">S</script>的特征值：<script type="math/tex">\hat{\lambda}_1 \geqslant \hat{\lambda}_2 \geqslant \dots \geqslant \hat{\lambda}_p \geqslant 0</script>，其对应的特征向量为：<script type="math/tex">\hat{t}_1, \hat{t}_2, \dots, \hat{t}_p</script>。</li>
+  <li>选一个较小因子数<script type="math/tex">m</script>，并且使得前m项累计贡献率<script type="math/tex">\frac{\sum_{i=1}^{m} \hat{\lambda}_i}{\sum_{i=1}^{p} \hat{\lambda}_i} </script>高于设定值。</li>
+  <li>将协方差矩阵<script type="math/tex">S</script>做这样的近似：<script type="math/tex">S = \sum_{i=1}^{m} \hat{\lambda}_i + \sum_{i=m+1}^{p} \hat{\lambda}_i \approx \sum_{i=1}^{m} \hat{\lambda}_i + \hat{D} := \hat{A}\hat{A}' + \hat{D} </script></li>
+</ol>
+
+<p>其中，<script type="math/tex">A = (\sqrt{\hat{\lambda}_1}t_1, \sqrt{\hat{\lambda}_2}t_2, \dots, \sqrt{\hat{\lambda}_m}t_m) </script>,<script type="math/tex">\hat{D} = diag(\hat{\sigma}_1^2, \hat{\sigma}_2^2, \dots, \hat{\sigma}_p^2) </script>,<script type="math/tex">\hat{\sigma}_i^2 = s_{ii} - \sum_{j=1}^{m} \hat{a}_{ij}^2 </script></p>
+
+<p>从上述的过程来看，我们是使用了一种近似的方法估计出了<script type="math/tex">A</script>和<script type="math/tex">D</script>，那么这就有一个<strong>残差矩阵</strong><script type="math/tex">S - (\hat{A}\hat{A}' + \hat{D}) </script>，显然这个矩阵的对角线元素为0。既然是一种近似，那么，如果这个残差矩阵的非对角线元素都非常小的时候，我们就可以认为取<script type="math/tex">m</script>个因子的模型就可以很好地解释或者是拟合原始的数据了。</p>
+
+<hr />
+
+<h4 id="section-1">2. 主因子法</h4>
+<hr />
+
+<p>对于因子模型，我们先对原始向量进行标准化，则有：<script type="math/tex"> R = AA' + D</script>。取<strong>约相关矩阵</strong><script type="math/tex">R^* = R - D = AA'</script>，假设特殊方差<script type="math/tex">\sigma_i^2</script>的一个估计值<script type="math/tex">\hat{\sigma}^2</script>为初始估计，则有约相关矩阵的估计值为：</p>
+
+<p><img src="http://jackycode.github.io/images/a35/eq2_1.png" alt="" /></p>
+
+<p>其中<script type="math/tex">\hat{R}</script>为样本相关矩阵，<script type="math/tex">\hat{D} = diag(\hat{\sigma^2_1},\hat{\sigma_2^2}, \dots, \hat{\sigma_p^2}) </script>, <script type="math/tex">\hat{h_i^2} = 1 - \hat{\sigma_i^2} </script>为<script type="math/tex">h_i^2</script>的初始估计。</p>
+
+<p>计算<script type="math/tex">\hat{R}^*</script>的特征值，取足够小，但累计贡献率达到要求的m：<script type="math/tex">\hat{\lambda^*_1} \geqslant \hat{\lambda^*_2} \geqslant \dots \geqslant \hat{\lambda^*_m} > 0 </script>，其对应的特征向量为：<script type="math/tex">\hat{t^*_1}, \hat{t^*_2}, \dots, \hat{t^*_m}</script>，则得到 <script type="math/tex">A</script> 的估计值：</p>
+
+<script type="math/tex; mode=display"> \hat{A} = (\sqrt{\hat{\lambda^*_1}}t^*_1, \sqrt{\hat{\lambda^*_2}}t^*_2, \dots, \sqrt{\hat{\lambda^*_m}}t^*_m ) </script>
+
+<p>那么<script type="math/tex">\sigma^2_i</script>的最终估计为： <script type="math/tex"> \hat{\sigma_i^2} = 1-\hat{h_i^2} = 1 - \sum_{j=1}^{m} \hat{a_{ij}^2} </script>。</p>
+
+<p>可以看到，这是一个可以迭代的过程，我们可以一直迭代，直到结果达到稳定为止！从过程来看，这里其实也是利用了主成分，因而，主因子法也是主成分法的一种修正！</p>
+
+<p>那么接下来的问题就是，这个特殊方差<script type="math/tex">\sigma^2_i</script>的初始估计值应该如何取呢？最常用的取法：<script type="math/tex"> \hat{\sigma_i^2} = 1/r^{ii} </script>, 其中<script type="math/tex"> r^{ii} </script>为<script type="math/tex">\hat{R}^{-1}</script>对角线元素的第<script type="math/tex">i</script>个。</p>
+
+<hr />
+
+<h4 id="section-2">3. 极大似然法</h4>
+<hr />
+
+<p>使用极大似然估计，那么就肯定需要使用样本的分布，这里我们假定公共因子<script type="math/tex">f \sim N_m(0, I) </script>，特殊因子<script type="math/tex"> \varepsilon \sim N_p(0, D) </script>，并且相互独立！这里的假设其实就是来源于模型的正交性假设，只不过是将正交性假设进一步限定，假设它们都是属于多元正态分布！</p>
+
+<p>有了上述假设，通过模型就可以知道<script type="math/tex">x \sim N_p(\mu, \Sigma) </script>，有了这个就可以计算样本的似然函数了，这里涉及到较为复杂的矩阵计算，不想多说，有兴趣的话可以查找一些资料；或者学习一下线性模型中关于矩阵求导的知识，然后自己推导一下。</p>
+
+<p>一般情况下，极大似然法使用得并不太多，因为这个方法是算不出显式解的，在没有限制条件的情况下，解也并不唯一确定！但是如果是在因子分部可以明显知道的情况下，使用这个方法就比较好了！</p>
+
+<hr />
+
+<h3 id="section-3">总结</h3>
+<hr />
+
+<p>到这边，对于基础的因子模型就介绍结束了。回顾一下，主要就是介绍了正交因子模型以及它的参数估计问题。但是，到这里，我们还没有说到模型中的公共因子如何解释这个问题！对于这个问题的解释，通常结合实际的问题，需要一定的专业知识和经验，然后才能给每个公共因子给出一个实际意义。而且，公共因子的解释，在很大程度上也依赖于因子模型中因子载荷矩阵的元素结构！这个时候就会牵扯出因子分析中其它的一些问题：<strong>因子旋转</strong>和<strong>因子得分</strong>。因为这两个问题涉及到一些比较复杂的数学知识，我不能够在清减数学的情况下说好它，如果单说怎么用，我觉得没有必要，所以暂时并不打算介绍这两个问题。有兴趣的，可以翻阅一些多元统计的书籍，一般都会有讲。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习16:因子分析1]]></title>
@@ -2567,74 +2653,6 @@
 <hr />
 
 <p>至此，就把线性回归的基础内容介绍完了。但其实线性回归还存在很多其它的问题。比如说回归诊断（就是检查回归的效果），变量选择等等等等。感兴趣的话，可以找本讲线性回归的书看看，有很多！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习1：简介]]></title>
-    <link href="http://jackycode.github.io/blog/2014/03/30/data-science-an-introduction-to-machine-learning/"/>
-    <updated>2014-03-30T16:39:09+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/03/30/data-science-an-introduction-to-machine-learning</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical15.jpg" alt="artical 15" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>上一篇“<a href="http://jackycode.github.io/blog/2014/03/27/an-introduction-to-data-science/">数据科学简介</a>”简单地说了一下数据科学是什么，以及它包罗的东西。这一篇打算简单介绍一下<strong>机器学习</strong>，并理一理机器学习中涉及的内容。</p>
-
-<hr />
-
-<h4 id="section">机器学习的定义</h4>
-
-<hr />
-
-<p>一般来说，教科书介绍一样东西，首先会给它下一个确切的定义。不过，对于机器学习的定义，我还真不知道该怎么去下。有太多的版本，太多的述说方式，不知道用哪个好。这里就列举一些我觉得有代表性的，讲的容易懂的那些定义。对于机器学习是什么，看看这些定义，应该就能够有个大致的了解了。</p>
-
-<p>首先，在“<a href="http://www.amazon.cn/Machine-Learning-The-Art-and-Science-of-Algorithms-That-Make-Sense-of-Data-Flach-Peter/dp/1107422221/ref=tmm_pap_title_0">Machine Learning: the art and science of algorithms that make sense of data</a>”一书中，有这样一个定义：</p>
-
-<blockquote>
-  <p>Machine Learning is the systematic study of algorithms and systems that improve their knowledge or performance with experience.</p>
-</blockquote>
-
-<p>这个定义说的比较简单直白，就是说，机器学习就是研究如何通过经验(其实就是数据)去改进性能的算法(这个翻译学得不好，见谅！)。我们可以简单这样理解，机器学习就是研究这么一类算法，通过这类算法呢，系统可以从数据中获取信息来提升自己的性能。最简单的说法就是将数据转换成有用的信息。</p>
-
-<p>在“<a href="http://www.amazon.cn/Machine-Learning-The-Art-and-Science-of-Algorithms-That-Make-Sense-of-Data-Flach-Peter/dp/1107422221/ref=tmm_pap_title_0">Machine Learning: the art and science of algorithms that make sense of data</a>”书中，还有这么一句话，将机器学习的流程说的很清楚：</p>
-
-<blockquote>
-  <p>Machine learning is concerned with using the right features to build the right models that achieve the right task.</p>
-</blockquote>
-
-<p>这句话就是说，机器学习关心的就是：如何通过对特征(数据)建立模型去完成一些任务。在Andrew Ng的机器学习视频中，还列出了Tom Mitchell给出的定义，与上面的说法有些相近：</p>
-
-<blockquote>
-  <p>A computer program is said to learn from experience E with respect to some task T and some performance measure P, if its performance on T, as measured by P, improves with experience E.</p>
-</blockquote>
-
-<p><strong><em>上一篇博文里曾说，数据科学是统计、计算机科学以及专业知识的结合。而其实，机器学习就是统计与计算机科学的结合。正因如此，机器学习是数据科学的核心。</em></strong>简单来说，机器学习就是：研究让机器通过学习过去的经验，达到提高处理相同任务能力的算法。</p>
-
-<hr />
-
-<h4 id="section-1">机器学习的类别</h4>
-
-<hr />
-
-<p>机器学习大致可以分为两类：监督学习(supervised learning)和无监督学习(unsupervised learning)。</p>
-
-<p>如何区分呢？<strong>区别就在于，测试数据有没有给出确切的类别或者结果。若给出了就是监督学习，若没有则是无监督学习</strong>。</p>
-
-<p>比如说回归：其给定的测试样本中，一组自变量的值肯定对应一个确定的因变量的值；再说分类：对于给出的测试样本中的每一个数据，其都会有自己所属的类别。所以回归与分类就属于监督学习的范畴，也就是可以通过既定的数据去做预测。</p>
-
-<p>而无监督学习不同，其给出的数据不存在任何其它信息，比方说聚类，给你一批数据，没有任何信息，让你把数据分成几个类别。一般来说，这时候就需要计算数据之间的相似度(距离)，然后把距离近的归位一类。</p>
-
-<hr />
-
-<h4 id="section-2">最后</h4>
-
-<hr />
-
-<p>到这里，基本上来说，机器学习是干什么的应该有了一些了解了。至于机器学习的分类，监督学习和无监督学习还不明白也不要紧。等弄明白了回归，分类以及聚类等等的是干什么的，自然就明白这两者之间的区别了。</p>
 ]]></content>
   </entry>
   
