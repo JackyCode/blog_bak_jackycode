@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: DataVisualization | Jacky and MSC]]></title>
+  <link href="http://jackycode.github.io/blog/categories/datavisualization/atom.xml" rel="self"/>
+  <link href="http://jackycode.github.io/"/>
+  <updated>2014-05-24T15:25:34+08:00</updated>
+  <id>http://jackycode.github.io/</id>
+  <author>
+    <name><![CDATA[Jacky Code]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[R语言绘图1：绘图基础]]></title>
+    <link href="http://jackycode.github.io/blog/2014/05/24/basic-plotting-tools/"/>
+    <updated>2014-05-24T14:48:02+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/05/24/basic-plotting-tools</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical36.jpg" alt="artical 36" />
+<!-- more --></p>
+
+<p>图片为本文中的某一张~~</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>以数字和文字展示统计分析的结果，很多时候并不直观，也不能吸引人！而且，从数字和文字中寻找规律、异常等等的东西也并不容易。但是，对于图形来说，这些就容易解决得多了。</p>
+
+<p>图形的作用不言而喻，就不想多说了。R语言具有强大的绘图功能，这篇就从最基础的绘图工具讲起，谈谈如何在R中绘制各种各样的图形。</p>
+
+<h4 id="section">一、点</h4>
+<hr />
+
+<p>散点图，无论是在处理数据之前，还是在处理数据的过程中，它都显得非常的重要。在R语言中，绘制散点图非常简单，这就需要使用到函数<strong><code>plot()</code></strong>。</p>
+
+<p>构造以下的数据以作演示使用：</p>
+
+<p><code>r
+set.seed(1234)
+x &lt;- sample(1:100, 80, replace = FALSE)
+y &lt;- 2 * x + 20 + rnorm(80, 0, 10)
+</code></p>
+
+<h6 id="section-1">1. 首先绘制一个最简单的散点图：</h6>
+
+<p><code>r
+plot(x = x, y = y)  ## 或者使用: plot(x, y)
+</code></p>
+
+<p><img src="/images/a36/2.png" alt="plot of chunk 2" /></p>
+
+<p>其中，<code>x = x</code>左侧的<code>x</code>表示横坐标，右侧的是数据名，<code>y</code>的相同。当然，左侧的<code>x</code>和<code>y</code>都是可以省略的。也可以使用<code>plot(&lt;formula&gt;)</code>这样的形式去绘制散点图：</p>
+
+<p><code>r
+plot(y ~ x)
+</code></p>
+
+<p><img src="/images/a36/3.png" alt="plot of chunk 3" /></p>
+
+<h5 id="section-2">2. 添加标题和标签</h5>
+
+<p><code>r
+plot(x, y, xlab = "name of x", ylab = "name of y", main = "Scatter Plot")
+</code></p>
+
+<p><img src="/images/a36/4.png" alt="plot of chunk 4" /></p>
+
+<h5 id="section-3">3. 设置坐标界限</h5>
+
+<p><code>r
+## 可先用以下函数查看x和y的取值范围 range(x) range(y)
+plot(x, y, xlab = "name of x", ylab = "name of y", main = "Scatter Plot", xlim = c(1,
+    100), ylim = c(0, 250))
+</code></p>
+
+<p><img src="/images/a36/5.png" alt="plot of chunk 5" /></p>
+
+<h5 id="section-4">4. 更改字符</h5>
+
+<p>默认情形下，绘图字符为空心点，可以使用<code>pch</code>选项参数进行更改：</p>
+
+<p><code>r
+plot(x, y, xlab = "name of x", ylab = "name of y", main = "Scatter Plot", xlim = c(1,
+    100), ylim = c(0, 250), pch = 19)
+</code></p>
+
+<p><img src="/images/a36/6.png" alt="plot of chunk 6" /></p>
+
+<p><code>pch</code>的取值与其对应的图形字符，也可以使用<code>plot</code>绘制：</p>
+
+<p><code>r
+a &lt;- rep(1:5, each = 5)
+b &lt;- rep(1:5, 5)
+plot(a, b, pch = 1:25)
+text(a, b, 1:25, pos = 2)
+</code></p>
+
+<p><img src="/images/a36/7.png" alt="plot of chunk 7" /></p>
+
+<h5 id="section-5">5. 更改颜色</h5>
+
+<p>默认情况下，R绘制的图像是黑白的。但其实，R中有若干和颜色相关的参数：</p>
+
+<p><code>r
+plot(x, y, main = "Plot", sub = "Scatter Plot", col = "red", col.axis = "green",
+    col.lab = "blue", col.main = "#999000", col.sub = "#000999", fg = "gray",
+    bg = "white")
+</code></p>
+
+<p><img src="/images/a36/8.png" alt="plot of chunk 8" /></p>
+
+<p>其中：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">参数</th>
+      <th style="text-align: center">作用</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">col</td>
+      <td style="text-align: center">绘图字符的颜色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">col.axis</td>
+      <td style="text-align: center">坐标轴文字颜色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">col.lab</td>
+      <td style="text-align: center">坐标轴标签颜色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">col.main</td>
+      <td style="text-align: center">标题颜色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">col.sub</td>
+      <td style="text-align: center">副标题颜色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">fg</td>
+      <td style="text-align: center">前景色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">bg</td>
+      <td style="text-align: center">背景色</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="section-6">6. 更改尺寸</h5>
+
+<p>与颜色类似，存在若干参数可以用来设置图形中元素的尺寸，而且与上表中设置颜色的参数相对应，只需将<code>col</code>更换成<code>cex</code>即可：</p>
+
+<p><code>r
+plot(x, y, main = "Plot", sub = "Scatter Plot", cex = 0.5, cex.axis = 1, cex.lab = 0.8,
+    cex.main = 2, cex.sub = 1.5)
+</code></p>
+
+<p><img src="/images/a36/9.png" alt="plot of chunk 9" /></p>
+
+<h4 id="section-7">二、线</h4>
+
+<p>有时候，我们不仅需要散点图，更需要折线图，比如在时间序列当中：</p>
+
+<p><code>r
+t &lt;- 1:50
+set.seed(1234)
+v &lt;- rnorm(50, 0, 10)
+plot(t, v, type = "l")
+</code></p>
+
+<p><img src="/images/a36/10.png" alt="plot of chunk 10" /></p>
+
+<h5 id="section-8">1. 更改线条类型</h5>
+
+<p>R中提供了很多类型的线条，可以通过<code>lty</code>选项来设定，如下：</p>
+
+<p><code>r
+a &lt;- c()
+plot(a, xlim = c(0, 10), ylim = c(1, 6), xlab = "", ylab = "lty")
+for (i in 1:6) {
+    abline(h = i, lty = i)
+}
+</code></p>
+
+<p><img src="/images/a36/11.png" alt="plot of chunk 11" /></p>
+
+<h5 id="section-9">2. 更改颜色</h5>
+
+<p>与前面更改点的颜色方法相同！</p>
+
+<h5 id="section-10">3. 线条宽度</h5>
+
+<p><code>r
+plot(t, v, type = "l", lwd = 2)
+</code></p>
+
+<p><img src="/images/a36/12.png" alt="plot of chunk 12" /></p>
+
+<h5 id="section-11">4. 点与线</h5>
+
+<p>有时候，我们还需要将点突出出来，此时需要利用<code>type</code>选项：</p>
+
+<p><code>r
+plot(t, v, type = "b")
+</code></p>
+
+<p><img src="/images/a36/13.png" alt="plot of chunk 13" /></p>
+
+<p><code>type</code>选项可以指定<code>plot()</code>函数绘制的类型，可以使用<code>help(plot)</code>查看。</p>
+
+<h4 id="section-12">三、散点图与平滑线</h4>
+
+<p>在做线性回归时，我们常常会在散点图中添加一条拟合直线以查看效果：</p>
+
+<p><code>r
+model &lt;- lm(y ~ x)
+plot(x, y)
+abline(model, col = "blue")
+</code></p>
+
+<p><img src="/images/a36/14.png" alt="plot of chunk 14" /></p>
+
+<p>有时候，我们需要在散点图上画一条拟合的平滑线，一般使用loess：</p>
+
+<p><code>r
+plot(x, y)
+model_loess &lt;- loess(y ~ x)
+fit &lt;- fitted(model_loess)
+ord &lt;- order(x)
+lines(x[ord], fit[ord], lwd = 2, lty = 2, col = "blue")
+</code></p>
+
+<p><img src="/images/a36/15.png" alt="plot of chunk 15" /></p>
+
+<p>当然，在R语言中要实现上面的图形有很多简单地方法，这里介绍两个：</p>
+
+<h5 id="carscatterplot">1. 使用<code>car</code>包中的<code>scatterplot()</code>函数</h5>
+
+<p><code>r
+library(car)
+scatterplot(y ~ x, spread = FALSE, lty = 1, lwd = 2, smoother.args = list(lty = 2,
+    lwd = 2), smoother = loessLine)
+</code></p>
+
+<p><img src="/images/a36/16.png" alt="plot of chunk 16" /></p>
+
+<p>其中，直线为线性拟合，虚线为loess曲线拟合，边界为箱线图！</p>
+
+<p>在函数中<code>smoother.args</code>选项指定曲线拟合的参数；<code>smoother</code>选项指定是否使用曲线拟合，以及用什么方法进行曲线拟合。当然，如果不需要曲线平滑拟合，那么可以将<code>smoother = FALSE</code>。</p>
+
+<h5 id="ggplot2">2. 使用<code>ggplot2</code>包</h5>
+
+<p><code>ggplot2</code>是学习R语言制图的一座大山，它提供了一个基于全面而连贯的语法的绘图系统。功能非常强大，而且弥补了R中自带图形绘制的很多缺点。唯一的问题，学习<code>ggplot2</code>的成本比较大，需要理解很多概念，也需要学习新的语法。</p>
+
+<p><strong>如果你是刚刚入门R语言，对于R语言基础的绘图工具还不是很熟的话，建议先跳过这一段，不要去弄懂其中的意思，试试效果就可以了！等对R语言基础绘图有了一定的了解之后，再来学习ggplot2，个人觉得会比较好一些！</strong></p>
+
+<p><strong><em>当然，如果你跟我一样喜欢折腾，不怕纠结，我不介意你一块学！不过，你遇到什么样的问题，那我就不保证了，反正我当时好长一段时间是蛮惨的！</em></strong></p>
+
+<p>使用这个包，实现的方法一般有两种，就是使用<code>qplot()</code>函数和<code>ggplot()</code>函数：</p>
+
+<p><code>r
+qplot(x, y, geom = c("point", "smooth"), method = "lm", se = FALSE) + geom_smooth(method = "loess",
+    color = "red", se = FALSE, lty = 2)
+</code></p>
+
+<p><img src="/images/a36/17.png" alt="plot of chunk 17" /></p>
+
+<p>或者：</p>
+
+<p><code>r
+dataSet &lt;- data.frame(x = x, y = y)
+ggplot(aes(x, y), data = dataSet) + geom_point() + geom_smooth(method = "lm",
+    color = "green", lty = 1, se = FALSE) + geom_smooth(method = "loess", color = "red",
+    lty = 2, se = FALSE)
+</code></p>
+
+<p><img src="/images/a36/18.png" alt="plot of chunk 18" /></p>
+]]></content>
+  </entry>
+  
+</feed>

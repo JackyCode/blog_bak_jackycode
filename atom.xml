@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-05-20T14:00:02+08:00</updated>
+  <updated>2014-05-24T15:25:34+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,308 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[R语言绘图1：绘图基础]]></title>
+    <link href="http://jackycode.github.io/blog/2014/05/24/basic-plotting-tools/"/>
+    <updated>2014-05-24T14:48:02+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/05/24/basic-plotting-tools</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical36.jpg" alt="artical 36" />
+<!-- more --></p>
+
+<p>图片为本文中的某一张~~</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>以数字和文字展示统计分析的结果，很多时候并不直观，也不能吸引人！而且，从数字和文字中寻找规律、异常等等的东西也并不容易。但是，对于图形来说，这些就容易解决得多了。</p>
+
+<p>图形的作用不言而喻，就不想多说了。R语言具有强大的绘图功能，这篇就从最基础的绘图工具讲起，谈谈如何在R中绘制各种各样的图形。</p>
+
+<h4 id="section">一、点</h4>
+<hr />
+
+<p>散点图，无论是在处理数据之前，还是在处理数据的过程中，它都显得非常的重要。在R语言中，绘制散点图非常简单，这就需要使用到函数<strong><code>plot()</code></strong>。</p>
+
+<p>构造以下的数据以作演示使用：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">set.seed<span class="p">(</span><span class="m">1234</span><span class="p">)</span>
+</span><span class="line">x <span class="o">&lt;-</span> sample<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">100</span><span class="p">,</span> <span class="m">80</span><span class="p">,</span> replace <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span>
+</span><span class="line">y <span class="o">&lt;-</span> <span class="m">2</span> <span class="o">*</span> x <span class="o">+</span> <span class="m">20</span> <span class="o">+</span> rnorm<span class="p">(</span><span class="m">80</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">10</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h6 id="section-1">1. 首先绘制一个最简单的散点图：</h6>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">plot<span class="p">(</span>x <span class="o">=</span> x<span class="p">,</span> y <span class="o">=</span> y<span class="p">)</span>  <span class="c1">## 或者使用: plot(x, y)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/2.png" alt="plot of chunk 2" /></p>
+
+<p>其中，<code>x = x</code>左侧的<code>x</code>表示横坐标，右侧的是数据名，<code>y</code>的相同。当然，左侧的<code>x</code>和<code>y</code>都是可以省略的。也可以使用<code>plot(&lt;formula&gt;)</code>这样的形式去绘制散点图：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">plot<span class="p">(</span>y <span class="o">~</span> x<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/3.png" alt="plot of chunk 3" /></p>
+
+<h5 id="section-2">2. 添加标题和标签</h5>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">plot<span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> xlab <span class="o">=</span> <span class="s">&quot;name of x&quot;</span><span class="p">,</span> ylab <span class="o">=</span> <span class="s">&quot;name of y&quot;</span><span class="p">,</span> main <span class="o">=</span> <span class="s">&quot;Scatter Plot&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/4.png" alt="plot of chunk 4" /></p>
+
+<h5 id="section-3">3. 设置坐标界限</h5>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 可先用以下函数查看x和y的取值范围 range(x) range(y)</span>
+</span><span class="line">plot<span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> xlab <span class="o">=</span> <span class="s">&quot;name of x&quot;</span><span class="p">,</span> ylab <span class="o">=</span> <span class="s">&quot;name of y&quot;</span><span class="p">,</span> main <span class="o">=</span> <span class="s">&quot;Scatter Plot&quot;</span><span class="p">,</span> xlim <span class="o">=</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span>
+</span><span class="line">    <span class="m">100</span><span class="p">),</span> ylim <span class="o">=</span> c<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">250</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/5.png" alt="plot of chunk 5" /></p>
+
+<h5 id="section-4">4. 更改字符</h5>
+
+<p>默认情形下，绘图字符为空心点，可以使用<code>pch</code>选项参数进行更改：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">plot<span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> xlab <span class="o">=</span> <span class="s">&quot;name of x&quot;</span><span class="p">,</span> ylab <span class="o">=</span> <span class="s">&quot;name of y&quot;</span><span class="p">,</span> main <span class="o">=</span> <span class="s">&quot;Scatter Plot&quot;</span><span class="p">,</span> xlim <span class="o">=</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span>
+</span><span class="line">    <span class="m">100</span><span class="p">),</span> ylim <span class="o">=</span> c<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">250</span><span class="p">),</span> pch <span class="o">=</span> <span class="m">19</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/6.png" alt="plot of chunk 6" /></p>
+
+<p><code>pch</code>的取值与其对应的图形字符，也可以使用<code>plot</code>绘制：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">a <span class="o">&lt;-</span> rep<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> each <span class="o">=</span> <span class="m">5</span><span class="p">)</span>
+</span><span class="line">b <span class="o">&lt;-</span> rep<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+</span><span class="line">plot<span class="p">(</span>a<span class="p">,</span> b<span class="p">,</span> pch <span class="o">=</span> <span class="m">1</span><span class="o">:</span><span class="m">25</span><span class="p">)</span>
+</span><span class="line">text<span class="p">(</span>a<span class="p">,</span> b<span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">25</span><span class="p">,</span> pos <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/7.png" alt="plot of chunk 7" /></p>
+
+<h5 id="section-5">5. 更改颜色</h5>
+
+<p>默认情况下，R绘制的图像是黑白的。但其实，R中有若干和颜色相关的参数：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">plot<span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> main <span class="o">=</span> <span class="s">&quot;Plot&quot;</span><span class="p">,</span> sub <span class="o">=</span> <span class="s">&quot;Scatter Plot&quot;</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> col.axis <span class="o">=</span> <span class="s">&quot;green&quot;</span><span class="p">,</span>
+</span><span class="line">    col.lab <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> col.main <span class="o">=</span> <span class="s">&quot;#999000&quot;</span><span class="p">,</span> col.sub <span class="o">=</span> <span class="s">&quot;#000999&quot;</span><span class="p">,</span> fg <span class="o">=</span> <span class="s">&quot;gray&quot;</span><span class="p">,</span>
+</span><span class="line">    bg <span class="o">=</span> <span class="s">&quot;white&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/8.png" alt="plot of chunk 8" /></p>
+
+<p>其中：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">参数</th>
+      <th style="text-align: center">作用</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">col</td>
+      <td style="text-align: center">绘图字符的颜色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">col.axis</td>
+      <td style="text-align: center">坐标轴文字颜色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">col.lab</td>
+      <td style="text-align: center">坐标轴标签颜色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">col.main</td>
+      <td style="text-align: center">标题颜色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">col.sub</td>
+      <td style="text-align: center">副标题颜色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">fg</td>
+      <td style="text-align: center">前景色</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">bg</td>
+      <td style="text-align: center">背景色</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="section-6">6. 更改尺寸</h5>
+
+<p>与颜色类似，存在若干参数可以用来设置图形中元素的尺寸，而且与上表中设置颜色的参数相对应，只需将<code>col</code>更换成<code>cex</code>即可：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">plot<span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> main <span class="o">=</span> <span class="s">&quot;Plot&quot;</span><span class="p">,</span> sub <span class="o">=</span> <span class="s">&quot;Scatter Plot&quot;</span><span class="p">,</span> cex <span class="o">=</span> <span class="m">0.5</span><span class="p">,</span> cex.axis <span class="o">=</span> <span class="m">1</span><span class="p">,</span> cex.lab <span class="o">=</span> <span class="m">0.8</span><span class="p">,</span>
+</span><span class="line">    cex.main <span class="o">=</span> <span class="m">2</span><span class="p">,</span> cex.sub <span class="o">=</span> <span class="m">1.5</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/9.png" alt="plot of chunk 9" /></p>
+
+<h4 id="section-7">二、线</h4>
+
+<p>有时候，我们不仅需要散点图，更需要折线图，比如在时间序列当中：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">t <span class="o">&lt;-</span> <span class="m">1</span><span class="o">:</span><span class="m">50</span>
+</span><span class="line">set.seed<span class="p">(</span><span class="m">1234</span><span class="p">)</span>
+</span><span class="line">v <span class="o">&lt;-</span> rnorm<span class="p">(</span><span class="m">50</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">10</span><span class="p">)</span>
+</span><span class="line">plot<span class="p">(</span>t<span class="p">,</span> v<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;l&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/10.png" alt="plot of chunk 10" /></p>
+
+<h5 id="section-8">1. 更改线条类型</h5>
+
+<p>R中提供了很多类型的线条，可以通过<code>lty</code>选项来设定，如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">a <span class="o">&lt;-</span> c<span class="p">()</span>
+</span><span class="line">plot<span class="p">(</span>a<span class="p">,</span> xlim <span class="o">=</span> c<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">10</span><span class="p">),</span> ylim <span class="o">=</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">6</span><span class="p">),</span> xlab <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span> ylab <span class="o">=</span> <span class="s">&quot;lty&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="kr">for</span> <span class="p">(</span>i <span class="kr">in</span> <span class="m">1</span><span class="o">:</span><span class="m">6</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    abline<span class="p">(</span>h <span class="o">=</span> i<span class="p">,</span> lty <span class="o">=</span> i<span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/11.png" alt="plot of chunk 11" /></p>
+
+<h5 id="section-9">2. 更改颜色</h5>
+
+<p>与前面更改点的颜色方法相同！</p>
+
+<h5 id="section-10">3. 线条宽度</h5>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">plot<span class="p">(</span>t<span class="p">,</span> v<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;l&quot;</span><span class="p">,</span> lwd <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/12.png" alt="plot of chunk 12" /></p>
+
+<h5 id="section-11">4. 点与线</h5>
+
+<p>有时候，我们还需要将点突出出来，此时需要利用<code>type</code>选项：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">plot<span class="p">(</span>t<span class="p">,</span> v<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;b&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/13.png" alt="plot of chunk 13" /></p>
+
+<p><code>type</code>选项可以指定<code>plot()</code>函数绘制的类型，可以使用<code>help(plot)</code>查看。</p>
+
+<h4 id="section-12">三、散点图与平滑线</h4>
+
+<p>在做线性回归时，我们常常会在散点图中添加一条拟合直线以查看效果：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">model <span class="o">&lt;-</span> lm<span class="p">(</span>y <span class="o">~</span> x<span class="p">)</span>
+</span><span class="line">plot<span class="p">(</span>x<span class="p">,</span> y<span class="p">)</span>
+</span><span class="line">abline<span class="p">(</span>model<span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/14.png" alt="plot of chunk 14" /></p>
+
+<p>有时候，我们需要在散点图上画一条拟合的平滑线，一般使用loess：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">plot<span class="p">(</span>x<span class="p">,</span> y<span class="p">)</span>
+</span><span class="line">model_loess <span class="o">&lt;-</span> loess<span class="p">(</span>y <span class="o">~</span> x<span class="p">)</span>
+</span><span class="line">fit <span class="o">&lt;-</span> fitted<span class="p">(</span>model_loess<span class="p">)</span>
+</span><span class="line">ord <span class="o">&lt;-</span> order<span class="p">(</span>x<span class="p">)</span>
+</span><span class="line">lines<span class="p">(</span>x<span class="p">[</span>ord<span class="p">],</span> fit<span class="p">[</span>ord<span class="p">],</span> lwd <span class="o">=</span> <span class="m">2</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/15.png" alt="plot of chunk 15" /></p>
+
+<p>当然，在R语言中要实现上面的图形有很多简单地方法，这里介绍两个：</p>
+
+<h5 id="carscatterplot">1. 使用<code>car</code>包中的<code>scatterplot()</code>函数</h5>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">library<span class="p">(</span>car<span class="p">)</span>
+</span><span class="line">scatterplot<span class="p">(</span>y <span class="o">~</span> x<span class="p">,</span> spread <span class="o">=</span> <span class="kc">FALSE</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">1</span><span class="p">,</span> lwd <span class="o">=</span> <span class="m">2</span><span class="p">,</span> smoother.args <span class="o">=</span> list<span class="p">(</span>lty <span class="o">=</span> <span class="m">2</span><span class="p">,</span>
+</span><span class="line">    lwd <span class="o">=</span> <span class="m">2</span><span class="p">),</span> smoother <span class="o">=</span> loessLine<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/16.png" alt="plot of chunk 16" /></p>
+
+<p>其中，直线为线性拟合，虚线为loess曲线拟合，边界为箱线图！</p>
+
+<p>在函数中<code>smoother.args</code>选项指定曲线拟合的参数；<code>smoother</code>选项指定是否使用曲线拟合，以及用什么方法进行曲线拟合。当然，如果不需要曲线平滑拟合，那么可以将<code>smoother = FALSE</code>。</p>
+
+<h5 id="ggplot2">2. 使用<code>ggplot2</code>包</h5>
+
+<p><code>ggplot2</code>是学习R语言制图的一座大山，它提供了一个基于全面而连贯的语法的绘图系统。功能非常强大，而且弥补了R中自带图形绘制的很多缺点。唯一的问题，学习<code>ggplot2</code>的成本比较大，需要理解很多概念，也需要学习新的语法。</p>
+
+<p><strong>如果你是刚刚入门R语言，对于R语言基础的绘图工具还不是很熟的话，建议先跳过这一段，不要去弄懂其中的意思，试试效果就可以了！等对R语言基础绘图有了一定的了解之后，再来学习ggplot2，个人觉得会比较好一些！</strong></p>
+
+<p><strong><em>当然，如果你跟我一样喜欢折腾，不怕纠结，我不介意你一块学！不过，你遇到什么样的问题，那我就不保证了，反正我当时好长一段时间是蛮惨的！</em></strong></p>
+
+<p>使用这个包，实现的方法一般有两种，就是使用<code>qplot()</code>函数和<code>ggplot()</code>函数：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">qplot<span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> geom <span class="o">=</span> c<span class="p">(</span><span class="s">&quot;point&quot;</span><span class="p">,</span> <span class="s">&quot;smooth&quot;</span><span class="p">),</span> method <span class="o">=</span> <span class="s">&quot;lm&quot;</span><span class="p">,</span> se <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span> <span class="o">+</span> geom_smooth<span class="p">(</span>method <span class="o">=</span> <span class="s">&quot;loess&quot;</span><span class="p">,</span>
+</span><span class="line">    color <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> se <span class="o">=</span> <span class="kc">FALSE</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/17.png" alt="plot of chunk 17" /></p>
+
+<p>或者：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">dataSet <span class="o">&lt;-</span> data.frame<span class="p">(</span>x <span class="o">=</span> x<span class="p">,</span> y <span class="o">=</span> y<span class="p">)</span>
+</span><span class="line">ggplot<span class="p">(</span>aes<span class="p">(</span>x<span class="p">,</span> y<span class="p">),</span> data <span class="o">=</span> dataSet<span class="p">)</span> <span class="o">+</span> geom_point<span class="p">()</span> <span class="o">+</span> geom_smooth<span class="p">(</span>method <span class="o">=</span> <span class="s">&quot;lm&quot;</span><span class="p">,</span>
+</span><span class="line">    color <span class="o">=</span> <span class="s">&quot;green&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">1</span><span class="p">,</span> se <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span> <span class="o">+</span> geom_smooth<span class="p">(</span>method <span class="o">=</span> <span class="s">&quot;loess&quot;</span><span class="p">,</span> color <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span>
+</span><span class="line">    lty <span class="o">=</span> <span class="m">2</span><span class="p">,</span> se <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a36/18.png" alt="plot of chunk 18" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习17:因子分析2]]></title>
@@ -2479,180 +2781,6 @@
 <p>在上一篇中可以看到，<code>lm</code>函数加上<code>summary</code>函数会有很多的输出内容。其实，那些输出中就含有上述的假设检验的结果，很容易就可以找到，这里不做阐述！</p>
 
 <p>我自己也写了一个关于线性回归的R语言函数，托管在<a href="https://github.com/JackyCode/Data_Science/tree/master/Linear_Regression">我的github</a>上面，函数内部对于线性回归的过程大都涉及到了，有兴趣可以看看。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习2：线性回归1]]></title>
-    <link href="http://jackycode.github.io/blog/2014/03/30/machine-learning1/"/>
-    <updated>2014-03-30T19:02:30+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/03/30/machine-learning1</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical16.jpg" alt="artical 16" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<h4 id="section">一、回归分析</h4>
-
-<hr />
-
-<p>在统计分析中，最大的两支应该算是相关分析和回归分析。而回归分析应该是统计学的核心。回归分析，就是研究因变量$y$与自变量$x$之间的关系，存在条件数学期望：$f(x)=E(y|x)$。此时有：$y=f(x)+\varepsilon$，一般假设$\varepsilon \sim N(0,\sigma^2)$。</p>
-
-<p>回归分析有很多变种：简单线性回归；多项式回归；Logistic回归；非参数回归；非线性回归等等。本篇就介绍最简单的线性回归，首先来看看一元线性回归。</p>
-
-<hr />
-
-<h4 id="section-1">二、一元线性回归</h4>
-
-<hr />
-
-<p>对于一元线性回归来说，$f(x)$就是线性的，则有：$f(x)=E(y|x)=\beta_0 + \beta_1 x$。通过已知的数据，可以估计出$\beta_0,\beta_1$的估计值：$\hat{\beta}_0,\hat{\beta}_1$。那么就有$y$的预测值：$\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x$。</p>
-
-<hr />
-
-<h5 id="beta0beta1hatbeta0hatbeta1">1. 如何计算$\beta_0,\beta_1$的估计值$\hat{\beta}_0,\hat{\beta}_1$呢？</h5>
-
-<hr />
-
-<p>定义离差平方和：</p>
-
-<script type="math/tex; mode=display">Q(\beta_0,\beta_1) = \sum_{i=1}^{n}(y_i-f(x_i))^2</script>
-
-<p>显然，我们希望$f(x_i)$的值与真实值$y_i$越接近越好。那么就是需要离差平方和越小越好。则得到目标：</p>
-
-<script type="math/tex; mode=display"> \min_{\beta_0,\beta_1}{\sum_{i=1}^{n}(y_i-f(x_i))^2} </script>
-
-<p>如何寻找$\hat{\beta}_0,\hat{\beta}_1$使得上面方程达到最小呢？这个就需要对其对$\hat{\beta}_0,\hat{\beta}_1$求偏导，得到：</p>
-
-<script type="math/tex; mode=display">\frac{\partial Q}{\partial \beta_0}=-2\sum_{i=1}^{n}{(y_i-\beta_0-\beta_1x_i)}</script>
-
-<script type="math/tex; mode=display">\frac{\partial Q}{\partial \beta_1}=-2\sum_{i=1}^{n}{(y_i-\beta_0-\beta_1x_i)x_i}</script>
-
-<p>令上述两式都等于0，计算得到：</p>
-
-<script type="math/tex; mode=display">\hat{\beta}_0=\overline{y}-\hat{\beta}_1\overline{x}</script>
-
-<script type="math/tex; mode=display">\hat{\beta}_1=\frac{\sum_{i=1}^{n}{(x_i-\overline{x})(y_i-\overline{x})}}{\sum_{i=1}^{n}{(x-\overline{x})^2}}</script>
-
-<p>这样就得到$\beta_0,\beta_1$的估计值$\hat{\beta}_0,\hat{\beta}_1$。这个方法就叫做OLS，即普通最小二乘(ordinary least squares)。</p>
-
-<hr />
-
-<h5 id="r">2. R语言实现</h5>
-
-<hr />
-
-<p>在R语言中有自带的函数可以处理线性回归，那就是<code>lm</code>函数。这里使用自带的数据<code>cars</code>做演示：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-<span class="line-number">18</span>
-<span class="line-number">19</span>
-<span class="line-number">20</span>
-<span class="line-number">21</span>
-<span class="line-number">22</span>
-<span class="line-number">23</span>
-<span class="line-number">24</span>
-<span class="line-number">25</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> attach<span class="p">(</span>cars<span class="p">)</span> <span class="c1"># 使用数据集cars，与with函数类似</span>
-</span><span class="line"><span class="o">&gt;</span> lingre <span class="o">&lt;-</span> lm<span class="p">(</span>dist <span class="o">~</span> speed<span class="p">)</span>
-</span><span class="line"><span class="o">&gt;</span> summary<span class="p">(</span>lingre<span class="p">)</span>
-</span><span class="line">
-</span><span class="line">Call<span class="o">:</span>
-</span><span class="line">lm<span class="p">(</span>formula <span class="o">=</span> dist <span class="o">~</span> speed<span class="p">)</span>
-</span><span class="line">
-</span><span class="line">Residuals<span class="o">:</span>
-</span><span class="line">    Min      <span class="m">1</span>Q  Median      <span class="m">3</span>Q     Max
-</span><span class="line"><span class="m">-29.069</span>  <span class="m">-9.525</span>  <span class="m">-2.272</span>   <span class="m">9.215</span>  <span class="m">43.201</span>
-</span><span class="line">
-</span><span class="line">Coefficients<span class="o">:</span>
-</span><span class="line">            Estimate Std. Error t value Pr<span class="p">(</span><span class="o">&gt;|</span>t<span class="o">|</span><span class="p">)</span>
-</span><span class="line"><span class="p">(</span>Intercept<span class="p">)</span> <span class="m">-17.5791</span>     <span class="m">6.7584</span>  <span class="m">-2.601</span>   <span class="m">0.0123</span> <span class="o">*</span>
-</span><span class="line">speed         <span class="m">3.9324</span>     <span class="m">0.4155</span>   <span class="m">9.464</span> <span class="m">1.49e-12</span> <span class="o">***</span>
-</span><span class="line"><span class="o">---</span>
-</span><span class="line">Signif. codes<span class="o">:</span>  <span class="m">0</span> ‘<span class="o">***</span>’ <span class="m">0.001</span> ‘<span class="o">**</span>’ <span class="m">0.01</span> ‘<span class="o">*</span>’ <span class="m">0.05</span> ‘.’ <span class="m">0.1</span> ‘ ’ <span class="m">1</span>
-</span><span class="line">
-</span><span class="line">Residual standard error<span class="o">:</span> <span class="m">15.38</span> on <span class="m">48</span> degrees of freedom
-</span><span class="line">Multiple R<span class="o">-</span>squared<span class="o">:</span>  <span class="m">0.6511</span><span class="p">,</span>	Adjusted R<span class="o">-</span>squared<span class="o">:</span>  <span class="m">0.6438</span>
-</span><span class="line"><span class="k-Variable">F</span><span class="o">-</span>statistic<span class="o">:</span> <span class="m">89.57</span> on <span class="m">1</span> and <span class="m">48</span> DF<span class="p">,</span>  p<span class="o">-</span>value<span class="o">:</span> <span class="m">1.49e-12</span>
-</span><span class="line">
-</span><span class="line"><span class="o">&gt;</span> plot<span class="p">(</span>dist <span class="o">~</span> speed<span class="p">,</span> pch<span class="o">=</span><span class="m">4</span><span class="p">)</span> <span class="c1"># 画出散点图</span>
-</span><span class="line"><span class="o">&gt;</span> abline<span class="p">(</span>lingre<span class="p">,</span> col<span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># 添加拟合直线</span>
-</span><span class="line"><span class="o">&gt;</span> detach<span class="p">(</span>cars<span class="p">)</span> <span class="c1"># 使用完记得释放</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>从这里可以得到回归方程：$\hat{dist} = -17.5791 + 3.9324 \times speed$。（对于其它的结果是什么意思，可以去查看线性回归的相关书籍）</p>
-
-<p>另外，得到拟合直线的图像：</p>
-
-<p><img src="\images\a16\lingre_one.jpg" alt="lingre_one" /></p>
-
-<hr />
-
-<h4 id="section-2">三、多元线性回归</h4>
-
-<hr />
-
-<p>对于多元线性回归来说，其计算方式与一元线性回归类似，区别在于，多元的时候需要利用矩阵来处理。首先看一下回归模型：</p>
-
-<script type="math/tex; mode=display"> y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_p x_p + \varepsilon </script>
-
-<p>其中$p$代表自变量的个数。</p>
-
-<p>若取$x^T_0=[1, 1, \dots, 1]_{1 \times n}$，则可将上述模型改写成：<script type="math/tex">y=X\beta+\varepsilon</script>。其中：</p>
-
-<script type="math/tex; mode=display">y^T=[y_1,y_2,\dots,y_n], X=[x_0,x_1,\dots,x_p], \beta^T=[\beta_0,\beta_1,\dots,\beta_p], \varepsilon^T=[\varepsilon_1,\varepsilon_2,\dots,\varepsilon_n]</script>
-
-<p>其中<script type="math/tex">x^T_i=[x_{1i},x_{2i},\dots,x_{ni}]</script>。</p>
-
-<p>这样我们就可以将离差平方和<script type="math/tex">\sum_{i=1}^{n}{(y_i-\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_p x_p)^2}</script>写成矩阵形式：</p>
-
-<script type="math/tex; mode=display">(y-X\beta)^T(y-X\beta)</script>
-
-<p>求导可得：<script type="math/tex">-2X^T(y-X\beta)</script>(这里用到矩阵求导的知识，一般介绍<strong>线性模型</strong>的书籍中会讲到；当然也可以直接对上面不是矩阵形式的离差平和求导)。令其等于0，可得：</p>
-
-<script type="math/tex; mode=display">\hat{\beta} = (X^TX)^{-1}X^Ty</script>
-
-<hr />
-
-<h5 id="r-1">R语言实现</h5>
-
-<hr />
-
-<p>对于R语言的实现，依旧使用<code>lm</code>函数：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">lingre_mul <span class="o">&lt;-</span> lm<span class="p">(</span>y <span class="o">~</span> x1 <span class="o">+</span> x2<span class="p">,</span> data<span class="o">=</span>datasets<span class="p">)</span>
-</span><span class="line">summary<span class="p">(</span>lingre_mul<span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>这里就不再用实际数据去演示了。</p>
-
-<hr />
-
-<h4 id="section-3">四、最后</h4>
-
-<hr />
-
-<p>至此，就把线性回归的基础内容介绍完了。但其实线性回归还存在很多其它的问题。比如说回归诊断（就是检查回归的效果），变量选择等等等等。感兴趣的话，可以找本讲线性回归的书看看，有很多！</p>
 ]]></content>
   </entry>
   
