@@ -31,3 +31,16 @@ footer: true
 </div>
 
 </article>
+
+<article>
+  <div class="well">
+
+<h2><a href="https://github.com/JackyCode/FunnyCodes/tree/master/MaxSubSeriesSum">MaxSubSeriesSum</a></h2>
+
+<footer>
+  最大的子序列和问题
+</footer>
+
+</div>
+
+</article>
