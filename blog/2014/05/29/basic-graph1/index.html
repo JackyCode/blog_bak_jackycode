@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>R语言记录7：相关分析 - Jacky and MSC</title>
+  <title>R语言绘图2：基础图形1 - Jacky and MSC</title>
   <meta name="author" content="Jacky Code">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jackycode.github.io/blog/2014/03/17/rseries7">
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/05/29/basic-graph1">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -99,7 +99,7 @@
   
   <header class="page-header">
     
-      <h1 class="entry-title">R语言记录7：相关分析</h1>
+      <h1 class="entry-title">R语言绘图2：基础图形1</h1>
     
     
       <p class="meta">
@@ -115,112 +115,30 @@
   
 
 
-<time datetime="2014-03-17T16:46:47+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2014</time>
+<time datetime="2014-05-29T14:50:05+08:00" pubdate data-updated="true">May 29<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p><img src="/images/artical/artical10.jpg" alt="aritical 10" />
+<div class="entry-content"><p><img src="/images/artical/artical37.jpg" alt="artical 37" />
 <!-- more --></p>
+
+<p>图片为本文中的某一张~~</p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
 
 <hr />
 
-<p>变量之间的关系，大致可分为两种：<em>函数关系</em>和<em>相关关系</em>。</p>
+<h3 id="section">一、 饼图</h3>
+<hr />
 
-<p>函数关系，简单来说就是可以将变量之间的关系用方程(其实就是函数)来描述：$y=f(x)$，处理这种关系对应的统计方法就是<strong><em>回归分析</em></strong>。</p>
+<p>饼图，简单来说，就是将一个圆（或者圆饼）按分类变量分成几块，每一块所占的面积比例就是相对应的变量在总体中所占的比例。</p>
 
-<p>相关关系，就是指变量之间存在不完全确定的依赖关系，其数值不能够使用函数表示出来，这个对应的就是<strong><em>相关分析</em></strong>。</p>
+<p>饼图在统计上，其实并不被看好。一般都会推荐使用条形图去代替，因为相比较面积，长度更能让人产生直观的判断。</p>
 
-<p>判断变量之间是否存在相关关系，最直接简单的方法就是画出两个变量之间的散点图。</p>
-
-<h4 id="section">1. 散点图</h4>
-<p>我们使用<code>cars</code>数据集中的数据进行演示,<code>cars</code>数据集中包含了汽车速度与制动距离的数据，显然直观感觉这两个变量之间肯定存在相关关系。画个散点图看看：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Correlation_Analysis.r</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> head<span class="p">(</span>cars<span class="p">)</span>
-</span><span class="line">  speed dist
-</span><span class="line"><span class="m">1</span>     <span class="m">4</span>    <span class="m">2</span>
-</span><span class="line"><span class="m">2</span>     <span class="m">4</span>   <span class="m">10</span>
-</span><span class="line"><span class="m">3</span>     <span class="m">7</span>    <span class="m">4</span>
-</span><span class="line"><span class="m">4</span>     <span class="m">7</span>   <span class="m">22</span>
-</span><span class="line"><span class="m">5</span>     <span class="m">8</span>   <span class="m">16</span>
-</span><span class="line"><span class="m">6</span>     <span class="m">9</span>   <span class="m">10</span>
-</span><span class="line"><span class="o">&gt;</span> with <span class="p">(</span>cars<span class="p">,</span> <span class="p">{</span>
-</span><span class="line"><span class="o">+</span> 	plot<span class="p">(</span>speed<span class="p">,</span> dist<span class="p">)</span>
-</span><span class="line"><span class="o">+</span> <span class="p">})</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>得到如下图形：</p>
-
-<p><img src="/images/RSeries7/scatter.jpg" alt="scatter" /></p>
-
-<p>从散点图看，汽车速度与其制动距离存在相关关系。但是，仅仅从图像来看，我们只能得到大概是否相关，而不能给出一个确切的描述。那么就希望能够找到一个方法，能够描述变量之间有多相关，程度有多大。</p>
-
-<h4 id="section-1">2. 相关的种类</h4>
-<p>根据相关程度，我们可以给相关进行分类：完全相关，不完全相关，完全不相关；而根据相关方向的不同，又可以分类：正相关(一个变大另一个也变大)，负相关。那么怎么用数学的方式去描述这些种类呢，那就需要用到相关系数。</p>
-
-<h5 id="section-2">(1). 相关系数</h5>
-<p>相关系数的符号用来代表正负相关($+$ -&gt; 正；$-$ -&gt; 负)，其值的大小用来描述相关程度的大小(0~1:完全不相关~完全相关)。相关系数的定义有很多，常用的有Person相关系数、Spearman相关系数等等。这里给出最常用的Person相关系数的计算方法：</p>
-
-<script type="math/tex; mode=display">\gamma=\frac{\sum_{i=1}^{n}{(x_i-\overline{x})(y_i-\overline{y})}}{\sqrt{\sum_{i=1}^{n}{(x_i-\overline{x})^2}\sum_{i=1}^{n}{(y_i-\overline{y})^2}}}</script>
-
-<p>当样本个数充分大时，样本相关系数可以作为总体相关系数的估计。</p>
-
-<p>在R中，可以使用<code>cor</code>函数来得到变量间的相关系数矩阵：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Correlation_Analysis.r</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> cor<span class="p">(</span>cars<span class="p">)</span>
-</span><span class="line">          speed      dist
-</span><span class="line">speed <span class="m">1.0000000</span> <span class="m">0.8068949</span>
-</span><span class="line">dist  <span class="m">0.8068949</span> <span class="m">1.0000000</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>可以看到，$corr(speed, dist)=0.8068949$，说明汽车速度与其制动距离之间存在较强的正相关关系。</p>
-
-<h6 id="section-3">注：</h6>
-<p>可以指定<code>cor</code>的参数得到不同的相关系数：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Correlation_Analysis.r</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> cor<span class="p">(</span>cars<span class="p">,</span> method<span class="o">=</span><span class="s">&#39;spearman&#39;</span><span class="p">)</span>
-</span><span class="line">          speed      dist
-</span><span class="line">speed <span class="m">1.0000000</span> <span class="m">0.8303568</span>
-</span><span class="line">dist  <span class="m">0.8303568</span> <span class="m">1.0000000</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<h5 id="section-4">(2). 相关性的显著性检验</h5>
-<p>得到了两个变量之间的相关系数，那就需要检验，得到的结果是否能够通过显著性检验。即相关性到底显著与否。</p>
-
-<p>这里需要建立假设检验：$H_0:$ 变量X和Y不相关；那么可以构造检验统计量如下：</p>
-
-<script type="math/tex; mode=display">T = \frac{\gamma(X,Y)\sqrt{n-2}}{\sqrt{1-\gamma(X,Y)^2}}</script>
-
-<p>在零假设成立的条件下，<script type="math/tex">T \sim t(n-2)</script>。那么若有$T &gt; t_{1-\alpha}(n-2)$，则拒绝原假设，说明变量X和Y存在显著的相关关系。</p>
-
-<h6 id="section-5">注：这里提到的内容可以到参数统计的书籍上寻找。</h6>
-
-<p>在R中，我们可以使用<code>cor.test</code>函数很轻松地对此进行检验：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Correlation_Analysis.r</span><a href="https://github.com/JackyCode/RSeries">link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
 <span class="line-number">3</span>
 <span class="line-number">4</span>
@@ -234,27 +152,88 @@
 <span class="line-number">12</span>
 <span class="line-number">13</span>
 <span class="line-number">14</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> with<span class="p">(</span>cars<span class="p">,</span> <span class="p">{</span>
-</span><span class="line"><span class="o">+</span> 	cor.test<span class="p">(</span>speed<span class="p">,</span> dist<span class="p">)</span>
-</span><span class="line"><span class="o">+</span> <span class="p">})</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 构造一批数据</span>
+</span><span class="line">year <span class="o">&lt;-</span> <span class="m">2001</span><span class="o">:</span><span class="m">2010</span>
+</span><span class="line">set.seed<span class="p">(</span><span class="m">1234</span><span class="p">)</span>
+</span><span class="line">counts <span class="o">&lt;-</span> sample<span class="p">(</span><span class="m">100</span><span class="o">:</span><span class="m">500</span><span class="p">,</span> <span class="m">10</span><span class="p">)</span>
 </span><span class="line">
-</span><span class="line">	Pearson<span class="s">&#39;</span><span class="err">s product-moment correlation</span>
+</span><span class="line"><span class="c1">## 绘图 在同一张画布上绘制4幅图，对于`par`的使用，可以`?par`</span>
+</span><span class="line">par<span class="p">(</span>mfrow <span class="o">=</span> c<span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">))</span>
 </span><span class="line">
-</span><span class="line">data<span class="o">:</span>  speed and dist
-</span><span class="line">t <span class="o">=</span> <span class="m">9.464</span><span class="p">,</span> df <span class="o">=</span> <span class="m">48</span><span class="p">,</span> p<span class="o">-</span>value <span class="o">=</span> <span class="m">1.49e-12</span>
-</span><span class="line">alternative hypothesis<span class="o">:</span> true correlation is not equal to <span class="m">0</span>
-</span><span class="line"><span class="m">95</span> percent confidence interval<span class="o">:</span>
-</span><span class="line"> <span class="m">0.6816422</span> <span class="m">0.8862036</span>
-</span><span class="line">sample estimates<span class="o">:</span>
-</span><span class="line">      cor
-</span><span class="line"><span class="m">0.8068949</span>
+</span><span class="line"><span class="c1">### 1</span>
+</span><span class="line">pie<span class="p">(</span>counts<span class="p">,</span> labels <span class="o">=</span> year<span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">### 2</span>
+</span><span class="line">pie<span class="p">(</span>counts<span class="p">,</span> labels <span class="o">=</span> year<span class="p">,</span> col <span class="o">=</span> gray<span class="p">(</span>seq<span class="p">(</span><span class="m">0.1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> length <span class="o">=</span> <span class="m">10</span><span class="p">)),</span> clockwise <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">### 3</span>
+</span><span class="line">lb <span class="o">&lt;-</span> paste<span class="p">(</span>year<span class="p">,</span> counts<span class="p">,</span> sep <span class="o">=</span> <span class="s">&quot;:&quot;</span><span class="p">)</span>
+</span><span class="line">pie<span class="p">(</span>counts<span class="p">,</span> labels <span class="o">=</span> lb<span class="p">,</span> col <span class="o">=</span> rainbow<span class="p">(</span><span class="m">10</span><span class="p">))</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">### 4</span>
+</span><span class="line">library<span class="p">(</span>plotrix<span class="p">)</span>
+</span><span class="line">pie3D<span class="p">(</span>counts<span class="p">,</span> labels <span class="o">=</span> year<span class="p">,</span> explode <span class="o">=</span> <span class="m">0.1</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>从结果可以看到，$t=9.464$这个不容易看出来结果，因为还需要查表。我们可以选择直接看$p$值：1.49e-12，比0.05小太多了。故而拒绝原假设，认为汽车速度与制动距离存在高度相关关系。</p>
+<p><img src="/images/a37/1.png" alt="plot of chunk 1" /></p>
 
-<h6 id="spearman">注：这里如何修改，使得其使用spearman相关系数呢？</h6>
+<h3 id="section-1">二、 条形图</h3>
+<hr />
 
-<p>到此，就将相关分析的大致内容进行了阐述。但是，相关分析也还有很多其它内容，比如偏相关等等。</p>
+<p>刚才我们就提到，很多时候，我们会使用条形图替代饼图。实际上，<strong>条形图就是通过垂直或者水平的条形去展示分类变量的频数</strong>。</p>
+
+<p>对于上面的数据，可以绘制：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">par<span class="p">(</span>mfrow <span class="o">=</span> c<span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">))</span>
+</span><span class="line">barplot<span class="p">(</span>counts<span class="p">,</span> names.arg <span class="o">=</span> year<span class="p">)</span>
+</span><span class="line">barplot<span class="p">(</span>counts<span class="p">,</span> names.arg <span class="o">=</span> year<span class="p">,</span> horiz <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+</span><span class="line">barplot<span class="p">(</span>counts<span class="p">,</span> names.arg <span class="o">=</span> year<span class="p">,</span> col <span class="o">=</span> rainbow<span class="p">(</span><span class="m">10</span><span class="p">))</span>
+</span><span class="line">barplot<span class="p">(</span>counts<span class="p">,</span> names.arg <span class="o">=</span> year<span class="p">,</span> col <span class="o">=</span> grey<span class="p">(</span>seq<span class="p">(</span><span class="m">0.1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> length <span class="o">=</span> <span class="m">10</span><span class="p">)),</span> horiz <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a37/2.png" alt="plot of chunk 2" /></p>
+
+<p>当每一年有两个变量指标时，可以绘制堆砌条形图和分组条形图：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 构造新的数据</span>
+</span><span class="line">set.seed<span class="p">(</span><span class="m">4321</span><span class="p">)</span>
+</span><span class="line">counts2 <span class="o">&lt;-</span> sample<span class="p">(</span><span class="m">100</span><span class="o">:</span><span class="m">500</span><span class="p">,</span> <span class="m">10</span><span class="p">)</span>
+</span><span class="line">count <span class="o">&lt;-</span> cbind<span class="p">(</span>c1 <span class="o">=</span> counts<span class="p">,</span> c2 <span class="o">=</span> counts2<span class="p">)</span>
+</span><span class="line">rownames<span class="p">(</span>count<span class="p">)</span> <span class="o">&lt;-</span> year
+</span><span class="line">
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line">par<span class="p">(</span>mfrow <span class="o">=</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">))</span>
+</span><span class="line">barplot<span class="p">(</span>count<span class="p">,</span> col <span class="o">=</span> rainbow<span class="p">(</span><span class="m">10</span><span class="p">),</span> legend <span class="o">=</span> rownames<span class="p">(</span>count<span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a37/31.png" alt="plot of chunk 3" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">barplot<span class="p">(</span>count<span class="p">,</span> col <span class="o">=</span> rainbow<span class="p">(</span><span class="m">10</span><span class="p">),</span> besid <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span> legend <span class="o">=</span> rownames<span class="p">(</span>count<span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a37/32.png" alt="plot of chunk 3" /></p>
 </div>
 
 
@@ -277,12 +256,12 @@
   
 
 
-<time datetime="2014-03-17T16:46:47+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2014</time>
+<time datetime="2014-05-29T14:50:05+08:00" pubdate data-updated="true">May 29<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/rseries/'>RSeries</a>
+    <a class='category' href='/blog/categories/datavisualization/'>DataVisualization</a>
   
 </span>
 
@@ -300,14 +279,10 @@
     <ul class="pager">
       
       <li class="previous"><a class="basic-alignment left"
-        href="/blog/2014/03/14/rseries6/" title="Previous Post:
-        R语言记录6：描述统计2">&laquo; R语言记录6：描述统计2</a></li>
+        href="/blog/2014/05/24/basic-plotting-tools/" title="Previous Post:
+        R语言绘图1：绘图基础">&laquo; R语言绘图1：绘图基础</a></li>
       
       <li><a href="/blog/archives">Blog Archives</a></li>
-      
-      <li class="next"><a class="basic-alignment right" href="/blog/2014/03/18/record3/"
-        title="Next Post: 记录：最近对博客的一些修改">记录：最近对博客的一些修改
-        &raquo;</a></li>
       
     </ul>
   </footer>
