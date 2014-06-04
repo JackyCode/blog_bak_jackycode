@@ -4,7 +4,7 @@
   <title><![CDATA[Category: DataVisualization | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/datavisualization/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-05-29T15:08:14+08:00</updated>
+  <updated>2014-06-04T17:06:03+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,126 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[R语言绘图3：基础图形2]]></title>
+    <link href="http://jackycode.github.io/blog/2014/06/04/basic-graph2/"/>
+    <updated>2014-06-04T16:53:08+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/06/04/basic-graph2</id>
+    <content type="html"><![CDATA[<p><img src="/images/artical/artical38.jpg" alt="artical 38" />
+<!-- more --></p>
+
+<p>图片为本文中的某一张~~</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h3 id="section">三、直方图</h3>
+<hr />
+
+<p>前面介绍的两种图形，一般都是用来处理离散数据的。那么对于连续数据，常用的图形就有这里所说的直方图。直方图在横轴上将数据值域划分成若干个组别，然后在纵轴上显示其频数。通过这种方式，可以将连续的点离散化，从而来描述连续型变量的分布。</p>
+
+<p>在R语言中，可以使用<code>hist()</code>函数来绘制直方图：</p>
+
+<p><code>r
+## 构造数据
+set.seed(1234)
+x &lt;- rnorm(100, 0, 1)
+## 设置画布
+par(mfrow = c(2, 2))
+## 1
+hist(x)
+box()
+## 2 修改颜色，组数
+hist(x, breaks = 10, col = "gray")
+box()
+## 3 添加核密度曲线
+hist(x, breaks = 10, freq = FALSE, col = "gray")
+lines(density(x), col = "red", lwd = 2)
+box()
+## 4 添加正态密度曲线
+h &lt;- hist(x, breaks = 10, col = "gray")
+xfit &lt;- seq(min(x), max(x), length = 100)
+yfit &lt;- dnorm(xfit, mean = mean(x), sd = sd(x))
+yfit &lt;- yfit * diff(h$mids[1:2]) * length(x)
+lines(xfit, yfit, col = "blue", lwd = 2)
+box()
+</code></p>
+
+<p><img src="/images/a38/hist.png" alt="plot of chunk hist" /></p>
+
+<p>当然，可以使用<code>ggplot2</code>包中的函数绘制直方图：</p>
+
+<p>先试试<code>qplot()</code>函数：</p>
+
+<p><code>r
+qplot(x, geom = "histogram", binwidth = 0.5, fill = ..count..)
+</code></p>
+
+<p><img src="/images/a38/hist_qplot.png" alt="plot of chunk hist_qplot" /></p>
+
+<p>再试试<code>ggplot()</code>函数：</p>
+
+<p><code>r
+dataSet &lt;- data.frame(x)
+h &lt;- ggplot(data = dataSet, aes(x = x))
+h + geom_histogram(aes(fill = ..count..), binwidth = 0.5)
+</code></p>
+
+<p><img src="/images/a38/hist_ggplot1.png" alt="plot of chunk hist_ggplot" /></p>
+
+<p><code>r
+## 添加核密度曲线
+h + geom_histogram(aes(y = ..density.., fill = ..count..), binwidth = 0.5) +
+    geom_density(color = "red")
+</code></p>
+
+<p><img src="/images/a38/hist_ggplot2.png" alt="plot of chunk hist_ggplot" /></p>
+
+<p><code>r
+## 添加正态密度曲线
+dataSet2 &lt;- data.frame(xfit, yfit)
+h + geom_histogram(aes(fill = ..count..), binwidth = 0.5) + geom_line(data = dataSet2,
+    aes(x = xfit, y = yfit), color = "red")
+</code></p>
+
+<p><img src="/images/a38/hist_ggplot3.png" alt="plot of chunk hist_ggplot" /></p>
+
+<p>直方图在统计中是非常重要的，我自己的感觉是：散点图用的最多最广泛，其次就是直方图！散点图之前已经说过，直方图的话，它可以直观地显示出样本数据大致的分布情况（经验分布函数），对选择什么样的分布、什么样的模型等等都有一定的作用。使用核函数以及正态密度曲线与之结合，能够更好地观察出样本数据的一些分布特征，所以，学会绘制直方图是十分重要的。</p>
+
+<h3 id="section-1">四、箱线图</h3>
+<hr />
+
+<p>还有一种常用的图形，就是<strong>箱线图</strong>，也称<strong>盒须图</strong>。它通过绘制连续型变量的五个分位数（最大最小值、25%和75%分位数以及中位数），描述变量的分布。</p>
+
+<p><code>r
+## 构造数据
+x1 &lt;- x
+x2 &lt;- rnorm(100, 1, 2)
+x3 &lt;- rnorm(100, 2, 4)
+all_x &lt;- c(x1, x2, x3)
+label &lt;- rep(1:3, each = 100)
+dataSet3 &lt;- data.frame(x = all_x, label = label)
+</code></p>
+
+<p>下面开始绘制箱线图：</p>
+
+<p><code>r
+boxplot(dataSet3$x)
+</code></p>
+
+<p><img src="/images/a38/boxplot1.png" alt="plot of chunk boxplot" /></p>
+
+<p><code>r
+## 考虑类别
+boxplot(x ~ label, data = dataSet3)
+</code></p>
+
+<p><img src="/images/a38/boxplot2.png" alt="plot of chunk boxplot" /></p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[R语言绘图2：基础图形1]]></title>
