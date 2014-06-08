@@ -122,7 +122,7 @@
   </header>
 
 
-<div class="entry-content"><p><img src="/images/artical/artical8.jpg" alt="aritical 8" />
+<div class="entry-content"><p><img src="/images/article/article8.jpg" alt="ariticle 8" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -197,8 +197,8 @@
 </span><span class="line"><span class="o">&gt;</span> sd<span class="p">(</span>mtcars<span class="o">$</span>mpg<span class="p">)</span>
 </span><span class="line"><span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="m">6.026948</span>
 </span><span class="line"><span class="o">&gt;</span> quantile<span class="p">(</span>mtcars<span class="o">$</span>mpg<span class="p">,</span> <span class="m">0.25</span><span class="p">)</span>
-</span><span class="line">   <span class="m">25</span><span class="o">% </span>
-</span><span class="line"><span class="o">15.425 </span>
+</span><span class="line">   <span class="m">25</span><span class="o">%</span>
+</span><span class="line"><span class="o">15.425</span>
 </span><span class="line"><span class="o">&gt; quantile(mtcars$mpg, c(0.25, 0.75))</span>
 </span><span class="line"><span class="o">   25%</span>    <span class="m">75</span>%
 </span><span class="line"><span class="m">15.425</span> <span class="m">22.800</span>
@@ -240,14 +240,14 @@
 </pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> desc.stats <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">,</span> na.omit<span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># na.omit=TRUE 表示忽略缺失值</span>
 </span><span class="line"><span class="o">+</span> 	<span class="kr">if</span> <span class="p">(</span>na.omit<span class="p">)</span>
 </span><span class="line"><span class="o">+</span> 		x <span class="o">&lt;-</span> x<span class="p">[</span><span class="o">!</span>is.na<span class="p">(</span>x<span class="p">)]</span>
-</span><span class="line"><span class="o">+</span> 	
+</span><span class="line"><span class="o">+</span>
 </span><span class="line"><span class="o">+</span> 	n <span class="o">&lt;-</span> length<span class="p">(</span>x<span class="p">)</span>
 </span><span class="line"><span class="o">+</span> 	mean <span class="o">&lt;-</span> mean<span class="p">(</span>x<span class="p">)</span>
 </span><span class="line"><span class="o">+</span> 	var <span class="o">&lt;-</span> var<span class="p">(</span>x<span class="p">)</span>
 </span><span class="line"><span class="o">+</span> 	sd <span class="o">&lt;-</span> sd<span class="p">(</span>x<span class="p">)</span>
 </span><span class="line"><span class="o">+</span> 	skew <span class="o">&lt;-</span> sum<span class="p">((</span>x<span class="o">-</span>mean<span class="p">)</span><span class="o">^</span><span class="m">3</span><span class="o">/</span>sd<span class="o">^</span><span class="m">3</span><span class="p">)</span><span class="o">/</span>n
 </span><span class="line"><span class="o">+</span> 	kurt <span class="o">&lt;-</span> sum<span class="p">((</span>x<span class="o">-</span>mean<span class="p">)</span><span class="o">^</span><span class="m">4</span><span class="o">/</span>sd<span class="o">^</span><span class="m">4</span><span class="p">)</span><span class="o">/</span>n <span class="o">-</span> <span class="m">3</span>
-</span><span class="line"><span class="o">+</span> 	
+</span><span class="line"><span class="o">+</span>
 </span><span class="line"><span class="o">+</span> 	<span class="kr">return</span><span class="p">(</span>list<span class="p">(</span>mean<span class="o">=</span>mean<span class="p">,</span> Variance<span class="o">=</span>var<span class="p">,</span> skewness<span class="o">=</span>skew<span class="p">,</span> kurtosis<span class="o">=</span>kurt<span class="p">))</span>
 </span><span class="line"><span class="o">+</span> <span class="p">}</span>
 </span><span class="line"><span class="o">&gt;</span> desc.stats<span class="p">(</span>mtcars<span class="o">$</span>mpg<span class="p">)</span>
@@ -462,7 +462,7 @@
 <li class='category'><a href='/blog/categories/classification/'>Classification (5)</a></li>
 <li class='category'><a href='/blog/categories/clustering/'>Clustering (3)</a></li>
 <li class='category'><a href='/blog/categories/datascience/'>DataScience (18)</a></li>
-<li class='category'><a href='/blog/categories/datavisualization/'>DataVisualization (3)</a></li>
+<li class='category'><a href='/blog/categories/datavisualization/'>DataVisualization (4)</a></li>
 <li class='category'><a href='/blog/categories/decisiontree/'>DecisionTree (2)</a></li>
 <li class='category'><a href='/blog/categories/kindle/'>Kindle (1)</a></li>
 <li class='category'><a href='/blog/categories/koding/'>Koding (1)</a></li>
@@ -482,6 +482,10 @@
     <li class="nav-header">最近文章</li>
     
       <li class="post">
+        <a href="/blog/2014/06/08/plotting-system/">R语言绘图4：R中的绘图系统</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/06/04/basic-graph2/">R语言绘图3：基础图形2</a>
       </li>
     
@@ -495,10 +499,6 @@
     
       <li class="post">
         <a href="/blog/2014/05/19/factor-analysis2/">数据科学之机器学习17:因子分析2</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/14/factor-analysis1/">数据科学之机器学习16:因子分析1</a>
       </li>
     
   </ul>

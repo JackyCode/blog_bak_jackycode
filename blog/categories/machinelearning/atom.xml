@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MachineLearning | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-06-04T17:06:03+08:00</updated>
+  <updated>2014-06-08T16:33:01+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -18,7 +18,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/19/factor-analysis2/"/>
     <updated>2014-05-19T15:00:02+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/19/factor-analysis2</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical35.jpg" alt="artical 35" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article35.jpg" alt="article 35" />
 <!-- more --></p>
 
 <p>图片来源于<a href="http://software.ssri.co.jp/statweb2/column/column0811.html">网址</a></p>
@@ -104,7 +104,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/14/factor-analysis1/"/>
     <updated>2014-05-14T16:05:45+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/14/factor-analysis1</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical34.jpg" alt="artical 34" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article34.jpg" alt="article 34" />
 <!-- more --></p>
 
 <p>图片来源于<a href="http://software.ssri.co.jp/statweb2/column/column0811.html">网址</a></p>
@@ -201,7 +201,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/11/principal-components/"/>
     <updated>2014-05-11T11:35:10+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/11/principal-components</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical33.jpg" alt="artical 33" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article33.jpg" alt="article 33" />
 <!-- more --></p>
 
 <p>图片为：本文实例数据得到的，前两个主成分的散点图！</p>
@@ -329,7 +329,7 @@ $values
     <link href="http://jackycode.github.io/blog/2014/05/07/apriori/"/>
     <updated>2014-05-07T17:00:48+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/07/apriori</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical31.jpg" alt="artical 31" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article31.jpg" alt="article 31" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -439,7 +439,7 @@ inspect(rules)
     <link href="http://jackycode.github.io/blog/2014/05/04/associationg-ananlysis/"/>
     <updated>2014-05-04T10:12:50+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/04/associationg-ananlysis</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical29.jpg" alt="artical 29" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article29.jpg" alt="article 29" />
 <!-- more --></p>
 
 <p>标题图片出处：<a href="http://www.hypertextbookshop.com/dataminingbook/public_version/contents/chapters/chapter002/section003/blue/page002.html">Rule Generation</a></p>

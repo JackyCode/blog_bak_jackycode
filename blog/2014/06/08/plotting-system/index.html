@@ -1,0 +1,528 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>R语言绘图4：R中的绘图系统 - Jacky and MSC</title>
+  <meta name="author" content="Jacky Code">
+
+  
+  <meta name="description" content="">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/06/08/plotting-system">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Jacky and MSC" type="application/atom+xml">
+  
+
+  <!-- 
+ -->
+  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-48812316-1', 'jackycode.github.io');ga('require', 'displayfeatures');ga('send', 'pageview');</script>
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">Jacky and MSC</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">文章归档</a></li>
+  <li><a href="/repos">我的项目</a></li>
+  <li><a href="/about">关于我</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:jackycode.github.io" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">R语言绘图4：R中的绘图系统</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-08T15:48:27+08:00" pubdate data-updated="true">Jun 8<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/article/article39.jpg" alt="article 39" />
+<!-- more --></p>
+
+<p>图片为本文中的某一张~~</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>前面三篇大致介绍了绘图的基础以及一些基础图形的绘制，其中重点使用R自带的基础绘图系统实现，部分也使用了<code>ggplot2</code>做了简单地演示。其实，在R中存在四套绘图系统，分别是：<strong>基础绘图系统</strong>(The Base Plotting System)、<strong>grid图形系统</strong>、<strong>Lattice绘图系统</strong>(The Lattice System)以及<strong>ggplot2绘图系统</strong>(The ggplot2 System)。</p>
+
+<p>grid图形系统提供了一种比标准图形系统更低水平的方法，使用者可以在图形设备上随意创建矩形区域，然后再该区域定义坐标系统，其后使用绘图的基础单元来控制图形！由此可见，grid图形非常的灵活，但是grid包没有提供生成统计图形，甚至没有提供完整绘图的函数，所以，一般来说，我们不会直接使用grid。</p>
+
+<p>Lattice绘图系统是基于grid图形系统的，我们在使用Lattice的时候，其实就会使用grid，只是不会直接去调用而已。这一篇，就简单看看这三个绘图系统：基础绘图系统、Lattice绘图系统以及ggplot2绘图系统。</p>
+
+<h3 id="section">1. 基础绘图系统</h3>
+<hr />
+
+<p>基础绘图系统，即是R语言自带的绘图系统。R中核心的绘图系统主要基于以下两个包：</p>
+
+<ol>
+  <li><strong>graphics</strong>包：此包包含了基础绘图系统的绘图函数，比如：<code>plot()</code>，<code>hist()</code>等等；</li>
+  <li><strong>grDevices</strong>包：此包包含了各类型的图形设备(graphics devices)，包括：<em>X11</em>, <em>PDF</em>, <em>PNG</em>等等。</li>
+</ol>
+
+<p>基础绘图系统总是从一幅空画布开始绘制图形，<strong>首先使用<code>plot()</code>这样的函数在空画布上画出图形，然后使用注释函数对图形进行添加或者修改</strong>，一般来说就是添加或者修改显示的文本、辅助线、辅助点以及标题等等。对于这样的一个流程，很显然，它可以很方便我们去使用，因为这样的流程可以完全将我们的思路反应出来。<strong>它就是通过一系列的R语言命令，一步一步地按照心中预想的绘图方式将其绘制出来</strong>。</p>
+
+<p>这样的绘图方式在给予我们方便的同时，也带来了一些弊端。首先，我们必须事先安排好图形应该如何绘制，因为一旦我们开始绘制就不能后退了；此外，当一副图形绘制完成，我们就不能再对其进行修改了，因为基础绘图系统没有绘图语言(graphical “language”)（这个可以跟ggplot2进行一个比对，就能明白其中的意思了！）。</p>
+
+<p>基础绘图一般来说：<strong>就是使用一系列单独的函数调用，将图形的各个零散的部分组合起来</strong>。这种方式比较简单，也比较切合自己的思路。正因为如此，我个人比较喜欢在分析问题的最开始，使用它进行一些简单地图形绘制，将其绘制到屏幕上，让我能够直观先去看看数据的基本状况。</p>
+
+<p>利用<code>mtcar</code>数据集，做个示例：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 取出感兴趣的数据</span>
+</span><span class="line">dataSet <span class="o">&lt;-</span> mtcars<span class="p">[</span>c<span class="p">(</span><span class="s">&quot;mpg&quot;</span><span class="p">,</span> <span class="s">&quot;disp&quot;</span><span class="p">,</span> <span class="s">&quot;carb&quot;</span><span class="p">)]</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">## 转换数据的格式</span>
+</span><span class="line">dataSet <span class="o">&lt;-</span> transform<span class="p">(</span>dataSet<span class="p">,</span> carb <span class="o">=</span> factor<span class="p">(</span>carb<span class="p">))</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">## 绘图查看数据 散点图</span>
+</span><span class="line">plot<span class="p">(</span>dataSet<span class="o">$</span>mpg<span class="p">,</span> dataSet<span class="o">$</span>disp<span class="p">,</span> xlab <span class="o">=</span> <span class="s">&quot;mpg&quot;</span><span class="p">,</span> ylab <span class="o">=</span> <span class="s">&quot;disp&quot;</span><span class="p">)</span>
+</span><span class="line">title<span class="p">(</span><span class="s">&quot;The Scatter Plot&quot;</span><span class="p">)</span>
+</span><span class="line">model <span class="o">&lt;-</span> lm<span class="p">(</span>disp <span class="o">~</span> mpg<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">)</span>
+</span><span class="line">abline<span class="p">(</span>model<span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a39/4base1.png" alt="plot of chunk 4base" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 加上条件</span>
+</span><span class="line">with<span class="p">(</span>dataSet<span class="p">,</span> plot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;n&quot;</span><span class="p">))</span>
+</span><span class="line"><span class="kr">for</span> <span class="p">(</span>i <span class="kr">in</span> unique<span class="p">(</span>dataSet<span class="o">$</span>carb<span class="p">))</span> <span class="p">{</span>
+</span><span class="line">    with<span class="p">(</span>subset<span class="p">(</span>dataSet<span class="p">,</span> carb <span class="o">==</span> i<span class="p">),</span> points<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> col <span class="o">=</span> i<span class="p">))</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="c1">## 对于carb == 4的数据，添加拟合直线</span>
+</span><span class="line">model1 <span class="o">&lt;-</span> lm<span class="p">(</span>disp <span class="o">~</span> mpg<span class="p">,</span> data <span class="o">=</span> subset<span class="p">(</span>dataSet<span class="p">,</span> carb <span class="o">==</span> <span class="m">4</span><span class="p">))</span>
+</span><span class="line">abline<span class="p">(</span>model1<span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">,</span> lwd <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a39/4base2.png" alt="plot of chunk 4base" /></p>
+
+<h3 id="lattice">2. Lattice</h3>
+<hr />
+
+<p>Lattice一般会使用以下两个包：</p>
+
+<ol>
+  <li><strong>lattice</strong>包：包含与基础绘图独立的，能够生成Trellis graphics的代码，包括<code>xyplot</code>,<code>bwplot</code>等等；</li>
+  <li><strong>grid</strong>包：lattice包建立在此包之上，在使用中很少直接调用这个包。</li>
+</ol>
+
+<p>Lattice与基础绘图系统的一个非常明显的区别在于：<strong>所有的绘图以及注释都在一次函数调用中完成</strong>。</p>
+
+<p>Lattice很擅长绘制需要分类的图形，比如说，想要根据不同的level，绘制y与x的散点图。这个在基础绘制系统中还是蛮麻烦的，但是在Lattice中就比较容易。也就是说，<strong>lattice通过一维、二维或三维的条件绘图(即是Trellis)，对多元变量关系进行直观展示</strong>。</p>
+
+<p>由于其所有的绘图与注释都需要在一次函数调用中完成，所以在使用之前就需要做好准备，因为一旦图形绘制好，就什么也不能添加了。</p>
+
+<p>接着上面的数据集做示例：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">xyplot<span class="p">(</span>disp <span class="o">~</span> mpg<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a39/4lattice1.png" alt="plot of chunk 4lattice" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">xyplot<span class="p">(</span>disp <span class="o">~</span> mpg <span class="o">|</span> carb<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> layout <span class="o">=</span> c<span class="p">(</span><span class="m">6</span><span class="p">,</span> <span class="m">1</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a39/4lattice2.png" alt="plot of chunk 4lattice" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 使用panel function</span>
+</span><span class="line">xyplot<span class="p">(</span>disp <span class="o">~</span> mpg <span class="o">|</span> carb<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> panel <span class="o">=</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> <span class="kc">...</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    panel.xyplot<span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> <span class="kc">...</span><span class="p">)</span>
+</span><span class="line">    panel.abline<span class="p">(</span>h <span class="o">=</span> median<span class="p">(</span>y<span class="p">),</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;gray&quot;</span><span class="p">)</span>
+</span><span class="line">    panel.lmline<span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a39/4lattice3.png" alt="plot of chunk 4lattice" /></p>
+
+<p><strong>更多有关Lattice的内容可以看Springer出的这本书：’Lattice: Multivariate Data Visualization with R’。</strong></p>
+
+<h3 id="ggplot2">3. ggplot2</h3>
+<hr />
+
+<p>以前就说过，ggplot2是基于一种全面的图形语法，提供了一种全新的图形创建方法。能够自动处理位置、文本等等注释，也能够按照需求自定义设置。默认情况下有很多选项以供选择，在不设置时会直接使用默认值。</p>
+
+<p>在ggplot2中，最简单最基础的绘图函数就是<code>qplot()</code>，我们可以来试试这个函数：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 查看qplot函数</span>
+</span><span class="line">str<span class="p">(</span>qplot<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## function (x, y = NULL, ..., data, facets = NULL, margins = FALSE,</span>
+</span><span class="line"><span class="c1">##     geom = &quot;auto&quot;, stat = list(NULL), position = list(NULL), xlim = c(NA,</span>
+</span><span class="line"><span class="c1">##         NA), ylim = c(NA, NA), log = &quot;&quot;, main = NULL, xlab = deparse(substitute(x)),</span>
+</span><span class="line"><span class="c1">##     ylab = deparse(substitute(y)), asp = NA)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 散点图</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a39/4ggplot21.png" alt="plot of chunk 4ggplot2" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 按carb区分 按颜色</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> color <span class="o">=</span> carb<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a39/4ggplot22.png" alt="plot of chunk 4ggplot2" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">### 按形状</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> shape <span class="o">=</span> carb<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a39/4ggplot23.png" alt="plot of chunk 4ggplot2" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 添加拟合直线</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> geom <span class="o">=</span> c<span class="p">(</span><span class="s">&quot;point&quot;</span><span class="p">,</span> <span class="s">&quot;smooth&quot;</span><span class="p">),</span> method <span class="o">=</span> <span class="s">&quot;lm&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a39/4ggplot24.png" alt="plot of chunk 4ggplot2" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 使用facets</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> facets <span class="o">=</span> . <span class="o">~</span> carb<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a39/4ggplot25.png" alt="plot of chunk 4ggplot2" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">### 添加颜色和形状</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> facets <span class="o">=</span> . <span class="o">~</span> carb<span class="p">,</span> color <span class="o">=</span> carb<span class="p">,</span> shape <span class="o">=</span> carb<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="/images/a39/4ggplot26.png" alt="plot of chunk 4ggplot2" /></p>
+
+<p>当然，ggpplot2中不止这一点东西。<strong>更多有关ggplot2的内容可以参看Spinger出的这本书：ggplot2:Elegant Graphics for Data Analysis’。</strong></p>
+
+<h3 id="section-1">总结</h3>
+<hr />
+
+<p>一般来说，使用R绘制图形就是使用以上的三种绘图系统。基础的绘图系统跟人的思路相仿，你可以边思考边画图，边做边画，比较方便。Lattice擅长绘制Trellis图形，并且其所有的绘图注释都只能在一个函数中实现。ggplot2则是集中了前两者的元素，更加富有创造性，当然学习成本就稍微高一些。</p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacky Code</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-08T15:48:27+08:00" pubdate data-updated="true">Jun 8<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/datavisualization/'>DataVisualization</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2014/06/04/basic-graph2/" title="Previous Post:
+        R语言绘图3：基础图形2">&laquo; R语言绘图3：基础图形2</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+	<ul id="about" class='nav nav-list'>
+		<li class="nav-header"><a href="/about">关于我</a></li>
+	    <p>概率统计专业的在读研究生</p>
+	    <p>喜欢看书，思考，然后写点什么</p>
+	    <p>能折腾，崇尚效率，喜爱精美</p>
+	    <p>喜欢Apple，离不了Google</p>
+	    <p>新浪微博: <a href="http://weibo.com/jackycode">Jacky130</a></p>
+	    <p>邮箱: <code>jackycodemsc@gmail.com</code></p>
+	</ul>
+</section>
+<section class="well">
+	<ul id="category_list" class="nav nav-list">
+		<li class="nav-header">文章分类</li>
+			<li id="categories">
+    			<li class='category'><a href='/blog/categories/associationanalysis/'>AssociationAnalysis (2)</a></li>
+<li class='category'><a href='/blog/categories/classification/'>Classification (5)</a></li>
+<li class='category'><a href='/blog/categories/clustering/'>Clustering (3)</a></li>
+<li class='category'><a href='/blog/categories/datascience/'>DataScience (18)</a></li>
+<li class='category'><a href='/blog/categories/datavisualization/'>DataVisualization (4)</a></li>
+<li class='category'><a href='/blog/categories/decisiontree/'>DecisionTree (2)</a></li>
+<li class='category'><a href='/blog/categories/kindle/'>Kindle (1)</a></li>
+<li class='category'><a href='/blog/categories/koding/'>Koding (1)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>Mac (2)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>MachineLearning (18)</a></li>
+<li class='category'><a href='/blog/categories/octopress/'>Octopress (4)</a></li>
+<li class='category'><a href='/blog/categories/rseries/'>RSeries (8)</a></li>
+<li class='category'><a href='/blog/categories/recommends/'>Recommends (2)</a></li>
+<li class='category'><a href='/blog/categories/records/'>Records (4)</a></li>
+<li class='category'><a href='/blog/categories/regression/'>Regression (4)</a></li>
+<li class='category'><a href='/blog/categories/vps/'>VPS (1)</a></li>
+
+  			</li>
+  	</ul>
+</section><section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">最近文章</li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/08/plotting-system/">R语言绘图4：R中的绘图系统</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/04/basic-graph2/">R语言绘图3：基础图形2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/29/basic-graph1/">R语言绘图2：基础图形1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/24/basic-plotting-tools/">R语言绘图1：绘图基础</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/19/factor-analysis2/">数据科学之机器学习17:因子分析2</a>
+      </li>
+    
+  </ul>
+</section>
+<section class="well">
+  <ul id="links" class="nav nav-list">
+    <li class="nav-header">推荐站点</li>
+    <li>
+      <a href="http://macshuo.com/">MacTalk-池建强的随想录</a>
+    </li>
+    <li>
+      <a href="http://yihui.name/">Yihui Xie</a>
+    </li>
+    <li>
+      <a href="http://www.liaoxuefeng.com/">廖雪峰的官方网站</a>
+    </li>
+    <li>
+      <a href="http://irising.me/">Page to Page</a>
+    </li>
+    <li>
+      <a href="http://www.dongwm.com/">小明明s à domicile</a>
+    </li>
+    <li>
+      <a href="http://beyondvincent.com/">破船之家</a>
+    </li>
+    <li>
+      <a href="http://lucifr.com/">Lucifr</a>
+    </li>
+</ul>
+</section><section class="well">
+	<li class="nav-header">License</li>
+<ul id="license" class='nav nav-list'>
+	
+		<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">
+			<img alt="知识共享许可协议" style="border-width:0" src="/images/license_CC.png" />
+		</a>
+	<br />本站作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">知识共享署名-非商业性使用-相同方式共享 2.5 中国大陆许可协议</a>进行许可。
+</ul>
+</section>
+
+  
+</aside>
+
+
+  <section>  
+  <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jacky130"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>  
+</section>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><!-- mathjax config similar to math.stackexchange --> 
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ jax: ["input/TeX", "output/HTML-CSS"], tex2jax: { inlineMath: [ ['$', '$'] ], displayMath: [ ['$$', '$$']], processEscapes: true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }, messageStyle: "none", "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] } }); </script> <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+<hr>
+<p>
+  Copyright &copy; 2014 - Jacky Code -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

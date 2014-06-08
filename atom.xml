@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-06-04T17:06:03+08:00</updated>
+  <updated>2014-06-08T16:33:01+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -14,11 +14,224 @@
 
   
   <entry>
+    <title type="html"><![CDATA[R语言绘图4：R中的绘图系统]]></title>
+    <link href="http://jackycode.github.io/blog/2014/06/08/plotting-system/"/>
+    <updated>2014-06-08T15:48:27+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/06/08/plotting-system</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article39.jpg" alt="article 39" />
+<!-- more --></p>
+
+<p>图片为本文中的某一张~~</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>前面三篇大致介绍了绘图的基础以及一些基础图形的绘制，其中重点使用R自带的基础绘图系统实现，部分也使用了<code>ggplot2</code>做了简单地演示。其实，在R中存在四套绘图系统，分别是：<strong>基础绘图系统</strong>(The Base Plotting System)、<strong>grid图形系统</strong>、<strong>Lattice绘图系统</strong>(The Lattice System)以及<strong>ggplot2绘图系统</strong>(The ggplot2 System)。</p>
+
+<p>grid图形系统提供了一种比标准图形系统更低水平的方法，使用者可以在图形设备上随意创建矩形区域，然后再该区域定义坐标系统，其后使用绘图的基础单元来控制图形！由此可见，grid图形非常的灵活，但是grid包没有提供生成统计图形，甚至没有提供完整绘图的函数，所以，一般来说，我们不会直接使用grid。</p>
+
+<p>Lattice绘图系统是基于grid图形系统的，我们在使用Lattice的时候，其实就会使用grid，只是不会直接去调用而已。这一篇，就简单看看这三个绘图系统：基础绘图系统、Lattice绘图系统以及ggplot2绘图系统。</p>
+
+<h3 id="section">1. 基础绘图系统</h3>
+<hr />
+
+<p>基础绘图系统，即是R语言自带的绘图系统。R中核心的绘图系统主要基于以下两个包：</p>
+
+<ol>
+  <li><strong>graphics</strong>包：此包包含了基础绘图系统的绘图函数，比如：<code>plot()</code>，<code>hist()</code>等等；</li>
+  <li><strong>grDevices</strong>包：此包包含了各类型的图形设备(graphics devices)，包括：<em>X11</em>, <em>PDF</em>, <em>PNG</em>等等。</li>
+</ol>
+
+<p>基础绘图系统总是从一幅空画布开始绘制图形，<strong>首先使用<code>plot()</code>这样的函数在空画布上画出图形，然后使用注释函数对图形进行添加或者修改</strong>，一般来说就是添加或者修改显示的文本、辅助线、辅助点以及标题等等。对于这样的一个流程，很显然，它可以很方便我们去使用，因为这样的流程可以完全将我们的思路反应出来。<strong>它就是通过一系列的R语言命令，一步一步地按照心中预想的绘图方式将其绘制出来</strong>。</p>
+
+<p>这样的绘图方式在给予我们方便的同时，也带来了一些弊端。首先，我们必须事先安排好图形应该如何绘制，因为一旦我们开始绘制就不能后退了；此外，当一副图形绘制完成，我们就不能再对其进行修改了，因为基础绘图系统没有绘图语言(graphical “language”)（这个可以跟ggplot2进行一个比对，就能明白其中的意思了！）。</p>
+
+<p>基础绘图一般来说：<strong>就是使用一系列单独的函数调用，将图形的各个零散的部分组合起来</strong>。这种方式比较简单，也比较切合自己的思路。正因为如此，我个人比较喜欢在分析问题的最开始，使用它进行一些简单地图形绘制，将其绘制到屏幕上，让我能够直观先去看看数据的基本状况。</p>
+
+<p>利用<code>mtcar</code>数据集，做个示例：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 取出感兴趣的数据</span>
+</span><span class="line">dataSet <span class="o">&lt;-</span> mtcars<span class="p">[</span>c<span class="p">(</span><span class="s">&quot;mpg&quot;</span><span class="p">,</span> <span class="s">&quot;disp&quot;</span><span class="p">,</span> <span class="s">&quot;carb&quot;</span><span class="p">)]</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">## 转换数据的格式</span>
+</span><span class="line">dataSet <span class="o">&lt;-</span> transform<span class="p">(</span>dataSet<span class="p">,</span> carb <span class="o">=</span> factor<span class="p">(</span>carb<span class="p">))</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">## 绘图查看数据 散点图</span>
+</span><span class="line">plot<span class="p">(</span>dataSet<span class="o">$</span>mpg<span class="p">,</span> dataSet<span class="o">$</span>disp<span class="p">,</span> xlab <span class="o">=</span> <span class="s">&quot;mpg&quot;</span><span class="p">,</span> ylab <span class="o">=</span> <span class="s">&quot;disp&quot;</span><span class="p">)</span>
+</span><span class="line">title<span class="p">(</span><span class="s">&quot;The Scatter Plot&quot;</span><span class="p">)</span>
+</span><span class="line">model <span class="o">&lt;-</span> lm<span class="p">(</span>disp <span class="o">~</span> mpg<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">)</span>
+</span><span class="line">abline<span class="p">(</span>model<span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a39/4base1.png" alt="plot of chunk 4base" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 加上条件</span>
+</span><span class="line">with<span class="p">(</span>dataSet<span class="p">,</span> plot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;n&quot;</span><span class="p">))</span>
+</span><span class="line"><span class="kr">for</span> <span class="p">(</span>i <span class="kr">in</span> unique<span class="p">(</span>dataSet<span class="o">$</span>carb<span class="p">))</span> <span class="p">{</span>
+</span><span class="line">    with<span class="p">(</span>subset<span class="p">(</span>dataSet<span class="p">,</span> carb <span class="o">==</span> i<span class="p">),</span> points<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> col <span class="o">=</span> i<span class="p">))</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="c1">## 对于carb == 4的数据，添加拟合直线</span>
+</span><span class="line">model1 <span class="o">&lt;-</span> lm<span class="p">(</span>disp <span class="o">~</span> mpg<span class="p">,</span> data <span class="o">=</span> subset<span class="p">(</span>dataSet<span class="p">,</span> carb <span class="o">==</span> <span class="m">4</span><span class="p">))</span>
+</span><span class="line">abline<span class="p">(</span>model1<span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">,</span> lwd <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a39/4base2.png" alt="plot of chunk 4base" /></p>
+
+<h3 id="lattice">2. Lattice</h3>
+<hr />
+
+<p>Lattice一般会使用以下两个包：</p>
+
+<ol>
+  <li><strong>lattice</strong>包：包含与基础绘图独立的，能够生成Trellis graphics的代码，包括<code>xyplot</code>,<code>bwplot</code>等等；</li>
+  <li><strong>grid</strong>包：lattice包建立在此包之上，在使用中很少直接调用这个包。</li>
+</ol>
+
+<p>Lattice与基础绘图系统的一个非常明显的区别在于：<strong>所有的绘图以及注释都在一次函数调用中完成</strong>。</p>
+
+<p>Lattice很擅长绘制需要分类的图形，比如说，想要根据不同的level，绘制y与x的散点图。这个在基础绘制系统中还是蛮麻烦的，但是在Lattice中就比较容易。也就是说，<strong>lattice通过一维、二维或三维的条件绘图(即是Trellis)，对多元变量关系进行直观展示</strong>。</p>
+
+<p>由于其所有的绘图与注释都需要在一次函数调用中完成，所以在使用之前就需要做好准备，因为一旦图形绘制好，就什么也不能添加了。</p>
+
+<p>接着上面的数据集做示例：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">xyplot<span class="p">(</span>disp <span class="o">~</span> mpg<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a39/4lattice1.png" alt="plot of chunk 4lattice" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">xyplot<span class="p">(</span>disp <span class="o">~</span> mpg <span class="o">|</span> carb<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> layout <span class="o">=</span> c<span class="p">(</span><span class="m">6</span><span class="p">,</span> <span class="m">1</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a39/4lattice2.png" alt="plot of chunk 4lattice" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 使用panel function</span>
+</span><span class="line">xyplot<span class="p">(</span>disp <span class="o">~</span> mpg <span class="o">|</span> carb<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> panel <span class="o">=</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> <span class="kc">...</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    panel.xyplot<span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> <span class="kc">...</span><span class="p">)</span>
+</span><span class="line">    panel.abline<span class="p">(</span>h <span class="o">=</span> median<span class="p">(</span>y<span class="p">),</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;gray&quot;</span><span class="p">)</span>
+</span><span class="line">    panel.lmline<span class="p">(</span>x<span class="p">,</span> y<span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">)</span>
+</span><span class="line"><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a39/4lattice3.png" alt="plot of chunk 4lattice" /></p>
+
+<p><strong>更多有关Lattice的内容可以看Springer出的这本书：’Lattice: Multivariate Data Visualization with R’。</strong></p>
+
+<h3 id="ggplot2">3. ggplot2</h3>
+<hr />
+
+<p>以前就说过，ggplot2是基于一种全面的图形语法，提供了一种全新的图形创建方法。能够自动处理位置、文本等等注释，也能够按照需求自定义设置。默认情况下有很多选项以供选择，在不设置时会直接使用默认值。</p>
+
+<p>在ggplot2中，最简单最基础的绘图函数就是<code>qplot()</code>，我们可以来试试这个函数：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 查看qplot函数</span>
+</span><span class="line">str<span class="p">(</span>qplot<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## function (x, y = NULL, ..., data, facets = NULL, margins = FALSE,</span>
+</span><span class="line"><span class="c1">##     geom = &quot;auto&quot;, stat = list(NULL), position = list(NULL), xlim = c(NA,</span>
+</span><span class="line"><span class="c1">##         NA), ylim = c(NA, NA), log = &quot;&quot;, main = NULL, xlab = deparse(substitute(x)),</span>
+</span><span class="line"><span class="c1">##     ylab = deparse(substitute(y)), asp = NA)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 散点图</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a39/4ggplot21.png" alt="plot of chunk 4ggplot2" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 按carb区分 按颜色</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> color <span class="o">=</span> carb<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a39/4ggplot22.png" alt="plot of chunk 4ggplot2" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">### 按形状</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> shape <span class="o">=</span> carb<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a39/4ggplot23.png" alt="plot of chunk 4ggplot2" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 添加拟合直线</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> geom <span class="o">=</span> c<span class="p">(</span><span class="s">&quot;point&quot;</span><span class="p">,</span> <span class="s">&quot;smooth&quot;</span><span class="p">),</span> method <span class="o">=</span> <span class="s">&quot;lm&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a39/4ggplot24.png" alt="plot of chunk 4ggplot2" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 使用facets</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> facets <span class="o">=</span> . <span class="o">~</span> carb<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a39/4ggplot25.png" alt="plot of chunk 4ggplot2" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">### 添加颜色和形状</span>
+</span><span class="line">qplot<span class="p">(</span>mpg<span class="p">,</span> disp<span class="p">,</span> data <span class="o">=</span> dataSet<span class="p">,</span> facets <span class="o">=</span> . <span class="o">~</span> carb<span class="p">,</span> color <span class="o">=</span> carb<span class="p">,</span> shape <span class="o">=</span> carb<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img src="http://jackycode.github.io/images/a39/4ggplot26.png" alt="plot of chunk 4ggplot2" /></p>
+
+<p>当然，ggpplot2中不止这一点东西。<strong>更多有关ggplot2的内容可以参看Spinger出的这本书：ggplot2:Elegant Graphics for Data Analysis’。</strong></p>
+
+<h3 id="section-1">总结</h3>
+<hr />
+
+<p>一般来说，使用R绘制图形就是使用以上的三种绘图系统。基础的绘图系统跟人的思路相仿，你可以边思考边画图，边做边画，比较方便。Lattice擅长绘制Trellis图形，并且其所有的绘图注释都只能在一个函数中实现。ggplot2则是集中了前两者的元素，更加富有创造性，当然学习成本就稍微高一些。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[R语言绘图3：基础图形2]]></title>
     <link href="http://jackycode.github.io/blog/2014/06/04/basic-graph2/"/>
     <updated>2014-06-04T16:53:08+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/06/04/basic-graph2</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical38.jpg" alt="artical 38" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article38.jpg" alt="article 38" />
 <!-- more --></p>
 
 <p>图片为本文中的某一张~~</p>
@@ -173,7 +386,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/29/basic-graph1/"/>
     <updated>2014-05-29T14:50:05+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/29/basic-graph1</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical37.jpg" alt="artical 37" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article37.jpg" alt="article 37" />
 <!-- more --></p>
 
 <p>图片为本文中的某一张~~</p>
@@ -293,7 +506,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/24/basic-plotting-tools/"/>
     <updated>2014-05-24T14:48:02+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/24/basic-plotting-tools</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical36.jpg" alt="artical 36" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article36.jpg" alt="article 36" />
 <!-- more --></p>
 
 <p>图片为本文中的某一张~~</p>
@@ -595,7 +808,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/19/factor-analysis2/"/>
     <updated>2014-05-19T15:00:02+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/19/factor-analysis2</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical35.jpg" alt="artical 35" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article35.jpg" alt="article 35" />
 <!-- more --></p>
 
 <p>图片来源于<a href="http://software.ssri.co.jp/statweb2/column/column0811.html">网址</a></p>
@@ -681,7 +894,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/14/factor-analysis1/"/>
     <updated>2014-05-14T16:05:45+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/14/factor-analysis1</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical34.jpg" alt="artical 34" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article34.jpg" alt="article 34" />
 <!-- more --></p>
 
 <p>图片来源于<a href="http://software.ssri.co.jp/statweb2/column/column0811.html">网址</a></p>
@@ -778,7 +991,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/11/principal-components/"/>
     <updated>2014-05-11T11:35:10+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/11/principal-components</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical33.jpg" alt="artical 33" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article33.jpg" alt="article 33" />
 <!-- more --></p>
 
 <p>图片为：本文实例数据得到的，前两个主成分的散点图！</p>
@@ -924,7 +1137,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/09/books-recommended/"/>
     <updated>2014-05-09T17:17:14+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/09/books-recommended</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical32.jpg" alt="artical 32" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article32.jpg" alt="article 32" />
 <!-- more --></p>
 
 <p>图为我写这篇博文时，我书桌的样子！</p>
@@ -1131,7 +1344,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/07/apriori/"/>
     <updated>2014-05-07T17:00:48+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/07/apriori</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical31.jpg" alt="artical 31" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article31.jpg" alt="article 31" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -1258,7 +1471,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/04/loop-functions/"/>
     <updated>2014-05-04T14:56:40+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/04/loop-functions</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical30.jpg" alt="aritical 30" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article30.jpg" alt="ariticle 30" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -1294,10 +1507,10 @@
 <span class="line-number">8</span>
 </pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
 </span><span class="line"><span class="c1">## [1] 2.5</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[2]]</span>
 </span><span class="line"><span class="c1">## [1] 3.5</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[3]]</span>
 </span><span class="line"><span class="c1">## [1] 12</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
@@ -1320,10 +1533,10 @@
 <span class="line-number">8</span>
 </pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
 </span><span class="line"><span class="c1">## [1] -0.5622</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[2]]</span>
 </span><span class="line"><span class="c1">## [1] -0.8519  0.3671  0.4243</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[3]]</span>
 </span><span class="line"><span class="c1">## [1]  0.09395 -1.19474  1.52337 -1.97529  0.47370</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
@@ -1348,10 +1561,10 @@
 <span class="line-number">8</span>
 </pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
 </span><span class="line"><span class="c1">## [1] FALSE</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[2]]</span>
 </span><span class="line"><span class="c1">## [1] TRUE</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[3]]</span>
 </span><span class="line"><span class="c1">## [1] FALSE</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
@@ -1477,7 +1690,7 @@
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  1  2  3 </span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  1  2  3</span>
 </span><span class="line"><span class="c1">## 10 26 42</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
@@ -1487,7 +1700,7 @@
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  1  2  3  4 </span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">##  1  2  3  4</span>
 </span><span class="line"><span class="c1">##  6 15 24 33</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
@@ -1510,13 +1723,13 @@
 <span class="line-number">11</span>
 </pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## $`1`</span>
 </span><span class="line"><span class="c1">## [1] 6</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## $`2`</span>
 </span><span class="line"><span class="c1">## [1] 15</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## $`3`</span>
 </span><span class="line"><span class="c1">## [1] 24</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## $`4`</span>
 </span><span class="line"><span class="c1">## [1] 33</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
@@ -1558,10 +1771,10 @@
 <span class="line-number">8</span>
 </pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
 </span><span class="line"><span class="c1">## [1] 2.019</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[2]]</span>
 </span><span class="line"><span class="c1">## [1]  1.6315 -0.7427</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[3]]</span>
 </span><span class="line"><span class="c1">## [1] 0.2025 2.8836 3.1694</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
@@ -1582,10 +1795,10 @@
 <span class="line-number">8</span>
 </pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
 </span><span class="line"><span class="c1">## [1] 1.019</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[2]]</span>
 </span><span class="line"><span class="c1">## [1] 1.8157 0.6287</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[3]]</span>
 </span><span class="line"><span class="c1">## [1] 2.401 3.295 3.390</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
@@ -1608,10 +1821,10 @@
 <span class="line-number">8</span>
 </pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
 </span><span class="line"><span class="c1">## [1] 2.019</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[2]]</span>
 </span><span class="line"><span class="c1">## [1]  1.6315 -0.7427</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[3]]</span>
 </span><span class="line"><span class="c1">## [1] 0.2025 2.8836 3.1694</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
@@ -1632,10 +1845,10 @@
 <span class="line-number">8</span>
 </pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [[1]]</span>
 </span><span class="line"><span class="c1">## [1] 1.019</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[2]]</span>
 </span><span class="line"><span class="c1">## [1] 1.8157 0.6287</span>
-</span><span class="line"><span class="c1">## </span>
+</span><span class="line"><span class="c1">##</span>
 </span><span class="line"><span class="c1">## [[3]]</span>
 </span><span class="line"><span class="c1">## [1] 2.401 3.295 3.390</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
@@ -1652,7 +1865,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/04/associationg-ananlysis/"/>
     <updated>2014-05-04T10:12:50+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/04/associationg-ananlysis</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical29.jpg" alt="artical 29" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article29.jpg" alt="article 29" />
 <!-- more --></p>
 
 <p>标题图片出处：<a href="http://www.hypertextbookshop.com/dataminingbook/public_version/contents/chapters/chapter002/section003/blue/page002.html">Rule Generation</a></p>
@@ -1780,7 +1993,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/30/reinstall-mac/"/>
     <updated>2014-04-30T20:57:58+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/30/reinstall-mac</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical28.jpg" alt="artical 28" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article28.jpg" alt="article 28" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -1949,7 +2162,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/27/logistic-regression/"/>
     <updated>2014-04-27T10:34:11+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/27/logistic-regression</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical27.jpg" alt="artical 27" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article27.jpg" alt="article 27" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -2020,7 +2233,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/24/cluster-analysis2/"/>
     <updated>2014-04-24T09:39:02+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/24/cluster-analysis2</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical26.jpg" alt="artical 26" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article26.jpg" alt="article 26" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -2077,7 +2290,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/21/cluster-analysis/"/>
     <updated>2014-04-21T18:46:04+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/21/cluster-analysis</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical25.jpg" alt="artical 25" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article25.jpg" alt="article 25" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -2222,7 +2435,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/19/kmeans/"/>
     <updated>2014-04-19T13:01:02+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/19/kmeans</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical24.jpg" alt="artical 24" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article24.jpg" alt="article 24" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -2331,7 +2544,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/14/id3/"/>
     <updated>2014-04-14T16:02:45+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/14/id3</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical23.jpg" alt="artical 23" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article23.jpg" alt="article 23" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -2506,7 +2719,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/11/apps-at-a-discount/"/>
     <updated>2014-04-11T19:32:31+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/11/apps-at-a-discount</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical22.jpg" alt="artical 22" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article22.jpg" alt="article 22" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -2532,7 +2745,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/11/decision-trees/"/>
     <updated>2014-04-11T19:00:32+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/11/decision-trees</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical21.jpg" alt="artical 21" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article21.jpg" alt="article 21" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -2590,7 +2803,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/08/naive-bayes/"/>
     <updated>2014-04-08T15:54:37+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/08/naive-bayes</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical20.jpg" alt="artical 20" />
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article20.jpg" alt="article 20" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -2674,55 +2887,6 @@
 
 <p>见<a href="http://jackycode.github.io/datascience">我的项目</a></p>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习5：分类之k-近邻算法]]></title>
-    <link href="http://jackycode.github.io/blog/2014/04/05/knn/"/>
-    <updated>2014-04-05T19:59:29+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/04/05/knn</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/artical/artical19.jpg" alt="artical 19" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<h4 id="section">基本思想</h4>
-<hr />
-
-<p>kNN，k-Nearest Neighbor algorithm，也就这边的k-近邻算法，是数据挖掘十大算法之一，是一个比较简单的分类方法。</p>
-
-<p>其基本的思想是：对于一个输入样本（未知分类的样本），考虑其与测试样本中与之距离最近（特征最相似）的k个样本，用这k个样本中出现最多的分类作为输入样本的分类。</p>
-
-<h4 id="section-1">具体流程</h4>
-<hr />
-
-<p>对于输入样本中的每一个点，进行以下操作：</p>
-
-<ol>
-  <li>计算点与测试样本中点的距离；</li>
-  <li>取出与当前点距离最小的k个点；</li>
-  <li>确定k个点的分类，计算各个分类的频数；</li>
-  <li>返回频数最高的类别，作为该输入点的预测分类。</li>
-</ol>
-
-<h4 id="section-2">距离的计算</h4>
-<hr />
-
-<p>上面一直在说，计算输入样本中点与测试样本中点之间的距离，那么这个距离应该怎么计算呢？这个距离一般就是使用欧式距离：</p>
-
-<script type="math/tex; mode=display"> d = \sqrt{(x - y)^T(x - y)} </script>
-
-<p>其中<script type="math/tex">x^T=[x_1, x_2,\dots,x_n], y^T=[y_1,y_2,\dots,y_n]</script>。二维的表示就是：</p>
-
-<script type="math/tex; mode=display"> d = \sqrt{(x - y)^T(x - y)} = \sqrt{(x_1 - y_1)^2 + (x_2 - y_2)^2} </script>
-
-<h4 id="r">R语言实现</h4>
-<hr />
-
-<p>见<a href="https://github.com/JackyCode/Data_Science/tree/master/kNN">我的github</a>。</p>
 ]]></content>
   </entry>
   

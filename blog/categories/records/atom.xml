@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Records | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/records/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-06-04T17:06:03+08:00</updated>
+  <updated>2014-06-08T16:33:01+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -18,7 +18,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/30/reinstall-mac/"/>
     <updated>2014-04-30T20:57:58+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/30/reinstall-mac</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical28.jpg" alt="artical 28" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article28.jpg" alt="article 28" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -188,7 +188,7 @@ defaults write org.R-project.R force.LANG en_US.UTF-8
     <link href="http://jackycode.github.io/blog/2014/03/18/record3/"/>
     <updated>2014-03-18T18:52:12+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/03/18/record3</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical11.jpg" alt="aritical 11" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article11.jpg" alt="ariticle 11" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -211,7 +211,7 @@ defaults write org.R-project.R force.LANG en_US.UTF-8
 <p><code>javascript
 &lt;!-- mathjax config similar to math.stackexchange --&gt;
 &lt;script type="text/x-mathjax-config"&gt;
-  MathJax.Hub.Config({ 
+  MathJax.Hub.Config({
     jax: ["input/TeX", "output/HTML-CSS"],
     tex2jax: {
     	inlineMath: [ ['$', '$'] ],
@@ -277,20 +277,20 @@ markdown:kramdown
 <p>给自己的文章分类，需要的操作稍微麻烦一些。首先需要在<code>plugins</code>目录下创建<code>category_list_tag.rb</code>文件：</p>
 
 <p>``` ruby
-module Jekyll 
-  class CategoryListTag &lt; Liquid::Tag 
-    def render(context) 
-      html = “” 
-      categories = context.registers[:site].categories.keys 
-      categories.sort.each do |category| 
-        posts_in_category = context.registers[:site].categories[category].size 
-        category_dir = context.registers[:site].config[‘category_dir’] 
-        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, ‘-‘).gsub(/-{2,}/, ‘-‘).downcase) 
-        html « “&lt;li class='category'&gt;<a href="http://jackycode.github.io/#{category_url}/">#{category} (#{posts_in_category})</a>&lt;/li&gt;\n” 
-      end 
-      html 
-    end 
-  end 
+module Jekyll
+  class CategoryListTag &lt; Liquid::Tag
+    def render(context)
+      html = “”
+      categories = context.registers[:site].categories.keys
+      categories.sort.each do |category|
+        posts_in_category = context.registers[:site].categories[category].size
+        category_dir = context.registers[:site].config[‘category_dir’]
+        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, ‘-‘).gsub(/-{2,}/, ‘-‘).downcase)
+        html « “&lt;li class='category'&gt;<a href="http://jackycode.github.io/#{category_url}/">#{category} (#{posts_in_category})</a>&lt;/li&gt;\n”
+      end
+      html
+    end
+  end
 end</p>
 
 <p>Liquid::Template.register_tag(‘category_list’, Jekyll::CategoryListTag)
@@ -370,7 +370,7 @@ default_asides: [custom/asides/about.html, asides/category_list.html]
     <link href="http://jackycode.github.io/blog/2014/02/26/record2/"/>
     <updated>2014-02-26T15:40:39+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/02/26/record2</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical3.jpg" alt="aritical 3" /></p>
+    <content type="html"><![CDATA[<p><img src="/images/article/article3.jpg" alt="ariticle 3" /></p>
 
 <!-- more -->
 
@@ -489,7 +489,7 @@ rake deploy
     <link href="http://jackycode.github.io/blog/2014/02/23/record/"/>
     <updated>2014-02-23T10:40:38+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/02/23/record</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical2.jpg" alt="aritical 2" /></p>
+    <content type="html"><![CDATA[<p><img src="/images/article/article2.jpg" alt="ariticle 2" /></p>
 
 <!-- more -->
 

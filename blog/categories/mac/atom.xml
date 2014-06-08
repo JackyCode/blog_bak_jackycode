@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Mac | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/mac/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-06-04T17:06:03+08:00</updated>
+  <updated>2014-06-08T16:33:01+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -18,7 +18,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/30/reinstall-mac/"/>
     <updated>2014-04-30T20:57:58+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/30/reinstall-mac</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical28.jpg" alt="artical 28" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article28.jpg" alt="article 28" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -188,7 +188,7 @@ defaults write org.R-project.R force.LANG en_US.UTF-8
     <link href="http://jackycode.github.io/blog/2014/04/11/apps-at-a-discount/"/>
     <updated>2014-04-11T19:32:31+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/11/apps-at-a-discount</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical22.jpg" alt="artical 22" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article22.jpg" alt="article 22" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>

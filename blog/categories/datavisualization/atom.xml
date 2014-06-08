@@ -4,7 +4,7 @@
   <title><![CDATA[Category: DataVisualization | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/datavisualization/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-06-04T17:06:03+08:00</updated>
+  <updated>2014-06-08T16:33:01+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -14,11 +14,193 @@
 
   
   <entry>
+    <title type="html"><![CDATA[R语言绘图4：R中的绘图系统]]></title>
+    <link href="http://jackycode.github.io/blog/2014/06/08/plotting-system/"/>
+    <updated>2014-06-08T15:48:27+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/06/08/plotting-system</id>
+    <content type="html"><![CDATA[<p><img src="/images/article/article39.jpg" alt="article 39" />
+<!-- more --></p>
+
+<p>图片为本文中的某一张~~</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>前面三篇大致介绍了绘图的基础以及一些基础图形的绘制，其中重点使用R自带的基础绘图系统实现，部分也使用了<code>ggplot2</code>做了简单地演示。其实，在R中存在四套绘图系统，分别是：<strong>基础绘图系统</strong>(The Base Plotting System)、<strong>grid图形系统</strong>、<strong>Lattice绘图系统</strong>(The Lattice System)以及<strong>ggplot2绘图系统</strong>(The ggplot2 System)。</p>
+
+<p>grid图形系统提供了一种比标准图形系统更低水平的方法，使用者可以在图形设备上随意创建矩形区域，然后再该区域定义坐标系统，其后使用绘图的基础单元来控制图形！由此可见，grid图形非常的灵活，但是grid包没有提供生成统计图形，甚至没有提供完整绘图的函数，所以，一般来说，我们不会直接使用grid。</p>
+
+<p>Lattice绘图系统是基于grid图形系统的，我们在使用Lattice的时候，其实就会使用grid，只是不会直接去调用而已。这一篇，就简单看看这三个绘图系统：基础绘图系统、Lattice绘图系统以及ggplot2绘图系统。</p>
+
+<h3 id="section">1. 基础绘图系统</h3>
+<hr />
+
+<p>基础绘图系统，即是R语言自带的绘图系统。R中核心的绘图系统主要基于以下两个包：</p>
+
+<ol>
+  <li><strong>graphics</strong>包：此包包含了基础绘图系统的绘图函数，比如：<code>plot()</code>，<code>hist()</code>等等；</li>
+  <li><strong>grDevices</strong>包：此包包含了各类型的图形设备(graphics devices)，包括：<em>X11</em>, <em>PDF</em>, <em>PNG</em>等等。</li>
+</ol>
+
+<p>基础绘图系统总是从一幅空画布开始绘制图形，<strong>首先使用<code>plot()</code>这样的函数在空画布上画出图形，然后使用注释函数对图形进行添加或者修改</strong>，一般来说就是添加或者修改显示的文本、辅助线、辅助点以及标题等等。对于这样的一个流程，很显然，它可以很方便我们去使用，因为这样的流程可以完全将我们的思路反应出来。<strong>它就是通过一系列的R语言命令，一步一步地按照心中预想的绘图方式将其绘制出来</strong>。</p>
+
+<p>这样的绘图方式在给予我们方便的同时，也带来了一些弊端。首先，我们必须事先安排好图形应该如何绘制，因为一旦我们开始绘制就不能后退了；此外，当一副图形绘制完成，我们就不能再对其进行修改了，因为基础绘图系统没有绘图语言(graphical “language”)（这个可以跟ggplot2进行一个比对，就能明白其中的意思了！）。</p>
+
+<p>基础绘图一般来说：<strong>就是使用一系列单独的函数调用，将图形的各个零散的部分组合起来</strong>。这种方式比较简单，也比较切合自己的思路。正因为如此，我个人比较喜欢在分析问题的最开始，使用它进行一些简单地图形绘制，将其绘制到屏幕上，让我能够直观先去看看数据的基本状况。</p>
+
+<p>利用<code>mtcar</code>数据集，做个示例：</p>
+
+<p>```r
+## 取出感兴趣的数据
+dataSet &lt;- mtcars[c(“mpg”, “disp”, “carb”)]</p>
+
+<h2 id="section-1">转换数据的格式</h2>
+<p>dataSet &lt;- transform(dataSet, carb = factor(carb))</p>
+
+<h2 id="section-2">绘图查看数据 散点图</h2>
+<p>plot(dataSet$mpg, dataSet$disp, xlab = “mpg”, ylab = “disp”)
+title(“The Scatter Plot”)
+model &lt;- lm(disp ~ mpg, data = dataSet)
+abline(model, col = “red”)
+```</p>
+
+<p><img src="/images/a39/4base1.png" alt="plot of chunk 4base" /></p>
+
+<p>```r</p>
+
+<h2 id="section-3">加上条件</h2>
+<p>with(dataSet, plot(mpg, disp, type = “n”))
+for (i in unique(dataSet$carb)) {
+    with(subset(dataSet, carb == i), points(mpg, disp, col = i))
+}
+## 对于carb == 4的数据，添加拟合直线
+model1 &lt;- lm(disp ~ mpg, data = subset(dataSet, carb == 4))
+abline(model1, lty = 2, lwd = 2)
+```</p>
+
+<p><img src="/images/a39/4base2.png" alt="plot of chunk 4base" /></p>
+
+<h3 id="lattice">2. Lattice</h3>
+<hr />
+
+<p>Lattice一般会使用以下两个包：</p>
+
+<ol>
+  <li><strong>lattice</strong>包：包含与基础绘图独立的，能够生成Trellis graphics的代码，包括<code>xyplot</code>,<code>bwplot</code>等等；</li>
+  <li><strong>grid</strong>包：lattice包建立在此包之上，在使用中很少直接调用这个包。</li>
+</ol>
+
+<p>Lattice与基础绘图系统的一个非常明显的区别在于：<strong>所有的绘图以及注释都在一次函数调用中完成</strong>。</p>
+
+<p>Lattice很擅长绘制需要分类的图形，比如说，想要根据不同的level，绘制y与x的散点图。这个在基础绘制系统中还是蛮麻烦的，但是在Lattice中就比较容易。也就是说，<strong>lattice通过一维、二维或三维的条件绘图(即是Trellis)，对多元变量关系进行直观展示</strong>。</p>
+
+<p>由于其所有的绘图与注释都需要在一次函数调用中完成，所以在使用之前就需要做好准备，因为一旦图形绘制好，就什么也不能添加了。</p>
+
+<p>接着上面的数据集做示例：</p>
+
+<p><code>r
+xyplot(disp ~ mpg, data = dataSet)
+</code></p>
+
+<p><img src="/images/a39/4lattice1.png" alt="plot of chunk 4lattice" /></p>
+
+<p><code>r
+xyplot(disp ~ mpg | carb, data = dataSet, layout = c(6, 1))
+</code></p>
+
+<p><img src="/images/a39/4lattice2.png" alt="plot of chunk 4lattice" /></p>
+
+<p><code>r
+## 使用panel function
+xyplot(disp ~ mpg | carb, data = dataSet, panel = function(x, y, ...) {
+    panel.xyplot(x, y, ...)
+    panel.abline(h = median(y), lty = 2, col = "gray")
+    panel.lmline(x, y, col = "red")
+})
+</code></p>
+
+<p><img src="/images/a39/4lattice3.png" alt="plot of chunk 4lattice" /></p>
+
+<p><strong>更多有关Lattice的内容可以看Springer出的这本书：’Lattice: Multivariate Data Visualization with R’。</strong></p>
+
+<h3 id="ggplot2">3. ggplot2</h3>
+<hr />
+
+<p>以前就说过，ggplot2是基于一种全面的图形语法，提供了一种全新的图形创建方法。能够自动处理位置、文本等等注释，也能够按照需求自定义设置。默认情况下有很多选项以供选择，在不设置时会直接使用默认值。</p>
+
+<p>在ggplot2中，最简单最基础的绘图函数就是<code>qplot()</code>，我们可以来试试这个函数：</p>
+
+<p><code>r
+## 查看qplot函数
+str(qplot)
+</code></p>
+
+<p><code>
+## function (x, y = NULL, ..., data, facets = NULL, margins = FALSE,
+##     geom = "auto", stat = list(NULL), position = list(NULL), xlim = c(NA,
+##         NA), ylim = c(NA, NA), log = "", main = NULL, xlab = deparse(substitute(x)),
+##     ylab = deparse(substitute(y)), asp = NA)
+</code></p>
+
+<p><code>r
+## 散点图
+qplot(mpg, disp, data = dataSet)
+</code></p>
+
+<p><img src="/images/a39/4ggplot21.png" alt="plot of chunk 4ggplot2" /></p>
+
+<p><code>r
+## 按carb区分 按颜色
+qplot(mpg, disp, data = dataSet, color = carb)
+</code></p>
+
+<p><img src="/images/a39/4ggplot22.png" alt="plot of chunk 4ggplot2" /></p>
+
+<p><code>r
+### 按形状
+qplot(mpg, disp, data = dataSet, shape = carb)
+</code></p>
+
+<p><img src="/images/a39/4ggplot23.png" alt="plot of chunk 4ggplot2" /></p>
+
+<p><code>r
+## 添加拟合直线
+qplot(mpg, disp, data = dataSet, geom = c("point", "smooth"), method = "lm")
+</code></p>
+
+<p><img src="/images/a39/4ggplot24.png" alt="plot of chunk 4ggplot2" /></p>
+
+<p><code>r
+## 使用facets
+qplot(mpg, disp, data = dataSet, facets = . ~ carb)
+</code></p>
+
+<p><img src="/images/a39/4ggplot25.png" alt="plot of chunk 4ggplot2" /></p>
+
+<p><code>r
+### 添加颜色和形状
+qplot(mpg, disp, data = dataSet, facets = . ~ carb, color = carb, shape = carb)
+</code></p>
+
+<p><img src="/images/a39/4ggplot26.png" alt="plot of chunk 4ggplot2" /></p>
+
+<p>当然，ggpplot2中不止这一点东西。<strong>更多有关ggplot2的内容可以参看Spinger出的这本书：ggplot2:Elegant Graphics for Data Analysis’。</strong></p>
+
+<h3 id="section-4">总结</h3>
+<hr />
+
+<p>一般来说，使用R绘制图形就是使用以上的三种绘图系统。基础的绘图系统跟人的思路相仿，你可以边思考边画图，边做边画，比较方便。Lattice擅长绘制Trellis图形，并且其所有的绘图注释都只能在一个函数中实现。ggplot2则是集中了前两者的元素，更加富有创造性，当然学习成本就稍微高一些。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[R语言绘图3：基础图形2]]></title>
     <link href="http://jackycode.github.io/blog/2014/06/04/basic-graph2/"/>
     <updated>2014-06-04T16:53:08+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/06/04/basic-graph2</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical38.jpg" alt="artical 38" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article38.jpg" alt="article 38" />
 <!-- more --></p>
 
 <p>图片为本文中的某一张~~</p>
@@ -138,7 +320,7 @@ boxplot(x ~ label, data = dataSet3)
     <link href="http://jackycode.github.io/blog/2014/05/29/basic-graph1/"/>
     <updated>2014-05-29T14:50:05+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/29/basic-graph1</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical37.jpg" alt="artical 37" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article37.jpg" alt="article 37" />
 <!-- more --></p>
 
 <p>图片为本文中的某一张~~</p>
@@ -226,7 +408,7 @@ barplot(count, col = rainbow(10), besid = TRUE, legend = rownames(count))
     <link href="http://jackycode.github.io/blog/2014/05/24/basic-plotting-tools/"/>
     <updated>2014-05-24T14:48:02+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/24/basic-plotting-tools</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical36.jpg" alt="artical 36" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article36.jpg" alt="article 36" />
 <!-- more --></p>
 
 <p>图片为本文中的某一张~~</p>

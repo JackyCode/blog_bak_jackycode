@@ -4,7 +4,7 @@
   <title><![CDATA[Category: RSeries | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/rseries/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-06-04T17:06:03+08:00</updated>
+  <updated>2014-06-08T16:33:01+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -18,7 +18,7 @@
     <link href="http://jackycode.github.io/blog/2014/05/04/loop-functions/"/>
     <updated>2014-05-04T14:56:40+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/04/loop-functions</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical30.jpg" alt="aritical 30" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article30.jpg" alt="ariticle 30" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -46,10 +46,10 @@ lapply(x, mean)
 <p><code>
 ## [[1]]
 ## [1] 2.5
-## 
+##
 ## [[2]]
 ## [1] 3.5
-## 
+##
 ## [[3]]
 ## [1] 12
 </code></p>
@@ -65,10 +65,10 @@ lapply(c(1, 3, 5), rnorm)
 <p><code>
 ## [[1]]
 ## [1] -0.5622
-## 
+##
 ## [[2]]
 ## [1] -0.8519  0.3671  0.4243
-## 
+##
 ## [[3]]
 ## [1]  0.09395 -1.19474  1.52337 -1.97529  0.47370
 </code></p>
@@ -85,10 +85,10 @@ lapply(x, function(item) any(item == 5))
 <p><code>
 ## [[1]]
 ## [1] FALSE
-## 
+##
 ## [[2]]
 ## [1] TRUE
-## 
+##
 ## [[3]]
 ## [1] FALSE
 </code></p>
@@ -206,7 +206,7 @@ Index2
 ```</p>
 
 <p><code>
-##  1  2  3 
+##  1  2  3
 ## 10 26 42
 </code></p>
 
@@ -215,7 +215,7 @@ tapply(x, Index2, sum)
 </code></p>
 
 <p><code>
-##  1  2  3  4 
+##  1  2  3  4
 ##  6 15 24 33
 </code></p>
 
@@ -228,13 +228,13 @@ tapply(x, Index2, sum, simplify = FALSE)
 <p><code>
 ## $`1`
 ## [1] 6
-## 
+##
 ## $`2`
 ## [1] 15
-## 
+##
 ## $`3`
 ## [1] 24
-## 
+##
 ## $`4`
 ## [1] 33
 </code></p>
@@ -268,10 +268,10 @@ mapply(rnorm, 1:3, mean = 2, sd = 1:3)
 <p><code>
 ## [[1]]
 ## [1] 2.019
-## 
+##
 ## [[2]]
 ## [1]  1.6315 -0.7427
-## 
+##
 ## [[3]]
 ## [1] 0.2025 2.8836 3.1694
 </code></p>
@@ -284,10 +284,10 @@ mapply(rnorm, 1:3, mean = 1:3, sd = 1)
 <p><code>
 ## [[1]]
 ## [1] 1.019
-## 
+##
 ## [[2]]
 ## [1] 1.8157 0.6287
-## 
+##
 ## [[3]]
 ## [1] 2.401 3.295 3.390
 </code></p>
@@ -302,10 +302,10 @@ list(rnorm(1, 2, 1), rnorm(2, 2, 2), rnorm(3, 2, 3))
 <p><code>
 ## [[1]]
 ## [1] 2.019
-## 
+##
 ## [[2]]
 ## [1]  1.6315 -0.7427
-## 
+##
 ## [[3]]
 ## [1] 0.2025 2.8836 3.1694
 </code></p>
@@ -318,10 +318,10 @@ list(rnorm(1, 1, 1), rnorm(2, 2, 1), rnorm(3, 3, 1))
 <p><code>
 ## [[1]]
 ## [1] 1.019
-## 
+##
 ## [[2]]
 ## [1] 1.8157 0.6287
-## 
+##
 ## [[3]]
 ## [1] 2.401 3.295 3.390
 </code></p>
@@ -338,7 +338,7 @@ list(rnorm(1, 1, 1), rnorm(2, 2, 1), rnorm(3, 3, 1))
     <link href="http://jackycode.github.io/blog/2014/03/17/rseries7/"/>
     <updated>2014-03-17T16:46:47+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/03/17/rseries7</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical10.jpg" alt="aritical 10" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article10.jpg" alt="ariticle 10" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -434,8 +434,8 @@ alternative hypothesis: true correlation is not equal to 0
 95 percent confidence interval:
  0.6816422 0.8862036
 sample estimates:
-      cor 
-0.8068949 
+      cor
+0.8068949
 ```</p>
 
 <p>从结果可以看到，$t=9.464$这个不容易看出来结果，因为还需要查表。我们可以选择直接看$p$值：1.49e-12，比0.05小太多了。故而拒绝原假设，认为汽车速度与制动距离存在高度相关关系。</p>
@@ -451,7 +451,7 @@ sample estimates:
     <link href="http://jackycode.github.io/blog/2014/03/14/rseries6/"/>
     <updated>2014-03-14T16:31:26+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/03/14/rseries6</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical9.jpg" alt="aritical 9" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article9.jpg" alt="ariticle 9" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -482,18 +482,18 @@ sample estimates:
 + })
 [[1]]
 am
- 0  1 
-19 13 </p>
+ 0  1
+19 13</p>
 
 <p>[[2]]
 gear
- 3  4  5 
-15 12  5 </p>
+ 3  4  5
+15 12  5</p>
 
 <p>[[3]]
 carb
- 1  2  3  4  6  8 
- 7 10  3 10  1  1 
+ 1  2  3  4  6  8
+ 7 10  3 10  1  1
 ```</p>
 
 <p>一维的情况，其实就是统计频数，把每个类别各自的频数计算出来就可以了。像<code>am</code>变量，其结果告诉我们，用自动挡的有19人，用手动挡的是13人(0 -&gt; 19; 1 -&gt; 13)。再来看看二维的：</p>
@@ -525,19 +525,19 @@ carb 0 1
 <p>``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
 &gt; with(dataSub, {
 + 	mytable2 &lt;- list(table(am, carb), table(carb, am))
-+ 	mytableConvert &lt;- list(margin.table(mytable2[[1]], 1), 
++ 	mytableConvert &lt;- list(margin.table(mytable2[[1]], 1),
 + 		margin.table(mytable2[[1]], 2)) # 选项1和2控制按行和按列
 + 	mytableConvert
 + })
 [[1]]
 am
- 0  1 
-19 13 </p>
+ 0  1
+19 13</p>
 
 <p>[[2]]
 carb
- 1  2  3  4  6  8 
- 7 10  3 10  1  1 
+ 1  2  3  4  6  8
+ 7 10  3 10  1  1
 ```</p>
 
 <p>可以看到，使用<code>margin.table</code>函数可以很容易得到一个列表的边际列表。下面看看三维的情况：</p>
@@ -577,8 +577,8 @@ am  1 2 3 4 6 8
 + 	prop.table(mytable[[1]])
 + })
 am
-      0       1 
-0.59375 0.40625 
+      0       1
+0.59375 0.40625
 </code></p>
 
 <p>二维以及以上都可以这么处理。那么，如果需要求的是全局相对频率列联表呢？想想，那不就是频数除以总数嘛，直接一句代码不就搞定了嘛：</p>
@@ -663,7 +663,7 @@ am        1       2       3       4       6       8
     <link href="http://jackycode.github.io/blog/2014/03/12/rseries5/"/>
     <updated>2014-03-12T15:57:02+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/03/12/rseries5</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical8.jpg" alt="aritical 8" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article8.jpg" alt="ariticle 8" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -702,8 +702,8 @@ am        1       2       3       4       6       8
  $ gear: num  4 4 4 3 3 3 3 4 4 4 ...
  $ carb: num  4 4 1 1 2 1 4 2 2 4 ...
 &gt; summary(mtcars$mpg)
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  10.40   15.42   19.20   20.09   22.80   33.90 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  10.40   15.42   19.20   20.09   22.80   33.90
 </code></p>
 
 <p>可以使用<code>mean</code>和<code>sd</code>函数得到样本均值和样本标准差，<code>quantile</code>函数计算样本分位数：</p>
@@ -714,11 +714,11 @@ am        1       2       3       4       6       8
 &gt; sd(mtcars$mpg)
 [1] 6.026948
 &gt; quantile(mtcars$mpg, 0.25)
-   25% 
-15.425 
+   25%
+15.425
 &gt; quantile(mtcars$mpg, c(0.25, 0.75))
-   25%    75% 
-15.425 22.800 
+   25%    75%
+15.425 22.800
 </code></p>
 
 <p>但是在R的基础包里面并没有计算偏度(skewness)和峰度(kurtosis)的函数，我们可以自定义一个函数，用来计算常用的描述性统计量：</p>
@@ -733,14 +733,14 @@ am        1       2       3       4       6       8
 &gt; desc.stats &lt;- function(x, na.omit=FALSE) { # na.omit=TRUE 表示忽略缺失值
 + 	if (na.omit)
 + 		x &lt;- x[!is.na(x)]
-+ 	
++
 + 	n &lt;- length(x)
 + 	mean &lt;- mean(x)
 + 	var &lt;- var(x)
 + 	sd &lt;- sd(x)
 + 	skew &lt;- sum((x-mean)^3/sd^3)/n
 + 	kurt &lt;- sum((x-mean)^4/sd^4)/n - 3
-+ 	
++
 + 	return(list(mean=mean, Variance=var, skewness=skew, kurtosis=kurt))
 + }
 &gt; desc.stats(mtcars$mpg)
@@ -765,12 +765,12 @@ $mean
 <p><code>r descriptive_statistics1.R https://github.com/JackyCode/RSeries
 &gt; mtcars.sub &lt;- data.frame(mpg=mtcars$mpg, wt=mtcars$wt) # 取出两个变量
 &gt; summary(mtcars.sub)
-      mpg              wt       
- Min.   :10.40   Min.   :1.513  
- 1st Qu.:15.43   1st Qu.:2.581  
- Median :19.20   Median :3.325  
- Mean   :20.09   Mean   :3.217  
- 3rd Qu.:22.80   3rd Qu.:3.610  
+      mpg              wt
+ Min.   :10.40   Min.   :1.513
+ 1st Qu.:15.43   1st Qu.:2.581
+ Median :19.20   Median :3.325
+ Mean   :20.09   Mean   :3.217
+ 3rd Qu.:22.80   3rd Qu.:3.610
  Max.   :33.90   Max.   :5.424
 </code></p>
 
@@ -778,10 +778,10 @@ $mean
 
 <p><code>r descriptive_statistics1.R https://github.com/JackyCode/RSeries
 &gt; sapply(mtcars.sub, desc.stats)
-         mpg       wt         
-mean     20.09062  3.21725    
-Variance 36.3241   0.957379   
-skewness 0.610655  0.4231465  
+         mpg       wt
+mean     20.09062  3.21725
+Variance 36.3241   0.957379
+skewness 0.610655  0.4231465
 kurtosis -0.372766 -0.02271075
 </code></p>
 
@@ -792,22 +792,22 @@ kurtosis -0.372766 -0.02271075
 &gt; mtcars.sub2 &lt;- data.frame(mpg=mtcars$mpg, am=mtcars$am, carb=mtcars$carb)
 &gt; tapply(mtcars.sub2$mpg, mtcars.sub2$am, summary)
 $<code>0</code>
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  10.40   14.95   17.30   17.15   19.20   24.40 </p>
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  10.40   14.95   17.30   17.15   19.20   24.40</p>
 
 <p>$<code>1</code>
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  15.00   21.00   22.80   24.39   30.40   33.90 </p>
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  15.00   21.00   22.80   24.39   30.40   33.90</p>
 
 <blockquote>
   <p>by(mtcars.sub2$mpg, mtcars.sub2$am, summary)
 mtcars.sub2$am: 0
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  10.40   14.95   17.30   17.15   19.20   24.40 
-———————————————————— 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  10.40   14.95   17.30   17.15   19.20   24.40
+————————————————————
 mtcars.sub2$am: 1
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  15.00   21.00   22.80   24.39   30.40   33.90 </p>
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  15.00   21.00   22.80   24.39   30.40   33.90</p>
 
   <p>aggregate(mpg ~ am, mtcars.sub2, summary)
   am mpg.Min. mpg.1st Qu. mpg.Median mpg.Mean mpg.3rd Qu. mpg.Max.
@@ -841,7 +841,7 @@ mtcars.sub2$am: 1
     <link href="http://jackycode.github.io/blog/2014/03/10/rseries4/"/>
     <updated>2014-03-10T16:50:29+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/03/10/rseries4</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical7.jpg" alt="aritical 7" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article7.jpg" alt="ariticle 7" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -998,7 +998,7 @@ Summary.MeanAndSd &lt;- function (x, alpha=0.05) {
 
 <p>``` r custom_function https://github.com/JackyCode/RSeries
 &gt; Summary.MeanAndSd(x, 1.5)
-Error in Summary.MeanAndSd(x, 1.5) : 
+Error in Summary.MeanAndSd(x, 1.5) :
   The argument ‘alpha’ should be between 0 and 1!
 &gt; Summary.MeanAndSd(x, 0.8)
 $mean

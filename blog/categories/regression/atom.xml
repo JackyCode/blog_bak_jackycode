@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Regression | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/regression/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-06-04T17:06:03+08:00</updated>
+  <updated>2014-06-08T16:33:01+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -18,7 +18,7 @@
     <link href="http://jackycode.github.io/blog/2014/04/27/logistic-regression/"/>
     <updated>2014-04-27T10:34:11+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/27/logistic-regression</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical27.jpg" alt="artical 27" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article27.jpg" alt="article 27" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -90,7 +90,7 @@ model &lt;- glm(formula, family=binominal(link = "logit"), data=data.frame)
     <link href="http://jackycode.github.io/blog/2014/04/02/linear-regression3/"/>
     <updated>2014-04-02T18:51:29+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/02/linear-regression3</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical18.jpg" alt="artical 18" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article18.jpg" alt="article 18" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -358,7 +358,7 @@ plot(y_res ~ y_pred)
     <link href="http://jackycode.github.io/blog/2014/04/01/linear-regression2/"/>
     <updated>2014-04-01T16:56:57+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/04/01/linear-regression2</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical17.jpg" alt="artical 17" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article17.jpg" alt="article 17" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -420,7 +420,7 @@ plot(y_res ~ y_pred)
     <link href="http://jackycode.github.io/blog/2014/03/30/machine-learning1/"/>
     <updated>2014-03-30T19:02:30+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/03/30/machine-learning1</id>
-    <content type="html"><![CDATA[<p><img src="/images/artical/artical16.jpg" alt="artical 16" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article16.jpg" alt="article 16" />
 <!-- more --></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
@@ -488,18 +488,18 @@ plot(y_res ~ y_pred)
 lm(formula = dist ~ speed)</p>
 
 <p>Residuals:
-    Min      1Q  Median      3Q     Max 
--29.069  -9.525  -2.272   9.215  43.201 </p>
+    Min      1Q  Median      3Q     Max
+-29.069  -9.525  -2.272   9.215  43.201</p>
 
 <p>Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)  <br />
-(Intercept) -17.5791     6.7584  -2.601   0.0123 *<br />
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) -17.5791     6.7584  -2.601   0.0123 *
 speed         3.9324     0.4155   9.464 1.49e-12 <strong>*
 —
 Signif. codes:  0 ‘</strong><em>’ 0.001 ‘**’ 0.01 ‘</em>’ 0.05 ‘.’ 0.1 ‘ ’ 1</p>
 
 <p>Residual standard error: 15.38 on 48 degrees of freedom
-Multiple R-squared:  0.6511,	Adjusted R-squared:  0.6438 
+Multiple R-squared:  0.6511,	Adjusted R-squared:  0.6438
 F-statistic: 89.57 on 1 and 48 DF,  p-value: 1.49e-12</p>
 
 <blockquote>
