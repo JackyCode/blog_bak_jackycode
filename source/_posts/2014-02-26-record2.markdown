@@ -6,7 +6,7 @@ comments: true
 categories: Octopress Records
 ---
 
-![aritical 3](/images/artical/artical3.jpg)
+![ariticle 3](/images/article/article3.jpg)
 
 <!-- more -->
 
@@ -43,7 +43,7 @@ categories: Octopress Records
 default_asides: []
 sidebar: collapse
 ```
-	
+
 即将`default_asides`里面的东西全删掉，然后添加`sidebar: collapse`就可以了。
 
 #### 4. 添加多说评论
@@ -66,23 +66,23 @@ sidebar: collapse
 </script>
 <!-- Duoshuo Comment END -->
 ```
-	
+
 你获得的代码跟这段唯一的区别就在于short_name不同。然后：
 
 ###### a. 在`_config.yml`文件中添加：
 
-``` 
+```
 # duoshuo comments
 duoshuo_comments: true
 ```
-		
+
 ###### b. 在`source/_layouts/post.html`中添加多说的模块：
 
 ``` html
 {% if site.duoshuo_short_name and site.duoshuo_comments == true and page.comments == true %}
-  <section>    
-		<h1>Comments</h1>    
-		<div id="comments" aria-live="polite">{% include post/abc.html %}</div>  
+  <section>
+		<h1>Comments</h1>
+		<div id="comments" aria-live="polite">{% include post/abc.html %}</div>
   </section>
 {% endif %}
 
@@ -93,14 +93,14 @@ duoshuo_comments: true
 
 ###### d. 发布到博客上
 
-``` 
+```
 rake generate
 git add .
 git commit -m 'add duoshuo comment'
 git push origin source
 rake deploy
 ```
-		
+
 ###### e. 打完收工
 
 #### 5. 修改样式

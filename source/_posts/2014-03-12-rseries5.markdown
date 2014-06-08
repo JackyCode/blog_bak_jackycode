@@ -5,7 +5,7 @@ date: 2014-03-12 15:57:02 +0800
 comments: true
 categories: RSeries
 ---
-![aritical 8](/images/artical/artical8.jpg)
+![ariticle 8](/images/article/article8.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*
@@ -44,8 +44,8 @@ categories: RSeries
  $ gear: num  4 4 4 3 3 3 3 4 4 4 ...
  $ carb: num  4 4 1 1 2 1 4 2 2 4 ...
 > summary(mtcars$mpg)
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  10.40   15.42   19.20   20.09   22.80   33.90 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  10.40   15.42   19.20   20.09   22.80   33.90
 ```
 
 可以使用`mean`和`sd`函数得到样本均值和样本标准差，`quantile`函数计算样本分位数：
@@ -56,11 +56,11 @@ categories: RSeries
 > sd(mtcars$mpg)
 [1] 6.026948
 > quantile(mtcars$mpg, 0.25)
-   25% 
-15.425 
+   25%
+15.425
 > quantile(mtcars$mpg, c(0.25, 0.75))
-   25%    75% 
-15.425 22.800 
+   25%    75%
+15.425 22.800
 ```
 
 但是在R的基础包里面并没有计算偏度(skewness)和峰度(kurtosis)的函数，我们可以自定义一个函数，用来计算常用的描述性统计量：
@@ -75,14 +75,14 @@ $$\beta_k = \frac{E(X-E(X))^4}{[E(X-E(X))^2]^2} - 3$$
 > desc.stats <- function(x, na.omit=FALSE) { # na.omit=TRUE 表示忽略缺失值
 + 	if (na.omit)
 + 		x <- x[!is.na(x)]
-+ 	
++
 + 	n <- length(x)
 + 	mean <- mean(x)
 + 	var <- var(x)
 + 	sd <- sd(x)
 + 	skew <- sum((x-mean)^3/sd^3)/n
 + 	kurt <- sum((x-mean)^4/sd^4)/n - 3
-+ 	
++
 + 	return(list(mean=mean, Variance=var, skewness=skew, kurtosis=kurt))
 + }
 > desc.stats(mtcars$mpg)
@@ -107,12 +107,12 @@ $kurtosis
 ``` r descriptive_statistics1.R https://github.com/JackyCode/RSeries
 > mtcars.sub <- data.frame(mpg=mtcars$mpg, wt=mtcars$wt) # 取出两个变量
 > summary(mtcars.sub)
-      mpg              wt       
- Min.   :10.40   Min.   :1.513  
- 1st Qu.:15.43   1st Qu.:2.581  
- Median :19.20   Median :3.325  
- Mean   :20.09   Mean   :3.217  
- 3rd Qu.:22.80   3rd Qu.:3.610  
+      mpg              wt
+ Min.   :10.40   Min.   :1.513
+ 1st Qu.:15.43   1st Qu.:2.581
+ Median :19.20   Median :3.325
+ Mean   :20.09   Mean   :3.217
+ 3rd Qu.:22.80   3rd Qu.:3.610
  Max.   :33.90   Max.   :5.424
 ```
 
@@ -120,10 +120,10 @@ $kurtosis
 
 ``` r descriptive_statistics1.R https://github.com/JackyCode/RSeries
 > sapply(mtcars.sub, desc.stats)
-         mpg       wt         
-mean     20.09062  3.21725    
-Variance 36.3241   0.957379   
-skewness 0.610655  0.4231465  
+         mpg       wt
+mean     20.09062  3.21725
+Variance 36.3241   0.957379
+skewness 0.610655  0.4231465
 kurtosis -0.372766 -0.02271075
 ```
 
@@ -134,21 +134,21 @@ kurtosis -0.372766 -0.02271075
 > mtcars.sub2 <- data.frame(mpg=mtcars$mpg, am=mtcars$am, carb=mtcars$carb)
 > tapply(mtcars.sub2$mpg, mtcars.sub2$am, summary)
 $`0`
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  10.40   14.95   17.30   17.15   19.20   24.40 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  10.40   14.95   17.30   17.15   19.20   24.40
 
 $`1`
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  15.00   21.00   22.80   24.39   30.40   33.90 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  15.00   21.00   22.80   24.39   30.40   33.90
 
 > by(mtcars.sub2$mpg, mtcars.sub2$am, summary)
 mtcars.sub2$am: 0
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  10.40   14.95   17.30   17.15   19.20   24.40 
------------------------------------------------------------- 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  10.40   14.95   17.30   17.15   19.20   24.40
+------------------------------------------------------------
 mtcars.sub2$am: 1
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  15.00   21.00   22.80   24.39   30.40   33.90 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  15.00   21.00   22.80   24.39   30.40   33.90
 >
 > aggregate(mpg ~ am, mtcars.sub2, summary)
   am mpg.Min. mpg.1st Qu. mpg.Median mpg.Mean mpg.3rd Qu. mpg.Max.

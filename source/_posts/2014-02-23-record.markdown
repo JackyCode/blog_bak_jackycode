@@ -6,7 +6,7 @@ comments: true
 categories: Octopress Records
 ---
 
-![aritical 2](/images/artical/artical2.jpg)
+![ariticle 2](/images/article/article2.jpg)
 
 <!-- more -->
 
@@ -35,7 +35,7 @@ categories: Octopress Records
 git --version
 ruby --version
 ```
-	
+
 如果能正确显示版本号，类似于我的输出：分别是`git version 1.8.3.4 (Apple Git-47)`和`ruby 2.0.0p247 (2013-06-27 revision 41674) [universal.x86_64-darwin13]`，就没有问题了，继续往下吧！
 
 

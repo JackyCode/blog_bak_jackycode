@@ -6,7 +6,7 @@ comments: true
 categories: DataScience MachineLearning
 ---
 
-![artical 15](/images/artical/artical15.jpg)
+![article 15](/images/article/article15.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*
@@ -53,7 +53,7 @@ categories: DataScience MachineLearning
 
 而无监督学习不同，其给出的数据不存在任何其它信息，比方说聚类，给你一批数据，没有任何信息，让你把数据分成几个类别。一般来说，这时候就需要计算数据之间的相似度(距离)，然后把距离近的归位一类。
 
-*** 
+***
 
 #### 最后
 

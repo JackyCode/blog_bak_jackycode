@@ -6,7 +6,7 @@ comments: true
 categories: Recommends
 ---
 
-![artical 32](/images/artical/artical32.jpg)
+![article 32](/images/article/article32.jpg)
 <!-- more -->
 
 图为我写这篇博文时，我书桌的样子！

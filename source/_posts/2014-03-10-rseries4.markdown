@@ -6,7 +6,7 @@ comments: true
 categories: RSeries
 ---
 
-![aritical 7](/images/artical/artical7.jpg)
+![ariticle 7](/images/article/article7.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*
@@ -71,7 +71,7 @@ result <- Summary.MeanAndSd(x)
 Summary.MeanAndSd <- function (x) {
   mean <- mean(x)
   sd <- sd(x)
-  
+
   return(c(mean, sd))
 }
 
@@ -90,7 +90,7 @@ Summary.MeanAndSd <- function (x, alpha) {
   sd <- sd(x)
   upper <- 1 - alpha/2
   ci <- mean + c(-1, 1) * qnorm(alpha/2, 0, 1)*sd/sqrt(length(x)) # qnorm计算正态分布的分位数
-  
+
   return(list(mean = mean, sd = sd, ci = ci)) # 使用列表输出结果是常用方式
 }
 
@@ -104,7 +104,7 @@ Summary.MeanAndSd <- function (x, alpha=0.05) {
   sd <- sd(x)
   upper <- 1 - alpha/2
   ci <- mean + c(-1, 1) * qnorm(alpha/2, 0, 1)*sd/sqrt(length(x)) # qnorm计算正态分布的分位数
-  
+
   return(list(mean = mean, sd = sd, ci = ci)) # 使用列表输出结果是常用方式
 }
 ```
@@ -145,12 +145,12 @@ Summary.MeanAndSd <- function (x, alpha=0.05) {
   } else if (alpha > 0.5) {
     warning("The argument 'alpha' is often smaller than 0.5 and  close to 0!")
   }
-  
+
   mean <- mean(x)
   sd <- sd(x)
   upper <- 1 - alpha/2
   ci <- mean + c(-1, 1) * qnorm(alpha/2, 0, 1)*sd/sqrt(length(x)) # qnorm计算正态分布的分位数
-  
+
   return(list(mean = mean, sd = sd, ci = ci)) # 使用列表输出结果是常用方式
 }
 ```
@@ -159,7 +159,7 @@ Summary.MeanAndSd <- function (x, alpha=0.05) {
 
 ``` r custom_function https://github.com/JackyCode/RSeries
 > Summary.MeanAndSd(x, 1.5)
-Error in Summary.MeanAndSd(x, 1.5) : 
+Error in Summary.MeanAndSd(x, 1.5) :
   The argument 'alpha' should be between 0 and 1!
 > Summary.MeanAndSd(x, 0.8)
 $mean
@@ -213,13 +213,13 @@ Summary.MeanAndSd <- function (x, alpha=0.05) {
   if (any(is.na(y))) {
     warning("There are any 'NA' in the data, we'll ignore these datas!")
   }
-  
+
   mean <- mean(x, na.rm=TRUE)
   sd <- sd(x, na.rm=TRUE)
   n <- ifelse(any(is.na(y)), length(x)-sum(is.na(x)), length(x)) # n <- length(x)-sum(is.na(x)) 也可以
   upper <- 1 - alpha/2
   ci <- mean + c(-1, 1) * qnorm(alpha/2, 0, 1)*sd/sqrt(n) # qnorm计算正态分布的分位数
-  
+
   return(list(mean = mean, sd = sd, ci = ci)) # 使用列表输出结果是常用方式
 }
 ```
@@ -254,13 +254,13 @@ Summary.MeanAndSd <- function (x, alpha=0.05, ...) {
     warning("The argument 'alpha' is often smaller than 0.5 and  close to 0!")
   }
   # ellipsis.arguments <- list(...)
-  
+
   mean <- mean(x, ...)
   sd <- sd(x, ...)
   n <- ifelse(any(is.na(y)), length(x)-sum(is.na(x)), length(x))
   upper <- 1 - alpha/2
   ci <- mean + c(-1, 1) * qnorm(alpha/2, 0, 1)*sd/sqrt(n) # qnorm计算正态分布的分位数
-  
+
   return(list(mean = mean, sd = sd, ci = ci)) # 使用列表输出结果是常用方式
 }
 ```

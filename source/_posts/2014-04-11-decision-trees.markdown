@@ -6,7 +6,7 @@ comments: true
 categories: DataScience MachineLearning DecisionTree Classification
 ---
 
-![artical 21](/images/artical/artical21.jpg)
+![article 21](/images/article/article21.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*

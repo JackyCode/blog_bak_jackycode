@@ -6,7 +6,7 @@ comments: true
 categories: DataScience MachineLearning
 ---
 
-![artical 14](/images/artical/artical14.jpg)
+![article 14](/images/article/article14.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*

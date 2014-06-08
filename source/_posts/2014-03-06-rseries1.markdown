@@ -6,7 +6,7 @@ comments: true
 categories: RSeries
 ---
 
-![aritical 4](/images/artical/artical4.jpg)
+![ariticle 4](/images/article/article4.jpg)
 
 <!-- more -->
 
@@ -43,7 +43,7 @@ sum
 
 #### 1. 循环语句
 
-``` r	
+``` r
 for (var in seq) expr
 ```
 
@@ -130,7 +130,7 @@ Fun <- function(x) {
 a <- 2
 b <- Fun(a)
 ```
-	
+
 学习这么多之后，我们就可以使用R做点小事情了。但是这还没有涉及到R语言自身的东西，毕竟上面的这些能力哪个编程语言没有。
 
 

@@ -7,7 +7,7 @@ categories: DataScience MachineLearning Clustering
 ---
 
 
-![artical 26](/images/artical/artical26.jpg)
+![article 26](/images/article/article26.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*

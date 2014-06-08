@@ -6,7 +6,7 @@ comments: true
 categories: Recommends Mac
 ---
 
-![artical 22](/images/artical/artical22.jpg)
+![article 22](/images/article/article22.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*

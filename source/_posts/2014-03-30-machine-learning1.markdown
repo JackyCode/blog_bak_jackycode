@@ -6,7 +6,7 @@ comments: true
 categories: DataScience MachineLearning Regression
 ---
 
-![artical 16](/images/artical/artical16.jpg)
+![article 16](/images/article/article16.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*
@@ -74,18 +74,18 @@ Call:
 lm(formula = dist ~ speed)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--29.069  -9.525  -2.272   9.215  43.201 
+    Min      1Q  Median      3Q     Max
+-29.069  -9.525  -2.272   9.215  43.201
 
 Coefficients:
-            Estimate Std. Error t value Pr(>|t|)    
-(Intercept) -17.5791     6.7584  -2.601   0.0123 *  
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept) -17.5791     6.7584  -2.601   0.0123 *
 speed         3.9324     0.4155   9.464 1.49e-12 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Residual standard error: 15.38 on 48 degrees of freedom
-Multiple R-squared:  0.6511,	Adjusted R-squared:  0.6438 
+Multiple R-squared:  0.6511,	Adjusted R-squared:  0.6438
 F-statistic: 89.57 on 1 and 48 DF,  p-value: 1.49e-12
 
 > plot(dist ~ speed, pch=4) # 画出散点图

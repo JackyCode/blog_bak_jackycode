@@ -6,7 +6,7 @@ comments: true
 categories: Records Mac
 ---
 
-![artical 28](/images/artical/artical28.jpg)
+![article 28](/images/article/article28.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*
@@ -27,7 +27,7 @@ categories: Records Mac
 3. 打开终端，执行命令：`sudo -s`，切换到root（成功的话，应该会显示`bash-3.2#`）；
 4. 将U盘（8G以上）接入Mac，用磁盘工具进行格式化，格式选择**"Mac OS扩展（日志式）"**，名称定为**“OSX”**；
 5. 在终端中执行下面的命令：（将其中的“username”换成你自己的用户名）
-    
+
     ```
     /Users/username/Desktop/createinstallmedia --volume /Volumes/OSX --
     ```

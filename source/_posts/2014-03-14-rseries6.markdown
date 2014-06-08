@@ -6,7 +6,7 @@ comments: true
 categories: RSeries
 ---
 
-![aritical 9](/images/artical/artical9.jpg)
+![ariticle 9](/images/article/article9.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*
@@ -37,18 +37,18 @@ categories: RSeries
 + })
 [[1]]
 am
- 0  1 
-19 13 
+ 0  1
+19 13
 
 [[2]]
 gear
- 3  4  5 
-15 12  5 
+ 3  4  5
+15 12  5
 
 [[3]]
 carb
- 1  2  3  4  6  8 
- 7 10  3 10  1  1 
+ 1  2  3  4  6  8
+ 7 10  3 10  1  1
 ```
 
 一维的情况，其实就是统计频数，把每个类别各自的频数计算出来就可以了。像`am`变量，其结果告诉我们，用自动挡的有19人，用手动挡的是13人(0 -> 19; 1 -> 13)。再来看看二维的：
@@ -80,19 +80,19 @@ carb 0 1
 ``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
 > with(dataSub, {
 + 	mytable2 <- list(table(am, carb), table(carb, am))
-+ 	mytableConvert <- list(margin.table(mytable2[[1]], 1), 
++ 	mytableConvert <- list(margin.table(mytable2[[1]], 1),
 + 		margin.table(mytable2[[1]], 2)) # 选项1和2控制按行和按列
 + 	mytableConvert
 + })
 [[1]]
 am
- 0  1 
-19 13 
+ 0  1
+19 13
 
 [[2]]
 carb
- 1  2  3  4  6  8 
- 7 10  3 10  1  1 
+ 1  2  3  4  6  8
+ 7 10  3 10  1  1
 ```
 
 可以看到，使用`margin.table`函数可以很容易得到一个列表的边际列表。下面看看三维的情况：
@@ -132,8 +132,8 @@ am  1 2 3 4 6 8
 + 	prop.table(mytable[[1]])
 + })
 am
-      0       1 
-0.59375 0.40625 
+      0       1
+0.59375 0.40625
 ```
 
 二维以及以上都可以这么处理。那么，如果需要求的是全局相对频率列联表呢？想想，那不就是频数除以总数嘛，直接一句代码不就搞定了嘛：

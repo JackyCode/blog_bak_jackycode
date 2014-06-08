@@ -6,7 +6,7 @@ comments: true
 categories: DataVisualization
 ---
 
-![artical 37](/images/artical/artical37.jpg)
+![article 37](/images/article/article37.jpg)
 <!-- more -->
 
 图片为本文中的某一张~~

@@ -6,7 +6,7 @@ comments: true
 categories: RSeries
 ---
 
-![aritical 10](/images/artical/artical10.jpg)
+![ariticle 10](/images/article/article10.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*
@@ -101,8 +101,8 @@ alternative hypothesis: true correlation is not equal to 0
 95 percent confidence interval:
  0.6816422 0.8862036
 sample estimates:
-      cor 
-0.8068949 
+      cor
+0.8068949
 ```
 
 从结果可以看到，$t=9.464$这个不容易看出来结果，因为还需要查表。我们可以选择直接看$p$值：1.49e-12，比0.05小太多了。故而拒绝原假设，认为汽车速度与制动距离存在高度相关关系。

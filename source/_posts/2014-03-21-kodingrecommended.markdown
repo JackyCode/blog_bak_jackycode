@@ -6,7 +6,7 @@ comments: true
 categories: Koding VPS
 ---
 
-![aritical 12](/images/artical/artical12.jpg)
+![ariticle 12](/images/article/article12.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*

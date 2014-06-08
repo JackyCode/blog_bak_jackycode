@@ -6,7 +6,7 @@ comments: true
 categories: RSeries
 ---
 
-![aritical 5](/images/artical/artical5.jpg)
+![ariticle 5](/images/article/article5.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*
@@ -46,7 +46,7 @@ getwd()
 # 更改到目标路径
 setwd("~/DataInR")
 ```
-	
+
 ###### 2. 向量
 
 ``` r  data_manipulation https://github.com/JackyCode/RSeries
@@ -81,7 +81,7 @@ z + x # 注意长度不同
 k <- 1:20
 z + k # 注意warning
 ```
-		
+
 ###### 3. 矩阵
 
 ``` r  data_manipulation https://github.com/JackyCode/RSeries
@@ -106,7 +106,7 @@ length(m)
 head(m, 2)
 tail(m, 1)
 ```
-#### 三. 小节	 
+#### 三. 小节
 到此为止，我们就可以在R语言中创建录入一些数据，并对数据进行一些简单的操作。利用上一节中所讲的控制语句，我们就可以编写R语言的小程序了。试试用R语言解决一些你在学习中遇到的小问题吧。下一次我将讲讲如何从文件中导入数据，以及一些其他的处理。
 
 

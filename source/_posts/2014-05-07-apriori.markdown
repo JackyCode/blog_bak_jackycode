@@ -6,7 +6,7 @@ comments: true
 categories: DataScience MachineLearning AssociationAnalysis
 ---
 
-![artical 31](/images/artical/artical31.jpg)
+![article 31](/images/article/article31.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*

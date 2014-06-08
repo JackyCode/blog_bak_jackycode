@@ -6,7 +6,7 @@ comments: true
 categories: Octopress
 ---
 
-![aritical 1](/images/artical/artical1.jpg)
+![ariticle 1](/images/article/article1.jpg)
 
 <!-- more -->
 

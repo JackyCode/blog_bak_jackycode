@@ -6,7 +6,7 @@ comments: true
 categories: DataScience MachineLearning
 ---
 
-![artical 33](/images/artical/artical33.jpg)
+![article 33](/images/article/article33.jpg)
 <!-- more -->
 
 图片为：本文实例数据得到的，前两个主成分的散点图！

@@ -7,7 +7,7 @@ categories: DataScience MachineLearning Classification
 ---
 
 
-![artical 20](/images/artical/artical20.jpg)
+![article 20](/images/article/article20.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*
@@ -49,7 +49,7 @@ $$ P(C_i \mid x) \propto P(x \mid C_i)P(C_i ) $$
 ##### 步骤：
 
 1. 在已知分类的数据集data中统计：
-	
+
 	$$P(C_i), i = 1, 2, \dots, m$$
 
 	$$P(x_j \mid C_i), i = 1, 2, \dots, m; j = 1, 2, \dots p$$

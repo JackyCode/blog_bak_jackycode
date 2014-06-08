@@ -6,7 +6,7 @@ comments: true
 categories: DataScience MachineLearning Regression
 ---
 
-![artical 18](/images/artical/artical18.jpg)
+![article 18](/images/article/article18.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*

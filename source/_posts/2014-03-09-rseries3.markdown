@@ -6,7 +6,7 @@ comments: true
 categories: RSeries
 ---
 
-![aritical 6](/images/artical/artical6.jpg)
+![ariticle 6](/images/article/article6.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*
@@ -26,24 +26,24 @@ R语言读取数据有很多方式，如`scan`函数，`read.table`函数等等�
 > x <- scan()
 1: 1 2 3
 4: 2 3 4
-7: 
+7:
 Read 6 items
 > x
 [1] 1 2 3 2 3 4
 ```
-	
+
 也可以通过设定参数，设定读取的数据类型：
 
 ``` r loadData https://github.com/JackyCode/RSeries
 > y <- scan(what="") # 读取字符型数据
 1: 1 2 3
 4: 2 3 4
-7: 
+7:
 Read 6 items
 > y
 [1] "1" "2" "3" "2" "3" "4"
 ```
-	
+
 也可以直接读取一个同一模式的数据文件：
 
 ``` r loadData https://github.com/JackyCode/RSeries
@@ -52,13 +52,13 @@ Read 9 items
 > z
 [1] 1 2 3 4 5 6 7 8 9
 ```
-	
+
 其中`example.txt`的内容如下：
 
 	1	2	3
 	4	5	6
 	7	8	9
-	
+
 注意最后留一个空白行，以便R读取数据时可以找到终止位置(否则会出现`warning`)。
 
 ##### 2. `read.table`函数
@@ -74,7 +74,7 @@ Read 9 items
 2 Wang  22
 3  Sun  23
 ```
-	
+
 此外，数据框还有一个优点：可以在不影响原始数据的情况下，改变数据。比如我想知道，数据里面每个人的年龄比18大多少：
 
 ``` r loadData https://github.com/JackyCode/RSeries
@@ -85,7 +85,7 @@ Read 9 items
 2 Wang  22     4
 3  Sun  23     5
 ```
-	
+
 那么如何使用`read.table`函数呢，看看如下示例：
 
 ``` r loadData https://github.com/JackyCode/RSeries
@@ -96,7 +96,7 @@ Read 9 items
 2  4  5  6
 3  7  8  9
 ```
-	
+
 其中`header`参数指定数据文件的第一行是否为变量名。当没有变量名时，可以使用参数`col.names`来指定：
 
 ``` r loadData https://github.com/JackyCode/RSeries
@@ -107,7 +107,7 @@ Read 9 items
 2  4  5  6
 3  7  8  9
 ```
-	
+
 当然`read.table`函数读取数据时，可以使用`sep=参数`指定分隔符。这些可以使用`?read.table`查看。
 
 ##### 3. `read.csv`和`read.delim`函数
@@ -132,7 +132,7 @@ dataTxt <- read.delim("example.txt", header=FALSE)
 > y
  [1] -1  3 -3  1 -4  5  0  2 -5 -2
 ```
-	
+
 ###### 2. 判断$x$中的数据是否大于$0$(`all`和`any`函数)：
 
 ``` r dataManipulation https://github.com/JackyCode/RSeries
@@ -143,7 +143,7 @@ dataTxt <- read.delim("example.txt", header=FALSE)
 > any(x>0)
 [1] TRUE
 ```
-	
+
 ###### 3. 试试更多的逻辑运算(`&, |, !`)：
 
 ``` r dataManipulation https://github.com/JackyCode/RSeries
@@ -154,7 +154,7 @@ dataTxt <- read.delim("example.txt", header=FALSE)
 > !(x>0)
 	 [1]  TRUE FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE FALSE
 ```
-	 
+
 ###### 4. 找出$x$与$y$相等的元素(`which`函数):
 
 ``` r dataManipulation https://github.com/JackyCode/RSeries
@@ -171,7 +171,7 @@ dataTxt <- read.delim("example.txt", header=FALSE)
 > z
  [1]  4 -4 -1 -2  4  5 -3 -3  1  2
 ```
-		 
+
 ###### 6. 取出$z$中不同的元素(`unique`函数)：
 
 ``` r dataManipulation https://github.com/JackyCode/RSeries
@@ -179,7 +179,7 @@ dataTxt <- read.delim("example.txt", header=FALSE)
 > z.unique
 [1]  4 -4 -1 -2  5 -3  1  2
 ```
-		
+
 ###### 7. 生成存在缺失数据的一列数据(`NA`)：
 
 ``` r dataManipulation https://github.com/JackyCode/RSeries
@@ -206,22 +206,22 @@ dataTxt <- read.delim("example.txt", header=FALSE)
 > x
 [1] -2  3 -3  0 -5  5  1  4 -1  2 -1 -5
 ```
-	 
+
 ###### 10. 更改$x$的数据类型(`as.character`,`as.factor`,`as.numeric`函数)：
 
 ``` r dataManipulation https://github.com/JackyCode/RSeries
 > x <- as.character(x)
 > x
- [1] "2"  "8"  "3"  "5"  "4"  "10" "6"  "9"  "1"  "7"  "1"  "4" 
+ [1] "2"  "8"  "3"  "5"  "4"  "10" "6"  "9"  "1"  "7"  "1"  "4"
 > x <- as.factor(x)
 > x
- [1] 2  8  3  5  4  10 6  9  1  7  1  4 
+ [1] 2  8  3  5  4  10 6  9  1  7  1  4
 Levels: 1 10 2 3 4 5 6 7 8 9
 > x <- as.numeric(as.character(x)) # 如果一组因子变量是用数字表示，一般先将数字因子转换成字符后再转换成数值。
 > x
  [1]  2  8  3  5  4 10  6  9  1  7  1  4
 ```
-		 
+
 ###### 11. 数据类型更改(`unlist`,`as.data.frame`)：
 
 ``` r dataManipulation https://github.com/JackyCode/RSeries
@@ -238,9 +238,9 @@ $x2
 # unlist
 > uList <- unlist(myList)
 > uList
-x11 x12 x13 x21 x22 x23 
-  1   2   3   2   4   6 
-  
+x11 x12 x13 x21 x22 x23
+  1   2   3   2   4   6
+
 # matrix
 > mList <- matrix(uList, 2, 3, byrow=TRUE)
 > mList
@@ -265,7 +265,7 @@ x11 x12 x13 x21 x22 x23
 o1  1  2  3
 o2  2  4  6
 ```
-		
+
 ###### 12. 按条件整理计算数据(`table`,`tapply`,`by`,`aggregate`函数)：
 
 ``` r dataManipulation https://github.com/JackyCode/RSeries
@@ -278,11 +278,11 @@ o2  2  4  6
 # 统计因子出现的频数
 > table(x$b)
 
- 1  2  3  4 
- 5  3  1 11 
+ 1  2  3  4
+ 5  3  1 11
 > table(x$c)
 
--3 -2 -1 
+-3 -2 -1
  9  7  4
 > table(x$b, x$c)
 
@@ -294,10 +294,10 @@ o2  2  4  6
 
 # 使用tapply，by以及aggregate函数根据不同因子对数据进行计算
 > tapply(x$a, x$b, sum)
- 1  2  3  4 
- 8 11  2 -5 
+ 1  2  3  4
+ 8 11  2 -5
 > tapply(x$a, x$c, sum)
--3 -2 -1 
+-3 -2 -1
 -7 16  7
 > tapply(x$a, list(x$b, x$c), sum) # 可以看到，由于b=2且c=-1的数据不存在，所有计算结果为NA(其它类似)
   -3 -2 -1

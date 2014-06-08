@@ -6,7 +6,7 @@ comments: true
 categories: Records Octopress
 ---
 
-![aritical 11](/images/artical/artical11.jpg)
+![ariticle 11](/images/article/article11.jpg)
 <!-- more -->
 
 *“文章原创，转载请注明出处”*
@@ -29,7 +29,7 @@ categories: Records Octopress
 ``` javascript
 <!-- mathjax config similar to math.stackexchange -->
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({ 
+  MathJax.Hub.Config({
     jax: ["input/TeX", "output/HTML-CSS"],
     tex2jax: {
     	inlineMath: [ ['$', '$'] ],
@@ -93,20 +93,20 @@ markdown:kramdown
 给自己的文章分类，需要的操作稍微麻烦一些。首先需要在`plugins`目录下创建`category_list_tag.rb`文件：
 
 ``` ruby
-module Jekyll 
-  class CategoryListTag < Liquid::Tag 
-    def render(context) 
-      html = "" 
-      categories = context.registers[:site].categories.keys 
-      categories.sort.each do |category| 
-        posts_in_category = context.registers[:site].categories[category].size 
-        category_dir = context.registers[:site].config['category_dir'] 
-        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase) 
-        html << "<li class='category'><a href='/#{category_url}/'>#{category} (#{posts_in_category})</a></li>\n" 
-      end 
-      html 
-    end 
-  end 
+module Jekyll
+  class CategoryListTag < Liquid::Tag
+    def render(context)
+      html = ""
+      categories = context.registers[:site].categories.keys
+      categories.sort.each do |category|
+        posts_in_category = context.registers[:site].categories[category].size
+        category_dir = context.registers[:site].config['category_dir']
+        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase)
+        html << "<li class='category'><a href='/#{category_url}/'>#{category} (#{posts_in_category})</a></li>\n"
+      end
+      html
+    end
+  end
 end
 
 Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)

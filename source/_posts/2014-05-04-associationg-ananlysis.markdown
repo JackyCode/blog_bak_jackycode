@@ -6,7 +6,7 @@ comments: true
 categories: DataScience MachineLearning AssociationAnalysis
 ---
 
-![artical 29](/images/artical/artical29.jpg)
+![article 29](/images/article/article29.jpg)
 <!-- more -->
 
 标题图片出处：[Rule Generation](http://www.hypertextbookshop.com/dataminingbook/public_version/contents/chapters/chapter002/section003/blue/page002.html)

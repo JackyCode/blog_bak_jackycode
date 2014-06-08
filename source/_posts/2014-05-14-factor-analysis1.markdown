@@ -6,7 +6,7 @@ comments: true
 categories: DataScience MachineLearning
 ---
 
-![artical 34](/images/artical/artical34.jpg)
+![article 34](/images/article/article34.jpg)
 <!-- more -->
 
 图片来源于[网址](http://software.ssri.co.jp/statweb2/column/column0811.html)
