@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: TextMining | Jacky and MSC]]></title>
+  <link href="http://jackycode.github.io/blog/categories/textmining/atom.xml" rel="self"/>
+  <link href="http://jackycode.github.io/"/>
+  <updated>2014-06-18T15:36:25+08:00</updated>
+  <id>http://jackycode.github.io/</id>
+  <author>
+    <name><![CDATA[Jacky Code]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学18：文本挖掘1]]></title>
+    <link href="http://jackycode.github.io/blog/2014/06/18/text-mining1/"/>
+    <updated>2014-06-18T15:08:39+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/06/18/text-mining1</id>
+    <content type="html"><![CDATA[<p><img src="/images/article/article40.jpg" alt="article 40" />
+<!-- more --></p>
+
+<p>图片由本文中数据生产~</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p><strong>文本挖掘</strong>，也称为文本数据挖掘，意思就如字面，对文本数据进行挖掘分析。文本挖掘一般包含：<em>文本分类</em>、<em>文本聚类</em>、<em>概念实体挖掘</em>、<em>自然语言处理</em>等等。接下来，我打算用一个简单的例子，介绍一下R语言文本挖掘的一般过程，顺便介绍一些文本挖掘中的概念。</p>
+
+<p>这边主要使用R中的<code>tm</code>包进行文本挖掘，首先加载Package：</p>
+
+<p><code>r
+require(tm)  ## R中处理文本挖掘的框架包
+require(ggplot2)
+</code></p>
+
+<h3 id="corpus">1. 载入Corpus</h3>
+<hr />
+
+<p><strong>Corpus</strong>（语料库），指一系列文档的集合，是<code>tm</code>包管理文件的数据结构。通常，我们需要将一批文档导入成Corpus结构的数据，然后才能进行进一步的处理分析。</p>
+
+<p>文档的格式有非常多的格式，<code>tm</code>包支持的格式其实只占很少的一部分，大致有：text, PDF, Mircosoft Word和XML。所以，如果需要处理的文档，其格式不在这里面的话，就需要对格式进行一些转换。个人建议，将文档格式转换成text或者XML会比较容易处理。我们可以查看一下，<code>tm</code>包支持的文档格式：</p>
+
+<p><code>r
+getReaders()
+</code></p>
+
+<p><code>
+## [1] "readDOC"                 "readPDF"
+## [3] "readReut21578XML"        "readReut21578XMLasPlain"
+## [5] "readPlain"               "readRCV1"
+## [7] "readRCV1asPlain"         "readTabular"
+## [9] "readXML"
+</code></p>
+
+<p>在<code>tm</code>包中，Corpus可以分为两种。一种是Volatile Corpus，这种数据结构是作为R对象保存在内存中,使用<code>VCorpus()</code>或者<code>Corpus()</code>函数；另一种就是Permanent Corpus，作为R的外部保存，使用<code>PCorpus()</code>函数。显然，如何选择取决于内存大小以及运算速率的要求了。</p>
+
+<p>我们这里使用<code>tm</code>包自带的XML文档数据进行演示：</p>
+
+<p><code>r
+xml &lt;- system.file("texts", "crude", package = "tm")  ## 数据所在的目录
+docs &lt;- Corpus(DirSource(xml), readerControl = list(reader = readReut21578XML))
+</code></p>
+
+<p>这里使用的数据源是<code>DirSource</code>，当然也可以从其他的数据源导入，可以使用<code>getSources()</code>查看：</p>
+
+<p><code>r
+getSources()
+</code></p>
+
+<p><code>
+## [1] "DataframeSource" "DirSource"       "ReutersSource"   "URISource"
+## [5] "VectorSource"
+</code></p>
+
+<p>如果读取的是其他格式的，就需要指定一些其他的参数，用<code>path</code>表示数据所在的目录：</p>
+
+<p><code>r
+## txt
+docs &lt;- Corpus(DirSource(&lt;path&gt;))
+## PDF
+docs &lt;- Corpus(DirSource(&lt;path&gt;), readerControl = list(reader = readPDF))
+## 其它的类似
+</code></p>
+
+<h3 id="corpus-1">2. 查看Corpus</h3>
+<hr />
+
+<p>将数据导入成Corpus之后，我们就需要查看Corpus。</p>
+
+<p><code>r
+docs  ## 只显示了Corpus中含有的文档数据数量
+</code></p>
+
+<p><code>
+## A corpus with 20 text documents
+</code></p>
+
+<p><code>r
+names(docs)[1:3]  ## 显示前3个文档的名称
+</code></p>
+
+<p><code>
+## [1] "reut-00001.xml" "reut-00002.xml" "reut-00004.xml"
+</code></p>
+
+<p><code>r
+summary(docs)  ## 显示更多的meta data，但不显示源信息
+</code></p>
+
+<p><code>
+## A corpus with 20 text documents
+##
+## The metadata consists of 2 tag-value pairs and a data frame
+## Available tags are:
+##   create_date creator
+## Available variables in the data frame are:
+##   MetaID
+</code></p>
+
+<p><code>r
+inspect(docs[1])  ## 提取第一篇文档的完整信息、
+</code></p>
+
+<p><code>
+## A corpus with 1 text document
+##
+## The metadata consists of 2 tag-value pairs and a data frame
+## Available tags are:
+##   create_date creator
+## Available variables in the data frame are:
+##   MetaID
+##
+## $`reut-00001.xml`
+## $doc
+## $file
+## [1] "&lt;buffer&gt;"
+##
+## $version
+## [1] "1.0"
+##
+## $children
+## $children$REUTERS
+## &lt;REUTERS TOPICS="YES" LEWISSPLIT="TRAIN" CGISPLIT="TRAINING-SET" OLDID="5670" NEWID="127"&gt;
+##  &lt;DATE&gt;26-FEB-1987 17:00:56.04&lt;/DATE&gt;
+##  &lt;TOPICS&gt;
+##   &lt;D&gt;crude&lt;/D&gt;
+##  &lt;/TOPICS&gt;
+##  &lt;PLACES&gt;
+##   &lt;D&gt;usa&lt;/D&gt;
+##  &lt;/PLACES&gt;
+##  &lt;PEOPLE/&gt;
+##  &lt;ORGS/&gt;
+##  &lt;EXCHANGES/&gt;
+##  &lt;COMPANIES/&gt;
+##  &lt;UNKNOWN&gt;Y
+##    f0119 reute
+## u f BC-DIAMOND-SHAMROCK-(DIA   02-26 0097&lt;/UNKNOWN&gt;
+##  &lt;TEXT&gt;
+##   &lt;TITLE&gt;DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES&lt;/TITLE&gt;
+##   &lt;DATELINE&gt;NEW YORK, FEB 26 -&lt;/DATELINE&gt;
+##   &lt;BODY&gt;Diamond Shamrock Corp said that
+## effective today it had cut its contract prices for crude oil by
+## 1.50 dlrs a barrel.
+##     The reduction brings its posted price for West Texas
+## Intermediate to 16.00 dlrs a barrel, the copany said.
+##     &amp;quot;The price reduction today was made in the light of falling
+## oil product prices and a weak crude oil market,&amp;quot; a company
+## spokeswoman said.
+##     Diamond is the latest in a line of U.S. oil companies that
+## have cut its contract, or posted, prices over the last two days
+## citing weak oil markets.
+##  Reuter&lt;/BODY&gt;
+##  &lt;/TEXT&gt;
+## &lt;/REUTERS&gt;
+##
+##
+## attr(,"class")
+## [1] "XMLDocumentContent"
+##
+## $dtd
+## $external
+## NULL
+##
+## $internal
+## NULL
+##
+## attr(,"class")
+## [1] "DTDList"
+##
+## attr(,"Author")
+## character(0)
+## attr(,"DateTimeStamp")
+## [1] "1987-02-26 17:00:56 GMT"
+## attr(,"Description")
+## [1] ""
+## attr(,"Heading")
+## [1] "DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES"
+## attr(,"ID")
+## [1] "127"
+## attr(,"Language")
+## [1] "en"
+## attr(,"LocalMetaData")
+## attr(,"LocalMetaData")$TOPICS
+## [1] "YES"
+##
+## attr(,"LocalMetaData")$LEWISSPLIT
+## [1] "TRAIN"
+##
+## attr(,"LocalMetaData")$CGISPLIT
+## [1] "TRAINING-SET"
+##
+## attr(,"LocalMetaData")$OLDID
+## [1] "5670"
+##
+## attr(,"LocalMetaData")$Topics
+## [1] "crude"
+##
+## attr(,"LocalMetaData")$Places
+## [1] "usa"
+##
+## attr(,"LocalMetaData")$People
+## character(0)
+##
+## attr(,"LocalMetaData")$Orgs
+## character(0)
+##
+## attr(,"LocalMetaData")$Exchanges
+## character(0)
+##
+## attr(,"Origin")
+## [1] "Reuters-21578 XML"
+## attr(,"class")
+## [1] "Reuters21578Document" "TextDocument"         "XMLDocument"
+## [4] "XMLAbstractDocument"  "oldClass"
+</code></p>
+
+<p><code>r
+## inspect(docs) 可以提取所有文档的完整信息，不过数据量会很大
+docs[[1]]  ## 提取第一个文档
+</code></p>
+
+<p><code>
+## $doc
+## $file
+## [1] "&lt;buffer&gt;"
+##
+## $version
+## [1] "1.0"
+##
+## $children
+## $children$REUTERS
+## &lt;REUTERS TOPICS="YES" LEWISSPLIT="TRAIN" CGISPLIT="TRAINING-SET" OLDID="5670" NEWID="127"&gt;
+##  &lt;DATE&gt;26-FEB-1987 17:00:56.04&lt;/DATE&gt;
+##  &lt;TOPICS&gt;
+##   &lt;D&gt;crude&lt;/D&gt;
+##  &lt;/TOPICS&gt;
+##  &lt;PLACES&gt;
+##   &lt;D&gt;usa&lt;/D&gt;
+##  &lt;/PLACES&gt;
+##  &lt;PEOPLE/&gt;
+##  &lt;ORGS/&gt;
+##  &lt;EXCHANGES/&gt;
+##  &lt;COMPANIES/&gt;
+##  &lt;UNKNOWN&gt;Y
+##    f0119 reute
+## u f BC-DIAMOND-SHAMROCK-(DIA   02-26 0097&lt;/UNKNOWN&gt;
+##  &lt;TEXT&gt;
+##   &lt;TITLE&gt;DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES&lt;/TITLE&gt;
+##   &lt;DATELINE&gt;NEW YORK, FEB 26 -&lt;/DATELINE&gt;
+##   &lt;BODY&gt;Diamond Shamrock Corp said that
+## effective today it had cut its contract prices for crude oil by
+## 1.50 dlrs a barrel.
+##     The reduction brings its posted price for West Texas
+## Intermediate to 16.00 dlrs a barrel, the copany said.
+##     &amp;quot;The price reduction today was made in the light of falling
+## oil product prices and a weak crude oil market,&amp;quot; a company
+## spokeswoman said.
+##     Diamond is the latest in a line of U.S. oil companies that
+## have cut its contract, or posted, prices over the last two days
+## citing weak oil markets.
+##  Reuter&lt;/BODY&gt;
+##  &lt;/TEXT&gt;
+## &lt;/REUTERS&gt;
+##
+##
+## attr(,"class")
+## [1] "XMLDocumentContent"
+##
+## $dtd
+## $external
+## NULL
+##
+## $internal
+## NULL
+##
+## attr(,"class")
+## [1] "DTDList"
+##
+## attr(,"Author")
+## character(0)
+## attr(,"DateTimeStamp")
+## [1] "1987-02-26 17:00:56 GMT"
+## attr(,"Description")
+## [1] ""
+## attr(,"Heading")
+## [1] "DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES"
+## attr(,"ID")
+## [1] "127"
+## attr(,"Language")
+## [1] "en"
+## attr(,"LocalMetaData")
+## attr(,"LocalMetaData")$TOPICS
+## [1] "YES"
+##
+## attr(,"LocalMetaData")$LEWISSPLIT
+## [1] "TRAIN"
+##
+## attr(,"LocalMetaData")$CGISPLIT
+## [1] "TRAINING-SET"
+##
+## attr(,"LocalMetaData")$OLDID
+## [1] "5670"
+##
+## attr(,"LocalMetaData")$Topics
+## [1] "crude"
+##
+## attr(,"LocalMetaData")$Places
+## [1] "usa"
+##
+## attr(,"LocalMetaData")$People
+## character(0)
+##
+## attr(,"LocalMetaData")$Orgs
+## character(0)
+##
+## attr(,"LocalMetaData")$Exchanges
+## character(0)
+##
+## attr(,"Origin")
+## [1] "Reuters-21578 XML"
+## attr(,"class")
+## [1] "Reuters21578Document" "TextDocument"         "XMLDocument"
+## [4] "XMLAbstractDocument"  "oldClass"
+</code></p>
+
+<p><code>r
+## docs[['reut-00001.xml']] 同样可以提取第一个文档
+</code></p>
+
+<h3 id="section">3. 信息转化</h3>
+<hr />
+
+<p>创建好Corpus后，就需要对其进行一些修改，比如去除标点、停止词等等。这里就需要使用到一个函数<code>tm_map()</code>，其可以将转化函数作用到每一个文档数据上。</p>
+
+<h4 id="section-1">1. 转化为纯文本</h4>
+
+<p>如果Corpus中存储的是非纯文本的数据，比如XML格式的数据，那么就需要先将这些数据转换成纯文本格式:</p>
+
+<p><code>r
+docs &lt;- tm_map(docs, as.PlainTextDocument)
+docs[[1]]
+</code></p>
+
+<p><code>
+## DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES
+## NEW YORK, FEB 26 -
+## Diamond Shamrock Corp said that
+## effective today it had cut its contract prices for crude oil by
+## 1.50 dlrs a barrel.
+##     The reduction brings its posted price for West Texas
+## Intermediate to 16.00 dlrs a barrel, the copany said.
+##     "The price reduction today was made in the light of falling
+## oil product prices and a weak crude oil market," a company
+## spokeswoman said.
+##     Diamond is the latest in a line of U.S. oil companies that
+## have cut its contract, or posted, prices over the last two days
+## citing weak oil markets.
+##  Reuter
+</code></p>
+
+<h4 id="section-2">2. 去除特殊字符</h4>
+
+<p>在文档数据中，可能会存在这样的字符：”/”、”@”、”-“等等。大部分时候，我们需要将其去除掉：</p>
+
+<p><code>r
+for (i in seq(docs)) {
+    docs[[i]] &lt;- gsub("/", " ", docs[[i]])
+    docs[[i]] &lt;- gsub("@", " ", docs[[i]])
+    docs[[i]] &lt;- gsub("-", " ", docs[[i]])
+}
+</code></p>
+
+<p>如果存在更复杂的替换，可以使用正则表达式去解决，这里不做介绍。</p>
+
+<h4 id="section-3">3. 转换成小写</h4>
+
+<p>顾名思义，就是将所有的数据转换成小写字母，这样以便更加容易分析。</p>
+
+<p><code>r
+docs &lt;- tm_map(docs, tolower)
+docs[[1]]  ## 查看效果
+</code></p>
+
+<p><code>
+## diamond shamrock (dia) cuts crude prices
+## new york, feb 26
+## diamond shamrock corp said that
+## effective today it had cut its contract prices for crude oil by
+## 1.50 dlrs a barrel.
+##     the reduction brings its posted price for west texas
+## intermediate to 16.00 dlrs a barrel, the copany said.
+##     "the price reduction today was made in the light of falling
+## oil product prices and a weak crude oil market," a company
+## spokeswoman said.
+##     diamond is the latest in a line of u.s. oil companies that
+## have cut its contract, or posted, prices over the last two days
+## citing weak oil markets.
+##  reuter
+</code></p>
+
+<h4 id="section-4">4. 去除数字</h4>
+
+<p>有些时候，我们需要将文档中的数字去除掉：</p>
+
+<p><code>r
+docs &lt;- tm_map(docs, removeNumbers)
+docs[[1]]
+</code></p>
+
+<p><code>
+## diamond shamrock (dia) cuts crude prices
+## new york, feb
+## diamond shamrock corp said that
+## effective today it had cut its contract prices for crude oil by
+## . dlrs a barrel.
+##     the reduction brings its posted price for west texas
+## intermediate to . dlrs a barrel, the copany said.
+##     "the price reduction today was made in the light of falling
+## oil product prices and a weak crude oil market," a company
+## spokeswoman said.
+##     diamond is the latest in a line of u.s. oil companies that
+## have cut its contract, or posted, prices over the last two days
+## citing weak oil markets.
+##  reuter
+</code></p>
+
+<h4 id="section-5">5. 去除停止词</h4>
+
+<p><code>r
+docs &lt;- tm_map(docs, removeWords, stopwords("english"))
+docs[[1]]
+</code></p>
+
+<p><code>
+## diamond shamrock (dia) cuts crude prices
+## new york, feb
+## diamond shamrock corp said
+## effective today   cut  contract prices  crude oil
+## . dlrs  barrel.
+##      reduction brings  posted price  west texas
+## intermediate  . dlrs  barrel,  copany said.
+##     " price reduction today  made   light  falling
+## oil product prices   weak crude oil market,"  company
+## spokeswoman said.
+##     diamond   latest   line  u.s. oil companies
+##  cut  contract,  posted, prices   last two days
+## citing weak oil markets.
+##  reuter
+</code></p>
+
+<h4 id="section-6">6. 去除标点</h4>
+
+<p><code>r
+docs &lt;- tm_map(docs, removePunctuation)
+docs[[1]]
+</code></p>
+
+<p><code>
+## diamond shamrock dia cuts crude prices
+## new york feb
+## diamond shamrock corp said
+## effective today   cut  contract prices  crude oil
+##  dlrs  barrel
+##      reduction brings  posted price  west texas
+## intermediate   dlrs  barrel  copany said
+##      price reduction today  made   light  falling
+## oil product prices   weak crude oil market  company
+## spokeswoman said
+##     diamond   latest   line  us oil companies
+##  cut  contract  posted prices   last two days
+## citing weak oil markets
+##  reuter
+</code></p>
+
+<h4 id="section-7">7. 去除多余的空格</h4>
+
+<p><code>r
+docs &lt;- tm_map(docs, stripWhitespace)
+docs[[1]]
+</code></p>
+
+<p><code>
+## diamond shamrock dia cuts crude prices
+## new york feb
+## diamond shamrock corp said effective today cut contract prices crude oil dlrs barrel reduction brings posted price west texas intermediate dlrs barrel copany said price reduction today made light falling oil product prices weak crude oil market company spokeswoman said diamond latest line us oil companies cut contract posted prices last two days citing weak oil markets reuter
+</code></p>
+
+<h4 id="stemming">8. Stemming(词干化)</h4>
+
+<p>首先介绍一下什么是Stemming，我们知道在英文中一个单词会存在很多形式，比如说复数形式、过去分词等等。但其实它们外表看起来虽不一样，但实际上是一样的。所以在处理分析的时候，就需要将这些单词都转换成其本身。在R中可以使用<code>SnowballC</code>这个包来处理Stemming，举个例子：</p>
+
+<p><code>r
+require(SnowballC)
+</code></p>
+
+<p><code>
+## Loading required package: SnowballC
+</code></p>
+
+<p><code>r
+exam &lt;- c("prices, price, doing")
+stemDocument(exam)
+</code></p>
+
+<p><code>
+## [1] "prices, price, do"
+</code></p>
+
+<p>对于我们的例子：</p>
+
+<p><code>r
+require(SnowballC)
+docs &lt;- tm_map(docs, stemDocument)
+docs[[1]]
+</code></p>
+
+<p><code>
+## diamond shamrock dia cut crude price
+## new york feb
+## diamond shamrock corp said effect today cut contract price crude oil dlrs barrel reduct bring post price west texa intermedi dlrs barrel copani said price reduct today made light fall oil product price weak crude oil market compani spokeswoman said diamond latest line us oil compani cut contract post price last two day cite weak oil market reuter
+</code></p>
+
+<h3 id="section-8">4. 创建词条-文档关系矩阵</h3>
+<hr />
+
+<p>文本挖掘中，词条-文档关系矩阵是构建模型的基础，后续分析建模都是建立在这个矩阵之上的。首先来了解一下这个矩阵，举个例子：</p>
+
+<p>我们有两篇文档，内容分别为：text mining 和 data mining and text mining。 那么对应的矩阵为：</p>
+
+<p><code>r
+d.Exam &lt;- c("text mining", "data mining and text mining")
+doc.Exam &lt;- Corpus(VectorSource(d.Exam))
+dtm.Exam &lt;- DocumentTermMatrix(doc.Exam)
+inspect(dtm.Exam)
+</code></p>
+
+<p><code>
+## A document-term matrix (2 documents, 4 terms)
+##
+## Non-/sparse entries: 6/2
+## Sparsity           : 25%
+## Maximal term length: 6
+## Weighting          : term frequency (tf)
+##
+##     Terms
+## Docs and data mining text
+##    1   0    0      1    1
+##    2   1    1      2    1
+</code></p>
+
+<p>可以看到，词条-文档关系矩阵其实就是将文档作为列，词条作为行，矩阵的每个位置就是对应的词条在对应的文档中出现的次数。</p>
+
+<p>对于我们的例子，可以这样来生产词条-文档矩阵：</p>
+
+<p><code>r
+dtm &lt;- DocumentTermMatrix(docs)
+inspect(dtm[1:5, 1:10])
+</code></p>
+
+<p><code>
+## A document-term matrix (5 documents, 10 terms)
+##
+## Non-/sparse entries: 1/49
+## Sparsity           : 98%
+## Maximal term length: 6
+## Weighting          : term frequency (tf)
+##
+##      Terms
+## Docs  abdul abil abl abroad abu accept accord across activ add
+##   127     0    0   0      0   0      0      0      0     0   0
+##   144     0    2   0      0   0      0      0      0     0   0
+##   191     0    0   0      0   0      0      0      0     0   0
+##   194     0    0   0      0   0      0      0      0     0   0
+##   211     0    0   0      0   0      0      0      0     0   0
+</code></p>
+
+<p>到这里，我们就已经生成了词条-文档矩阵。下一次，就来看看如何对这个矩阵进行一些操作，以及如何利用这个矩阵进行后续的建模分析。</p>
+
+]]></content>
+  </entry>
+  
+</feed>

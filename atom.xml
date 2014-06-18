@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-06-08T16:33:01+08:00</updated>
+  <updated>2014-06-18T15:36:25+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,931 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学18：文本挖掘1]]></title>
+    <link href="http://jackycode.github.io/blog/2014/06/18/text-mining1/"/>
+    <updated>2014-06-18T15:08:39+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/06/18/text-mining1</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article40.jpg" alt="article 40" />
+<!-- more --></p>
+
+<p>图片由本文中数据生产~</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p><strong>文本挖掘</strong>，也称为文本数据挖掘，意思就如字面，对文本数据进行挖掘分析。文本挖掘一般包含：<em>文本分类</em>、<em>文本聚类</em>、<em>概念实体挖掘</em>、<em>自然语言处理</em>等等。接下来，我打算用一个简单的例子，介绍一下R语言文本挖掘的一般过程，顺便介绍一些文本挖掘中的概念。</p>
+
+<p>这边主要使用R中的<code>tm</code>包进行文本挖掘，首先加载Package：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">require<span class="p">(</span>tm<span class="p">)</span>  <span class="c1">## R中处理文本挖掘的框架包</span>
+</span><span class="line">require<span class="p">(</span>ggplot2<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="corpus">1. 载入Corpus</h3>
+<hr />
+
+<p><strong>Corpus</strong>（语料库），指一系列文档的集合，是<code>tm</code>包管理文件的数据结构。通常，我们需要将一批文档导入成Corpus结构的数据，然后才能进行进一步的处理分析。</p>
+
+<p>文档的格式有非常多的格式，<code>tm</code>包支持的格式其实只占很少的一部分，大致有：text, PDF, Mircosoft Word和XML。所以，如果需要处理的文档，其格式不在这里面的话，就需要对格式进行一些转换。个人建议，将文档格式转换成text或者XML会比较容易处理。我们可以查看一下，<code>tm</code>包支持的文档格式：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">getReaders<span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1] &quot;readDOC&quot;                 &quot;readPDF&quot;</span>
+</span><span class="line"><span class="c1">## [3] &quot;readReut21578XML&quot;        &quot;readReut21578XMLasPlain&quot;</span>
+</span><span class="line"><span class="c1">## [5] &quot;readPlain&quot;               &quot;readRCV1&quot;</span>
+</span><span class="line"><span class="c1">## [7] &quot;readRCV1asPlain&quot;         &quot;readTabular&quot;</span>
+</span><span class="line"><span class="c1">## [9] &quot;readXML&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在<code>tm</code>包中，Corpus可以分为两种。一种是Volatile Corpus，这种数据结构是作为R对象保存在内存中,使用<code>VCorpus()</code>或者<code>Corpus()</code>函数；另一种就是Permanent Corpus，作为R的外部保存，使用<code>PCorpus()</code>函数。显然，如何选择取决于内存大小以及运算速率的要求了。</p>
+
+<p>我们这里使用<code>tm</code>包自带的XML文档数据进行演示：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">xml <span class="o">&lt;-</span> system.file<span class="p">(</span><span class="s">&quot;texts&quot;</span><span class="p">,</span> <span class="s">&quot;crude&quot;</span><span class="p">,</span> package <span class="o">=</span> <span class="s">&quot;tm&quot;</span><span class="p">)</span>  <span class="c1">## 数据所在的目录</span>
+</span><span class="line">docs <span class="o">&lt;-</span> Corpus<span class="p">(</span>DirSource<span class="p">(</span>xml<span class="p">),</span> readerControl <span class="o">=</span> list<span class="p">(</span>reader <span class="o">=</span> readReut21578XML<span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这里使用的数据源是<code>DirSource</code>，当然也可以从其他的数据源导入，可以使用<code>getSources()</code>查看：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">getSources<span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1] &quot;DataframeSource&quot; &quot;DirSource&quot;       &quot;ReutersSource&quot;   &quot;URISource&quot;</span>
+</span><span class="line"><span class="c1">## [5] &quot;VectorSource&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>如果读取的是其他格式的，就需要指定一些其他的参数，用<code>path</code>表示数据所在的目录：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## txt</span>
+</span><span class="line">docs <span class="o">&lt;-</span> Corpus<span class="p">(</span>DirSource<span class="p">(</span><span class="o">&lt;</span>path<span class="o">&gt;</span><span class="p">))</span>
+</span><span class="line"><span class="c1">## PDF</span>
+</span><span class="line">docs <span class="o">&lt;-</span> Corpus<span class="p">(</span>DirSource<span class="p">(</span><span class="o">&lt;</span>path<span class="o">&gt;</span><span class="p">),</span> readerControl <span class="o">=</span> list<span class="p">(</span>reader <span class="o">=</span> readPDF<span class="p">))</span>
+</span><span class="line"><span class="c1">## 其它的类似</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="corpus-1">2. 查看Corpus</h3>
+<hr />
+
+<p>将数据导入成Corpus之后，我们就需要查看Corpus。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">docs  <span class="c1">## 只显示了Corpus中含有的文档数据数量</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## A corpus with 20 text documents</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">names<span class="p">(</span>docs<span class="p">)[</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">]</span>  <span class="c1">## 显示前3个文档的名称</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1] &quot;reut-00001.xml&quot; &quot;reut-00002.xml&quot; &quot;reut-00004.xml&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">summary<span class="p">(</span>docs<span class="p">)</span>  <span class="c1">## 显示更多的meta data，但不显示源信息</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## A corpus with 20 text documents</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## The metadata consists of 2 tag-value pairs and a data frame</span>
+</span><span class="line"><span class="c1">## Available tags are:</span>
+</span><span class="line"><span class="c1">##   create_date creator</span>
+</span><span class="line"><span class="c1">## Available variables in the data frame are:</span>
+</span><span class="line"><span class="c1">##   MetaID</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">inspect<span class="p">(</span>docs<span class="p">[</span><span class="m">1</span><span class="p">])</span>  <span class="c1">## 提取第一篇文档的完整信息、</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+<span class="line-number">84</span>
+<span class="line-number">85</span>
+<span class="line-number">86</span>
+<span class="line-number">87</span>
+<span class="line-number">88</span>
+<span class="line-number">89</span>
+<span class="line-number">90</span>
+<span class="line-number">91</span>
+<span class="line-number">92</span>
+<span class="line-number">93</span>
+<span class="line-number">94</span>
+<span class="line-number">95</span>
+<span class="line-number">96</span>
+<span class="line-number">97</span>
+<span class="line-number">98</span>
+<span class="line-number">99</span>
+<span class="line-number">100</span>
+<span class="line-number">101</span>
+<span class="line-number">102</span>
+<span class="line-number">103</span>
+<span class="line-number">104</span>
+<span class="line-number">105</span>
+<span class="line-number">106</span>
+<span class="line-number">107</span>
+<span class="line-number">108</span>
+<span class="line-number">109</span>
+<span class="line-number">110</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## A corpus with 1 text document</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## The metadata consists of 2 tag-value pairs and a data frame</span>
+</span><span class="line"><span class="c1">## Available tags are:</span>
+</span><span class="line"><span class="c1">##   create_date creator</span>
+</span><span class="line"><span class="c1">## Available variables in the data frame are:</span>
+</span><span class="line"><span class="c1">##   MetaID</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## $`reut-00001.xml`</span>
+</span><span class="line"><span class="c1">## $doc</span>
+</span><span class="line"><span class="c1">## $file</span>
+</span><span class="line"><span class="c1">## [1] &quot;&lt;buffer&gt;&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## $version</span>
+</span><span class="line"><span class="c1">## [1] &quot;1.0&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## $children</span>
+</span><span class="line"><span class="c1">## $children$REUTERS</span>
+</span><span class="line"><span class="c1">## &lt;REUTERS TOPICS=&quot;YES&quot; LEWISSPLIT=&quot;TRAIN&quot; CGISPLIT=&quot;TRAINING-SET&quot; OLDID=&quot;5670&quot; NEWID=&quot;127&quot;&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;DATE&gt;26-FEB-1987 17:00:56.04&lt;/DATE&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;TOPICS&gt;</span>
+</span><span class="line"><span class="c1">##   &lt;D&gt;crude&lt;/D&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;/TOPICS&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;PLACES&gt;</span>
+</span><span class="line"><span class="c1">##   &lt;D&gt;usa&lt;/D&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;/PLACES&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;PEOPLE/&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;ORGS/&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;EXCHANGES/&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;COMPANIES/&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;UNKNOWN&gt;Y</span>
+</span><span class="line"><span class="c1">##    f0119 reute</span>
+</span><span class="line"><span class="c1">## u f BC-DIAMOND-SHAMROCK-(DIA   02-26 0097&lt;/UNKNOWN&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;TEXT&gt;</span>
+</span><span class="line"><span class="c1">##   &lt;TITLE&gt;DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES&lt;/TITLE&gt;</span>
+</span><span class="line"><span class="c1">##   &lt;DATELINE&gt;NEW YORK, FEB 26 -&lt;/DATELINE&gt;</span>
+</span><span class="line"><span class="c1">##   &lt;BODY&gt;Diamond Shamrock Corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## 1.50 dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     The reduction brings its posted price for West Texas</span>
+</span><span class="line"><span class="c1">## Intermediate to 16.00 dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &amp;quot;The price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&amp;quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     Diamond is the latest in a line of U.S. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  Reuter&lt;/BODY&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;/TEXT&gt;</span>
+</span><span class="line"><span class="c1">## &lt;/REUTERS&gt;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;class&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;XMLDocumentContent&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## $dtd</span>
+</span><span class="line"><span class="c1">## $external</span>
+</span><span class="line"><span class="c1">## NULL</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## $internal</span>
+</span><span class="line"><span class="c1">## NULL</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;class&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;DTDList&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;Author&quot;)</span>
+</span><span class="line"><span class="c1">## character(0)</span>
+</span><span class="line"><span class="c1">## attr(,&quot;DateTimeStamp&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;1987-02-26 17:00:56 GMT&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;Description&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;Heading&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;ID&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;127&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;Language&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;en&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$TOPICS</span>
+</span><span class="line"><span class="c1">## [1] &quot;YES&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$LEWISSPLIT</span>
+</span><span class="line"><span class="c1">## [1] &quot;TRAIN&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$CGISPLIT</span>
+</span><span class="line"><span class="c1">## [1] &quot;TRAINING-SET&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$OLDID</span>
+</span><span class="line"><span class="c1">## [1] &quot;5670&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$Topics</span>
+</span><span class="line"><span class="c1">## [1] &quot;crude&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$Places</span>
+</span><span class="line"><span class="c1">## [1] &quot;usa&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$People</span>
+</span><span class="line"><span class="c1">## character(0)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$Orgs</span>
+</span><span class="line"><span class="c1">## character(0)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$Exchanges</span>
+</span><span class="line"><span class="c1">## character(0)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;Origin&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;Reuters-21578 XML&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;class&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;Reuters21578Document&quot; &quot;TextDocument&quot;         &quot;XMLDocument&quot;</span>
+</span><span class="line"><span class="c1">## [4] &quot;XMLAbstractDocument&quot;  &quot;oldClass&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## inspect(docs) 可以提取所有文档的完整信息，不过数据量会很大</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>  <span class="c1">## 提取第一个文档</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+<span class="line-number">83</span>
+<span class="line-number">84</span>
+<span class="line-number">85</span>
+<span class="line-number">86</span>
+<span class="line-number">87</span>
+<span class="line-number">88</span>
+<span class="line-number">89</span>
+<span class="line-number">90</span>
+<span class="line-number">91</span>
+<span class="line-number">92</span>
+<span class="line-number">93</span>
+<span class="line-number">94</span>
+<span class="line-number">95</span>
+<span class="line-number">96</span>
+<span class="line-number">97</span>
+<span class="line-number">98</span>
+<span class="line-number">99</span>
+<span class="line-number">100</span>
+<span class="line-number">101</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## $doc</span>
+</span><span class="line"><span class="c1">## $file</span>
+</span><span class="line"><span class="c1">## [1] &quot;&lt;buffer&gt;&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## $version</span>
+</span><span class="line"><span class="c1">## [1] &quot;1.0&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## $children</span>
+</span><span class="line"><span class="c1">## $children$REUTERS</span>
+</span><span class="line"><span class="c1">## &lt;REUTERS TOPICS=&quot;YES&quot; LEWISSPLIT=&quot;TRAIN&quot; CGISPLIT=&quot;TRAINING-SET&quot; OLDID=&quot;5670&quot; NEWID=&quot;127&quot;&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;DATE&gt;26-FEB-1987 17:00:56.04&lt;/DATE&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;TOPICS&gt;</span>
+</span><span class="line"><span class="c1">##   &lt;D&gt;crude&lt;/D&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;/TOPICS&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;PLACES&gt;</span>
+</span><span class="line"><span class="c1">##   &lt;D&gt;usa&lt;/D&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;/PLACES&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;PEOPLE/&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;ORGS/&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;EXCHANGES/&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;COMPANIES/&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;UNKNOWN&gt;Y</span>
+</span><span class="line"><span class="c1">##    f0119 reute</span>
+</span><span class="line"><span class="c1">## u f BC-DIAMOND-SHAMROCK-(DIA   02-26 0097&lt;/UNKNOWN&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;TEXT&gt;</span>
+</span><span class="line"><span class="c1">##   &lt;TITLE&gt;DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES&lt;/TITLE&gt;</span>
+</span><span class="line"><span class="c1">##   &lt;DATELINE&gt;NEW YORK, FEB 26 -&lt;/DATELINE&gt;</span>
+</span><span class="line"><span class="c1">##   &lt;BODY&gt;Diamond Shamrock Corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## 1.50 dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     The reduction brings its posted price for West Texas</span>
+</span><span class="line"><span class="c1">## Intermediate to 16.00 dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &amp;quot;The price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&amp;quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     Diamond is the latest in a line of U.S. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  Reuter&lt;/BODY&gt;</span>
+</span><span class="line"><span class="c1">##  &lt;/TEXT&gt;</span>
+</span><span class="line"><span class="c1">## &lt;/REUTERS&gt;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;class&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;XMLDocumentContent&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## $dtd</span>
+</span><span class="line"><span class="c1">## $external</span>
+</span><span class="line"><span class="c1">## NULL</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## $internal</span>
+</span><span class="line"><span class="c1">## NULL</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;class&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;DTDList&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;Author&quot;)</span>
+</span><span class="line"><span class="c1">## character(0)</span>
+</span><span class="line"><span class="c1">## attr(,&quot;DateTimeStamp&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;1987-02-26 17:00:56 GMT&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;Description&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;Heading&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;ID&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;127&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;Language&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;en&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$TOPICS</span>
+</span><span class="line"><span class="c1">## [1] &quot;YES&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$LEWISSPLIT</span>
+</span><span class="line"><span class="c1">## [1] &quot;TRAIN&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$CGISPLIT</span>
+</span><span class="line"><span class="c1">## [1] &quot;TRAINING-SET&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$OLDID</span>
+</span><span class="line"><span class="c1">## [1] &quot;5670&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$Topics</span>
+</span><span class="line"><span class="c1">## [1] &quot;crude&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$Places</span>
+</span><span class="line"><span class="c1">## [1] &quot;usa&quot;</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$People</span>
+</span><span class="line"><span class="c1">## character(0)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$Orgs</span>
+</span><span class="line"><span class="c1">## character(0)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;LocalMetaData&quot;)$Exchanges</span>
+</span><span class="line"><span class="c1">## character(0)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## attr(,&quot;Origin&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;Reuters-21578 XML&quot;</span>
+</span><span class="line"><span class="c1">## attr(,&quot;class&quot;)</span>
+</span><span class="line"><span class="c1">## [1] &quot;Reuters21578Document&quot; &quot;TextDocument&quot;         &quot;XMLDocument&quot;</span>
+</span><span class="line"><span class="c1">## [4] &quot;XMLAbstractDocument&quot;  &quot;oldClass&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## docs[[&#39;reut-00001.xml&#39;]] 同样可以提取第一个文档</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="section">3. 信息转化</h3>
+<hr />
+
+<p>创建好Corpus后，就需要对其进行一些修改，比如去除标点、停止词等等。这里就需要使用到一个函数<code>tm_map()</code>，其可以将转化函数作用到每一个文档数据上。</p>
+
+<h4 id="section-1">1. 转化为纯文本</h4>
+
+<p>如果Corpus中存储的是非纯文本的数据，比如XML格式的数据，那么就需要先将这些数据转换成纯文本格式:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> as.PlainTextDocument<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES</span>
+</span><span class="line"><span class="c1">## NEW YORK, FEB 26 -</span>
+</span><span class="line"><span class="c1">## Diamond Shamrock Corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## 1.50 dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     The reduction brings its posted price for West Texas</span>
+</span><span class="line"><span class="c1">## Intermediate to 16.00 dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &quot;The price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     Diamond is the latest in a line of U.S. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  Reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-2">2. 去除特殊字符</h4>
+
+<p>在文档数据中，可能会存在这样的字符：”/”、”@”、”-“等等。大部分时候，我们需要将其去除掉：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="kr">for</span> <span class="p">(</span>i <span class="kr">in</span> seq<span class="p">(</span>docs<span class="p">))</span> <span class="p">{</span>
+</span><span class="line">    docs<span class="p">[[</span>i<span class="p">]]</span> <span class="o">&lt;-</span> gsub<span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">,</span> docs<span class="p">[[</span>i<span class="p">]])</span>
+</span><span class="line">    docs<span class="p">[[</span>i<span class="p">]]</span> <span class="o">&lt;-</span> gsub<span class="p">(</span><span class="s">&quot;@&quot;</span><span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">,</span> docs<span class="p">[[</span>i<span class="p">]])</span>
+</span><span class="line">    docs<span class="p">[[</span>i<span class="p">]]</span> <span class="o">&lt;-</span> gsub<span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">,</span> docs<span class="p">[[</span>i<span class="p">]])</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>如果存在更复杂的替换，可以使用正则表达式去解决，这里不做介绍。</p>
+
+<h4 id="section-3">3. 转换成小写</h4>
+
+<p>顾名思义，就是将所有的数据转换成小写字母，这样以便更加容易分析。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> tolower<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>  <span class="c1">## 查看效果</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## diamond shamrock (dia) cuts crude prices</span>
+</span><span class="line"><span class="c1">## new york, feb 26</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## 1.50 dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     the reduction brings its posted price for west texas</span>
+</span><span class="line"><span class="c1">## intermediate to 16.00 dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &quot;the price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     diamond is the latest in a line of u.s. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-4">4. 去除数字</h4>
+
+<p>有些时候，我们需要将文档中的数字去除掉：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> removeNumbers<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## diamond shamrock (dia) cuts crude prices</span>
+</span><span class="line"><span class="c1">## new york, feb</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## . dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     the reduction brings its posted price for west texas</span>
+</span><span class="line"><span class="c1">## intermediate to . dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &quot;the price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     diamond is the latest in a line of u.s. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-5">5. 去除停止词</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> removeWords<span class="p">,</span> stopwords<span class="p">(</span><span class="s">&quot;english&quot;</span><span class="p">))</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## diamond shamrock (dia) cuts crude prices</span>
+</span><span class="line"><span class="c1">## new york, feb</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said</span>
+</span><span class="line"><span class="c1">## effective today   cut  contract prices  crude oil</span>
+</span><span class="line"><span class="c1">## . dlrs  barrel.</span>
+</span><span class="line"><span class="c1">##      reduction brings  posted price  west texas</span>
+</span><span class="line"><span class="c1">## intermediate  . dlrs  barrel,  copany said.</span>
+</span><span class="line"><span class="c1">##     &quot; price reduction today  made   light  falling</span>
+</span><span class="line"><span class="c1">## oil product prices   weak crude oil market,&quot;  company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     diamond   latest   line  u.s. oil companies</span>
+</span><span class="line"><span class="c1">##  cut  contract,  posted, prices   last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-6">6. 去除标点</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> removePunctuation<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## diamond shamrock dia cuts crude prices</span>
+</span><span class="line"><span class="c1">## new york feb</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said</span>
+</span><span class="line"><span class="c1">## effective today   cut  contract prices  crude oil</span>
+</span><span class="line"><span class="c1">##  dlrs  barrel</span>
+</span><span class="line"><span class="c1">##      reduction brings  posted price  west texas</span>
+</span><span class="line"><span class="c1">## intermediate   dlrs  barrel  copany said</span>
+</span><span class="line"><span class="c1">##      price reduction today  made   light  falling</span>
+</span><span class="line"><span class="c1">## oil product prices   weak crude oil market  company</span>
+</span><span class="line"><span class="c1">## spokeswoman said</span>
+</span><span class="line"><span class="c1">##     diamond   latest   line  us oil companies</span>
+</span><span class="line"><span class="c1">##  cut  contract  posted prices   last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="section-7">7. 去除多余的空格</h4>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> stripWhitespace<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## diamond shamrock dia cuts crude prices</span>
+</span><span class="line"><span class="c1">## new york feb</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said effective today cut contract prices crude oil dlrs barrel reduction brings posted price west texas intermediate dlrs barrel copany said price reduction today made light falling oil product prices weak crude oil market company spokeswoman said diamond latest line us oil companies cut contract posted prices last two days citing weak oil markets reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="stemming">8. Stemming(词干化)</h4>
+
+<p>首先介绍一下什么是Stemming，我们知道在英文中一个单词会存在很多形式，比如说复数形式、过去分词等等。但其实它们外表看起来虽不一样，但实际上是一样的。所以在处理分析的时候，就需要将这些单词都转换成其本身。在R中可以使用<code>SnowballC</code>这个包来处理Stemming，举个例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">require<span class="p">(</span>SnowballC<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## Loading required package: SnowballC</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">exam <span class="o">&lt;-</span> c<span class="p">(</span><span class="s">&quot;prices, price, doing&quot;</span><span class="p">)</span>
+</span><span class="line">stemDocument<span class="p">(</span>exam<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## [1] &quot;prices, price, do&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>对于我们的例子：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">require<span class="p">(</span>SnowballC<span class="p">)</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> stemDocument<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## diamond shamrock dia cut crude price</span>
+</span><span class="line"><span class="c1">## new york feb</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said effect today cut contract price crude oil dlrs barrel reduct bring post price west texa intermedi dlrs barrel copani said price reduct today made light fall oil product price weak crude oil market compani spokeswoman said diamond latest line us oil compani cut contract post price last two day cite weak oil market reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="section-8">4. 创建词条-文档关系矩阵</h3>
+<hr />
+
+<p>文本挖掘中，词条-文档关系矩阵是构建模型的基础，后续分析建模都是建立在这个矩阵之上的。首先来了解一下这个矩阵，举个例子：</p>
+
+<p>我们有两篇文档，内容分别为：text mining 和 data mining and text mining。 那么对应的矩阵为：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">d.Exam <span class="o">&lt;-</span> c<span class="p">(</span><span class="s">&quot;text mining&quot;</span><span class="p">,</span> <span class="s">&quot;data mining and text mining&quot;</span><span class="p">)</span>
+</span><span class="line">doc.Exam <span class="o">&lt;-</span> Corpus<span class="p">(</span>VectorSource<span class="p">(</span>d.Exam<span class="p">))</span>
+</span><span class="line">dtm.Exam <span class="o">&lt;-</span> DocumentTermMatrix<span class="p">(</span>doc.Exam<span class="p">)</span>
+</span><span class="line">inspect<span class="p">(</span>dtm.Exam<span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## A document-term matrix (2 documents, 4 terms)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## Non-/sparse entries: 6/2</span>
+</span><span class="line"><span class="c1">## Sparsity           : 25%</span>
+</span><span class="line"><span class="c1">## Maximal term length: 6</span>
+</span><span class="line"><span class="c1">## Weighting          : term frequency (tf)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">##     Terms</span>
+</span><span class="line"><span class="c1">## Docs and data mining text</span>
+</span><span class="line"><span class="c1">##    1   0    0      1    1</span>
+</span><span class="line"><span class="c1">##    2   1    1      2    1</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>可以看到，词条-文档关系矩阵其实就是将文档作为列，词条作为行，矩阵的每个位置就是对应的词条在对应的文档中出现的次数。</p>
+
+<p>对于我们的例子，可以这样来生产词条-文档矩阵：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">dtm <span class="o">&lt;-</span> DocumentTermMatrix<span class="p">(</span>docs<span class="p">)</span>
+</span><span class="line">inspect<span class="p">(</span>dtm<span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## A document-term matrix (5 documents, 10 terms)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">## Non-/sparse entries: 1/49</span>
+</span><span class="line"><span class="c1">## Sparsity           : 98%</span>
+</span><span class="line"><span class="c1">## Maximal term length: 6</span>
+</span><span class="line"><span class="c1">## Weighting          : term frequency (tf)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">##      Terms</span>
+</span><span class="line"><span class="c1">## Docs  abdul abil abl abroad abu accept accord across activ add</span>
+</span><span class="line"><span class="c1">##   127     0    0   0      0   0      0      0      0     0   0</span>
+</span><span class="line"><span class="c1">##   144     0    2   0      0   0      0      0      0     0   0</span>
+</span><span class="line"><span class="c1">##   191     0    0   0      0   0      0      0      0     0   0</span>
+</span><span class="line"><span class="c1">##   194     0    0   0      0   0      0      0      0     0   0</span>
+</span><span class="line"><span class="c1">##   211     0    0   0      0   0      0      0      0     0   0</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>到这里，我们就已经生成了词条-文档矩阵。下一次，就来看看如何对这个矩阵进行一些操作，以及如何利用这个矩阵进行后续的建模分析。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[R语言绘图4：R中的绘图系统]]></title>
@@ -2795,98 +3720,6 @@
 </ul>
 
 <p>下一篇就开始讲讲一些决策树的算法。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习6: 分类之朴素贝叶斯]]></title>
-    <link href="http://jackycode.github.io/blog/2014/04/08/naive-bayes/"/>
-    <updated>2014-04-08T15:54:37+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/04/08/naive-bayes</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article20.jpg" alt="article 20" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<h3 id="knn">0、kNN算法的优缺点</h3>
-<p>与kNN算法一样，朴素贝叶斯算法也是数据挖掘十大算法之一。我们介绍kNN算法时，并没有讨论kNN算法的优缺点，这边首先看看这个问题。</p>
-
-<p>从构造kNN算法的过程可以看到，这个分类算法的<strong>精度很高</strong>。因为这个算法计算了所有点与待分类点之间的相似度，然后去确定带分类点的类别。由此可见，这个算法对<strong>异常值并不敏感</strong>。但是正是因为它需要计算所有点之间的距离，所以其<strong>复杂度是很高的</strong>，换句话就是，如果数据量大的话，这个算法会很费时，并不高效。</p>
-
-<h3 id="section">一、贝叶斯决策</h3>
-<hr />
-
-<p>贝叶斯定理给出了条件概率之间的关系，是一个非常重要的定理。这里直接给出贝叶斯定理的结论：</p>
-
-<script type="math/tex; mode=display"> P(B  \mid A) = \frac{P(A \mid B)P(B) }{P(A)} </script>
-
-<p>在贝叶斯决策理论里面，要判断点$x$是否属于$C_i$类，只要验证是否存在：</p>
-
-<script type="math/tex; mode=display"> p(C_i \mid x) = \max_{j} \{ P(C_j \mid x) \} </script>
-
-<p>即是，使得$p(C_i \mid x)$达到最大的那个$C_i$就是$x$所属的类别。</p>
-
-<h3 id="section-1">二、具体流程</h3>
-<hr />
-
-<p>要计算<script type="math/tex">P(C_i \mid x)</script>，那么就需要计算<script type="math/tex">\frac{P(x \mid C_i)P(C_i )}{P(x)}</script>，我们知道对于每一个<script type="math/tex">P(C_i \mid x)</script>，其计算公式中的分母都是<script type="math/tex">P(x)</script>，所以有：</p>
-
-<script type="math/tex; mode=display"> P(C_i \mid x) \propto P(x \mid C_i)P(C_i ) </script>
-
-<p>所以我们实际计算时，只需要考虑上式右侧的大小即可。首先我们来确定一些符号的意思：</p>
-
-<ul>
-  <li><script type="math/tex">x = [x_1, x_2, \dots, x_p]</script>为一个带分类的项，$x_i$为其特征；</li>
-  <li>data表示一个已知分类的数据集($n \times p$的矩阵)，其每一行代表一个观测，每一列代表一个特征；</li>
-  <li>label表示data中每一个数据对应的类别标签($ n \times 1$的矩阵)，比如data的第一行观测的类别就是label中的第一个取值；</li>
-  <li><script type="math/tex">C = [ C_1, C_2, \dots, C_m ]</script>为一个类别集合，一般来说$ m &lt; p $。</li>
-</ul>
-
-<h5 id="section-2">步骤：</h5>
-
-<ol>
-  <li>
-    <p>在已知分类的数据集data中统计：</p>
-
-<script type="math/tex; mode=display">P(C_i), i = 1, 2, \dots, m</script>
-
-<script type="math/tex; mode=display">P(x_j \mid C_i), i = 1, 2, \dots, m; j = 1, 2, \dots p</script>
-  </li>
-  <li>
-    <p>计算</p>
-
-<script type="math/tex; mode=display">P(x \mid C_i)P(C_i ) = P(C_i) \prod_{j=1}^{p} {P(x_j \mid C_i)}, i = 1, 2, \dots, m</script>
-  </li>
-  <li>
-    <p>若</p>
-
-<script type="math/tex; mode=display">P(x \mid C_k)P(C_k) = \max\{ P(x \mid C_i)P(C_i ) \}</script>
-
-    <p>则<script type="math/tex"> x \in C_k</script>。</p>
-  </li>
-</ol>
-
-<h3 id="section-3">三、一些存在的问题</h3>
-<hr />
-
-<ol>
-  <li>当步骤的第2步中，<script type="math/tex">P(x \mid C_i)P(C_i ) = P(C_i) \prod_{j=1}^{p} {P(x_j \mid C_i)}, i = 1, 2, \dots, m</script>，中<script type="math/tex">P(x_j \mid C_i)</script>可能在样本较小时取值出现0，那么就会影响乘积；</li>
-  <li>计算机计算时会出现精度问题，比如，如果<script type="math/tex">P(x_j \mid C_i)</script>的值有很多都是非常小的（像0.000001），那么计算机在计算是会将其四舍五入成0。</li>
-</ol>
-
-<p>出现上面的情况应该怎么办呢？</p>
-
-<p>学数学的应该都清楚，遇到这种问题有一个很简单的处理方式，那就是取个对数。虽说取对数后会改变值的大小，但是取对数不会改变原本数据趋势，即原来大的数，取对数后还是大的。</p>
-
-<p>此外，对于<script type="math/tex">P(x_j \mid C_i)</script>可能在样本较小时取值出现0的情况，处理也很简单，那就是将每一个$x_j$的初值都设置成1，所有特征的基数都从1开始，不会影响结果。（这时需要注意，所有特征的初值都是1，对应的总数初值也会发生变化。）</p>
-
-<h3 id="r">四、R语言实现</h3>
-<hr />
-
-<p>见<a href="http://jackycode.github.io/datascience">我的项目</a></p>
-
 ]]></content>
   </entry>
   
