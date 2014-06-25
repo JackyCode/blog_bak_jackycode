@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-06-18T15:36:25+08:00</updated>
+  <updated>2014-06-25T19:45:29+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,348 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学19：文本挖掘1-更新]]></title>
+    <link href="http://jackycode.github.io/blog/2014/06/25/text-mining1-update/"/>
+    <updated>2014-06-25T19:21:26+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/06/25/text-mining1-update</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article41.jpg" alt="article 41" />
+<!-- more --></p>
+
+<p>图片由本文中数据生产~</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>前几天，R中的’tm’包从0.5-10更新到了0.6版本。其中更新了不少的东西，对于上一篇中的代码，已经是不能够正确运行了。所以这里需要先更新一下上一篇中的一些代码，正好可以回顾一些之前的流程。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## Load Packages needed</span>
+</span><span class="line">require<span class="p">(</span>tm<span class="p">)</span>
+</span><span class="line">require<span class="p">(</span>SnowballC<span class="p">)</span>
+</span><span class="line">require<span class="p">(</span>ggplot2<span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">## Loading Corpus 这里直接读成文本格式</span>
+</span><span class="line">xml.path <span class="o">&lt;-</span> system.file<span class="p">(</span><span class="s">&quot;texts&quot;</span><span class="p">,</span> <span class="s">&quot;crude&quot;</span><span class="p">,</span> package <span class="o">=</span> <span class="s">&quot;tm&quot;</span><span class="p">)</span>
+</span><span class="line">docs <span class="o">&lt;-</span> Corpus<span class="p">(</span>DirSource<span class="p">(</span>xml.path<span class="p">),</span> readerControl <span class="o">=</span> list<span class="p">(</span>reader <span class="o">=</span> readReut21578XMLasPlain<span class="p">))</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">## 查看</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## Diamond Shamrock Corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## 1.50 dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     The reduction brings its posted price for West Texas</span>
+</span><span class="line"><span class="c1">## Intermediate to 16.00 dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &quot;The price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     Diamond is the latest in a line of U.S. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  Reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 去除特殊字符 上一篇中的代码已不能胜任</span>
+</span><span class="line"><span class="c1">## 因为上一篇中的代码会修改Corpus中每个文档的class</span>
+</span><span class="line"><span class="c1">## 所以这里需要使用一个新的函数&#39;content_transformer&#39;来保证class还是TextDoument</span>
+</span><span class="line">removeSpecialCharacter <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">,</span> pattern<span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    gsub<span class="p">(</span>pattern<span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">,</span> x<span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> content_transformer<span class="p">(</span>removeSpecialCharacter<span class="p">),</span> <span class="s">&quot;[@/-]&quot;</span><span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## Diamond Shamrock Corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## 1.50 dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     The reduction brings its posted price for West Texas</span>
+</span><span class="line"><span class="c1">## Intermediate to 16.00 dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &quot;The price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     Diamond is the latest in a line of U.S. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  Reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 转换成小写字母 与上面问题类似，需要添加&#39;content_transformer&#39;函数</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> content_transformer<span class="p">(</span>tolower<span class="p">))</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## 1.50 dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     the reduction brings its posted price for west texas</span>
+</span><span class="line"><span class="c1">## intermediate to 16.00 dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &quot;the price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     diamond is the latest in a line of u.s. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 去除数字</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> removeNumbers<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## . dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     the reduction brings its posted price for west texas</span>
+</span><span class="line"><span class="c1">## intermediate to . dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &quot;the price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     diamond is the latest in a line of u.s. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 去除停止词</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> removeWords<span class="p">,</span> stopwords<span class="p">(</span><span class="s">&quot;english&quot;</span><span class="p">))</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said</span>
+</span><span class="line"><span class="c1">## effective today   cut  contract prices  crude oil</span>
+</span><span class="line"><span class="c1">## . dlrs  barrel.</span>
+</span><span class="line"><span class="c1">##      reduction brings  posted price  west texas</span>
+</span><span class="line"><span class="c1">## intermediate  . dlrs  barrel,  copany said.</span>
+</span><span class="line"><span class="c1">##     &quot; price reduction today  made   light  falling</span>
+</span><span class="line"><span class="c1">## oil product prices   weak crude oil market,&quot;  company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     diamond   latest   line  u.s. oil companies</span>
+</span><span class="line"><span class="c1">##  cut  contract,  posted, prices   last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 去除标点符号</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> removePunctuation<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said</span>
+</span><span class="line"><span class="c1">## effective today   cut  contract prices  crude oil</span>
+</span><span class="line"><span class="c1">##  dlrs  barrel</span>
+</span><span class="line"><span class="c1">##      reduction brings  posted price  west texas</span>
+</span><span class="line"><span class="c1">## intermediate   dlrs  barrel  copany said</span>
+</span><span class="line"><span class="c1">##      price reduction today  made   light  falling</span>
+</span><span class="line"><span class="c1">## oil product prices   weak crude oil market  company</span>
+</span><span class="line"><span class="c1">## spokeswoman said</span>
+</span><span class="line"><span class="c1">##     diamond   latest   line  us oil companies</span>
+</span><span class="line"><span class="c1">##  cut  contract  posted prices   last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 去除多余的空格</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> stripWhitespace<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said effective today cut contract prices crude oil dlrs barrel reduction brings posted price west texas intermediate dlrs barrel copany said price reduction today made light falling oil product prices weak crude oil market company spokeswoman said diamond latest line us oil companies cut contract posted prices last two days citing weak oil markets reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 词干化</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> stemDocument<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said effect today cut contract price crude oil dlrs barrel reduct bring post price west texa intermedi dlrs barrel copani said price reduct today made light fall oil product price weak crude oil market compani spokeswoman said diamond latest line us oil compani cut contract post price last two day cite weak oil market reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 创建Document Term Matrix</span>
+</span><span class="line">dtm <span class="o">&lt;-</span> DocumentTermMatrix<span class="p">(</span>docs<span class="p">)</span>
+</span><span class="line">dtm
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;DocumentTermMatrix (documents: 20, terms: 780)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## Non-/sparse entries: 1570/14030</span>
+</span><span class="line"><span class="c1">## Sparsity           : 90%</span>
+</span><span class="line"><span class="c1">## Maximal term length: 13</span>
+</span><span class="line"><span class="c1">## Weighting          : term frequency (tf)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">inspect<span class="p">(</span>dtm<span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;DocumentTermMatrix (documents: 5, terms: 10)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## Non-/sparse entries: 2/48</span>
+</span><span class="line"><span class="c1">## Sparsity           : 96%</span>
+</span><span class="line"><span class="c1">## Maximal term length: 7</span>
+</span><span class="line"><span class="c1">## Weighting          : term frequency (tf)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">##      Terms</span>
+</span><span class="line"><span class="c1">## Docs  abdul abil abl abroad accept accord across activ add address</span>
+</span><span class="line"><span class="c1">##   127     0    0   0      0      0      0      0     0   0       0</span>
+</span><span class="line"><span class="c1">##   144     0    2   0      0      0      0      0     0   0       4</span>
+</span><span class="line"><span class="c1">##   191     0    0   0      0      0      0      0     0   0       0</span>
+</span><span class="line"><span class="c1">##   194     0    0   0      0      0      0      0     0   0       0</span>
+</span><span class="line"><span class="c1">##   211     0    0   0      0      0      0      0     0   0       0</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>到这里，就已经完成了上一篇所做的事情了。留意一下，也可以发现，’tm’包更新过之后，处理的结果与之前有一些不同，可以自己动手试试看，看看哪里不一样？</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学18：文本挖掘1]]></title>
@@ -3662,64 +4004,6 @@
 <p><img src="http://jackycode.github.io/images/a22/1pass.jpg" alt="1pass" /></p>
 
 <p>这些打折的应用，都可以直接在App Store购买。我暂时不知道打折持续的时间有多少，也不知道打折的原因。没关系啦，这个打折总归是我们这些消费者福音，像1Password这样贵的应用，如果需要的，抓紧时间购买吧！！！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习7: 决策树]]></title>
-    <link href="http://jackycode.github.io/blog/2014/04/11/decision-trees/"/>
-    <updated>2014-04-11T19:00:32+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/04/11/decision-trees</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article21.jpg" alt="article 21" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<h3 id="section">一、开始</h3>
-<hr />
-
-<p>在介绍决策树的概念内容之前，先来初步了解一下决策树的流程。这是一个很简单的概念，通过一张简单的流程图就可以大致了解决策树是干什么的，怎么干的。</p>
-
-<p><img src="\images\a21\decisiontrees.jpg" alt="decision trees" /></p>
-
-<h3 id="section-1">二、相关概念</h3>
-<hr />
-
-<h4 id="section-2">1. 一些概念</h4>
-<hr />
-
-<ul>
-  <li>决策树学习是一种逼近离散值目标函数的方法。</li>
-  <li>决策树通过把实例从根节点排列到某个叶子节点来分类实例，叶子的节点即为实例所属的分类。</li>
-  <li>决策树上的每一个节点，指定了对实例的某一个属性的测试，并且，该节点的每一个后续分支对应该属性的一个可能值。</li>
-</ul>
-
-<h4 id="section-3">2. 分类方法</h4>
-<hr />
-<p>从树的根节点开始，测试这个节点指定的属性，然后按照给定实例的该属性值对应的分支向下移动。然后以新节点作为根节点重复上面的过程直至结束。</p>
-
-<h3 id="section-4">三、 评价</h3>
-<hr />
-
-<p>通过决策树的流程，可以发现决策树的计算复杂度不高，而且其输出的结果易于理解，并且对缺失值不敏感。</p>
-
-<p>但是，正是由于其划分过于细致，可能会导致过度匹配问题(与回归中的overfitting类似)。</p>
-
-<h3 id="section-5">四、主要的决策树算法</h3>
-<hr />
-
-<p>从决策树的流程可以看出，<strong>如何选择属性作为节点以测试实例</strong>是最为关键的一步。不同的算法采取了不同的方法，主要的决策树算法有这样几个：</p>
-
-<ul>
-  <li>ID3</li>
-  <li>C4.5 （数据挖掘十大算法之一，也是ID3算法的改进）</li>
-  <li>C5.0 （C4.5的改进，适用于处理大数据集，采用Boosting方式提高模型准确率，因而又称BoostingTrees。）</li>
-  <li>CART（数据挖掘十大算法之一）</li>
-</ul>
-
-<p>下一篇就开始讲讲一些决策树的算法。</p>
 ]]></content>
   </entry>
   

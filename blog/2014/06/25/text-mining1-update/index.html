@@ -1,0 +1,658 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>数据科学19：文本挖掘1-更新 - Jacky and MSC</title>
+  <meta name="author" content="Jacky Code">
+
+  
+  <meta name="description" content="">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jackycode.github.io/blog/2014/06/25/text-mining1-update">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Jacky and MSC" type="application/atom+xml">
+  
+
+  <!-- 
+ -->
+  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-48812316-1', 'jackycode.github.io');ga('require', 'displayfeatures');ga('send', 'pageview');</script>
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">Jacky and MSC</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">文章归档</a></li>
+  <li><a href="/repos">我的项目</a></li>
+  <li><a href="/about">关于我</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:jackycode.github.io" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">数据科学19：文本挖掘1-更新</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-25T19:21:26+08:00" pubdate data-updated="true">Jun 25<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/article/article41.jpg" alt="article 41" />
+<!-- more --></p>
+
+<p>图片由本文中数据生产~</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>前几天，R中的’tm’包从0.5-10更新到了0.6版本。其中更新了不少的东西，对于上一篇中的代码，已经是不能够正确运行了。所以这里需要先更新一下上一篇中的一些代码，正好可以回顾一些之前的流程。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## Load Packages needed</span>
+</span><span class="line">require<span class="p">(</span>tm<span class="p">)</span>
+</span><span class="line">require<span class="p">(</span>SnowballC<span class="p">)</span>
+</span><span class="line">require<span class="p">(</span>ggplot2<span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">## Loading Corpus 这里直接读成文本格式</span>
+</span><span class="line">xml.path <span class="o">&lt;-</span> system.file<span class="p">(</span><span class="s">&quot;texts&quot;</span><span class="p">,</span> <span class="s">&quot;crude&quot;</span><span class="p">,</span> package <span class="o">=</span> <span class="s">&quot;tm&quot;</span><span class="p">)</span>
+</span><span class="line">docs <span class="o">&lt;-</span> Corpus<span class="p">(</span>DirSource<span class="p">(</span>xml.path<span class="p">),</span> readerControl <span class="o">=</span> list<span class="p">(</span>reader <span class="o">=</span> readReut21578XMLasPlain<span class="p">))</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">## 查看</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## Diamond Shamrock Corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## 1.50 dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     The reduction brings its posted price for West Texas</span>
+</span><span class="line"><span class="c1">## Intermediate to 16.00 dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &quot;The price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     Diamond is the latest in a line of U.S. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  Reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 去除特殊字符 上一篇中的代码已不能胜任</span>
+</span><span class="line"><span class="c1">## 因为上一篇中的代码会修改Corpus中每个文档的class</span>
+</span><span class="line"><span class="c1">## 所以这里需要使用一个新的函数&#39;content_transformer&#39;来保证class还是TextDoument</span>
+</span><span class="line">removeSpecialCharacter <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">,</span> pattern<span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    gsub<span class="p">(</span>pattern<span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">,</span> x<span class="p">)</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> content_transformer<span class="p">(</span>removeSpecialCharacter<span class="p">),</span> <span class="s">&quot;[@/-]&quot;</span><span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## Diamond Shamrock Corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## 1.50 dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     The reduction brings its posted price for West Texas</span>
+</span><span class="line"><span class="c1">## Intermediate to 16.00 dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &quot;The price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     Diamond is the latest in a line of U.S. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  Reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 转换成小写字母 与上面问题类似，需要添加&#39;content_transformer&#39;函数</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> content_transformer<span class="p">(</span>tolower<span class="p">))</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## 1.50 dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     the reduction brings its posted price for west texas</span>
+</span><span class="line"><span class="c1">## intermediate to 16.00 dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &quot;the price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     diamond is the latest in a line of u.s. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 去除数字</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> removeNumbers<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said that</span>
+</span><span class="line"><span class="c1">## effective today it had cut its contract prices for crude oil by</span>
+</span><span class="line"><span class="c1">## . dlrs a barrel.</span>
+</span><span class="line"><span class="c1">##     the reduction brings its posted price for west texas</span>
+</span><span class="line"><span class="c1">## intermediate to . dlrs a barrel, the copany said.</span>
+</span><span class="line"><span class="c1">##     &quot;the price reduction today was made in the light of falling</span>
+</span><span class="line"><span class="c1">## oil product prices and a weak crude oil market,&quot; a company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     diamond is the latest in a line of u.s. oil companies that</span>
+</span><span class="line"><span class="c1">## have cut its contract, or posted, prices over the last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 去除停止词</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> removeWords<span class="p">,</span> stopwords<span class="p">(</span><span class="s">&quot;english&quot;</span><span class="p">))</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said</span>
+</span><span class="line"><span class="c1">## effective today   cut  contract prices  crude oil</span>
+</span><span class="line"><span class="c1">## . dlrs  barrel.</span>
+</span><span class="line"><span class="c1">##      reduction brings  posted price  west texas</span>
+</span><span class="line"><span class="c1">## intermediate  . dlrs  barrel,  copany said.</span>
+</span><span class="line"><span class="c1">##     &quot; price reduction today  made   light  falling</span>
+</span><span class="line"><span class="c1">## oil product prices   weak crude oil market,&quot;  company</span>
+</span><span class="line"><span class="c1">## spokeswoman said.</span>
+</span><span class="line"><span class="c1">##     diamond   latest   line  u.s. oil companies</span>
+</span><span class="line"><span class="c1">##  cut  contract,  posted, prices   last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets.</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 去除标点符号</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> removePunctuation<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said</span>
+</span><span class="line"><span class="c1">## effective today   cut  contract prices  crude oil</span>
+</span><span class="line"><span class="c1">##  dlrs  barrel</span>
+</span><span class="line"><span class="c1">##      reduction brings  posted price  west texas</span>
+</span><span class="line"><span class="c1">## intermediate   dlrs  barrel  copany said</span>
+</span><span class="line"><span class="c1">##      price reduction today  made   light  falling</span>
+</span><span class="line"><span class="c1">## oil product prices   weak crude oil market  company</span>
+</span><span class="line"><span class="c1">## spokeswoman said</span>
+</span><span class="line"><span class="c1">##     diamond   latest   line  us oil companies</span>
+</span><span class="line"><span class="c1">##  cut  contract  posted prices   last two days</span>
+</span><span class="line"><span class="c1">## citing weak oil markets</span>
+</span><span class="line"><span class="c1">##  reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 去除多余的空格</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> stripWhitespace<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said effective today cut contract prices crude oil dlrs barrel reduction brings posted price west texas intermediate dlrs barrel copany said price reduction today made light falling oil product prices weak crude oil market company spokeswoman said diamond latest line us oil companies cut contract posted prices last two days citing weak oil markets reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 词干化</span>
+</span><span class="line">docs <span class="o">&lt;-</span> tm_map<span class="p">(</span>docs<span class="p">,</span> stemDocument<span class="p">)</span>
+</span><span class="line">docs<span class="p">[[</span><span class="m">1</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;PlainTextDocument (metadata: 15)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## diamond shamrock corp said effect today cut contract price crude oil dlrs barrel reduct bring post price west texa intermedi dlrs barrel copani said price reduct today made light fall oil product price weak crude oil market compani spokeswoman said diamond latest line us oil compani cut contract post price last two day cite weak oil market reuter</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## 创建Document Term Matrix</span>
+</span><span class="line">dtm <span class="o">&lt;-</span> DocumentTermMatrix<span class="p">(</span>docs<span class="p">)</span>
+</span><span class="line">dtm
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;DocumentTermMatrix (documents: 20, terms: 780)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## Non-/sparse entries: 1570/14030</span>
+</span><span class="line"><span class="c1">## Sparsity           : 90%</span>
+</span><span class="line"><span class="c1">## Maximal term length: 13</span>
+</span><span class="line"><span class="c1">## Weighting          : term frequency (tf)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line">inspect<span class="p">(</span>dtm<span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span> <span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="c1">## &lt;&lt;DocumentTermMatrix (documents: 5, terms: 10)&gt;&gt;</span>
+</span><span class="line"><span class="c1">## Non-/sparse entries: 2/48</span>
+</span><span class="line"><span class="c1">## Sparsity           : 96%</span>
+</span><span class="line"><span class="c1">## Maximal term length: 7</span>
+</span><span class="line"><span class="c1">## Weighting          : term frequency (tf)</span>
+</span><span class="line"><span class="c1">##</span>
+</span><span class="line"><span class="c1">##      Terms</span>
+</span><span class="line"><span class="c1">## Docs  abdul abil abl abroad accept accord across activ add address</span>
+</span><span class="line"><span class="c1">##   127     0    0   0      0      0      0      0     0   0       0</span>
+</span><span class="line"><span class="c1">##   144     0    2   0      0      0      0      0     0   0       4</span>
+</span><span class="line"><span class="c1">##   191     0    0   0      0      0      0      0     0   0       0</span>
+</span><span class="line"><span class="c1">##   194     0    0   0      0      0      0      0     0   0       0</span>
+</span><span class="line"><span class="c1">##   211     0    0   0      0      0      0      0     0   0       0</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>到这里，就已经完成了上一篇所做的事情了。留意一下，也可以发现，’tm’包更新过之后，处理的结果与之前有一些不同，可以自己动手试试看，看看哪里不一样？</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacky Code</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-25T19:21:26+08:00" pubdate data-updated="true">Jun 25<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/datascience/'>DataScience</a>, <a class='category' href='/blog/categories/textmining/'>TextMining</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2014/06/18/text-mining1/" title="Previous Post:
+        数据科学18：文本挖掘1">&laquo; 数据科学18：文本挖掘1</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+	<ul id="about" class='nav nav-list'>
+		<li class="nav-header"><a href="/about">关于我</a></li>
+	    <p>概率统计专业的在读研究生</p>
+	    <p>喜欢看书，思考，然后写点什么</p>
+	    <p>能折腾，崇尚效率，喜爱精美</p>
+	    <p>喜欢Apple，离不了Google</p>
+	    <p>新浪微博: <a href="http://weibo.com/jackycode">Jacky130</a></p>
+	    <p>邮箱: <code>jackycodemsc@gmail.com</code></p>
+	</ul>
+</section>
+<section class="well">
+	<ul id="category_list" class="nav nav-list">
+		<li class="nav-header">文章分类</li>
+			<li id="categories">
+    			<li class='category'><a href='/blog/categories/associationanalysis/'>AssociationAnalysis (2)</a></li>
+<li class='category'><a href='/blog/categories/classification/'>Classification (5)</a></li>
+<li class='category'><a href='/blog/categories/clustering/'>Clustering (3)</a></li>
+<li class='category'><a href='/blog/categories/datascience/'>DataScience (20)</a></li>
+<li class='category'><a href='/blog/categories/datavisualization/'>DataVisualization (4)</a></li>
+<li class='category'><a href='/blog/categories/decisiontree/'>DecisionTree (2)</a></li>
+<li class='category'><a href='/blog/categories/kindle/'>Kindle (1)</a></li>
+<li class='category'><a href='/blog/categories/koding/'>Koding (1)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>Mac (2)</a></li>
+<li class='category'><a href='/blog/categories/machinelearning/'>MachineLearning (18)</a></li>
+<li class='category'><a href='/blog/categories/octopress/'>Octopress (4)</a></li>
+<li class='category'><a href='/blog/categories/rseries/'>RSeries (8)</a></li>
+<li class='category'><a href='/blog/categories/recommends/'>Recommends (2)</a></li>
+<li class='category'><a href='/blog/categories/records/'>Records (4)</a></li>
+<li class='category'><a href='/blog/categories/regression/'>Regression (4)</a></li>
+<li class='category'><a href='/blog/categories/textmining/'>TextMining (2)</a></li>
+<li class='category'><a href='/blog/categories/vps/'>VPS (1)</a></li>
+
+  			</li>
+  	</ul>
+</section><section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">最近文章</li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/25/text-mining1-update/">数据科学19：文本挖掘1-更新</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/18/text-mining1/">数据科学18：文本挖掘1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/08/plotting-system/">R语言绘图4：R中的绘图系统</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/04/basic-graph2/">R语言绘图3：基础图形2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/29/basic-graph1/">R语言绘图2：基础图形1</a>
+      </li>
+    
+  </ul>
+</section>
+<section class="well">
+  <ul id="links" class="nav nav-list">
+    <li class="nav-header">推荐站点</li>
+    <li>
+      <a href="http://macshuo.com/">MacTalk-池建强的随想录</a>
+    </li>
+    <li>
+      <a href="http://yihui.name/">Yihui Xie</a>
+    </li>
+    <li>
+      <a href="http://www.liaoxuefeng.com/">廖雪峰的官方网站</a>
+    </li>
+    <li>
+      <a href="http://irising.me/">Page to Page</a>
+    </li>
+    <li>
+      <a href="http://www.dongwm.com/">小明明s à domicile</a>
+    </li>
+    <li>
+      <a href="http://beyondvincent.com/">破船之家</a>
+    </li>
+    <li>
+      <a href="http://lucifr.com/">Lucifr</a>
+    </li>
+</ul>
+</section><section class="well">
+	<li class="nav-header">License</li>
+<ul id="license" class='nav nav-list'>
+	
+		<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">
+			<img alt="知识共享许可协议" style="border-width:0" src="/images/license_CC.png" />
+		</a>
+	<br />本站作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/cn/">知识共享署名-非商业性使用-相同方式共享 2.5 中国大陆许可协议</a>进行许可。
+</ul>
+</section>
+
+  
+</aside>
+
+
+  <section>  
+  <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"jacky130"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END --></div>  
+</section>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><!-- mathjax config similar to math.stackexchange --> 
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ jax: ["input/TeX", "output/HTML-CSS"], tex2jax: { inlineMath: [ ['$', '$'] ], displayMath: [ ['$$', '$$']], processEscapes: true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }, messageStyle: "none", "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] } }); </script> <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+<hr>
+<p>
+  Copyright &copy; 2014 - Jacky Code -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
