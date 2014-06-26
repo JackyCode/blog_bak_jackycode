@@ -4,7 +4,7 @@
   <title><![CDATA[Category: DataScience | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/datascience/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-06-25T19:45:29+08:00</updated>
+  <updated>2014-06-26T15:29:28+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,328 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学20：文本挖掘2]]></title>
+    <link href="http://jackycode.github.io/blog/2014/06/26/text-mining2/"/>
+    <updated>2014-06-26T15:02:09+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/06/26/text-mining2</id>
+    <content type="html"><![CDATA[<p><img src="/images/article/article42.jpg" alt="article 42" />
+<!-- more --></p>
+
+<p>图片由本文中数据生产~</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h2 id="section">一、对词条-文档矩阵的操作</h2>
+
+<hr />
+
+<p>在’tm’包中，提供了一些常用的函数，可以对得到的Document Term
+Matrix进行一些操作。当然，我们也可以使用自己的方式，对该矩阵进行一些探索，比如，我们先来看看词条的频数：</p>
+
+<h3 id="section-1">1.1 词条频数</h3>
+
+<hr />
+
+<p>``` r
+freq &lt;- colSums(as.matrix(dtm))
+length(freq)</p>
+
+<h2 id="section-2">[1] 780</h2>
+<p>```</p>
+
+<p>如果我们想看看，哪些频数是大于等于30的，我们可以：</p>
+
+<p>``` r
+names(freq[freq &gt;= 30])</p>
+
+<h2 id="market-mln----oil----opec---price--said">[1] “market” “mln”    “oil”    “opec”   “price”  “said”</h2>
+<p>```</p>
+
+<p>但其实，在’tm’包中有自带的函数可以解决：</p>
+
+<p>``` r
+findFreqTerms(dtm, lowfreq = 30)</p>
+
+<h2 id="market-mln----oil----opec---price--said-1">[1] “market” “mln”    “oil”    “opec”   “price”  “said”</h2>
+<p>```</p>
+
+<p>如果得到了每个词条的频数，我们可以列一个表查看一些其它的东西：</p>
+
+<p>``` r
+ord &lt;- order(freq, decreasing = TRUE)
+## 查看频数排在前十的词条及其频数
+head(freq[ord], 10)</p>
+
+<h2 id="oil---said--price---opec----mln-market-barrel---last----bpd---dlrs">oil   said  price   opec    mln market barrel   last    bpd   dlrs</h2>
+<p>##     86     73     63     47     31     30     26     24     23     23</p>
+
+<h2 id="section-3">查看频数的频数</h2>
+<p>tail(table(freq), 10)</p>
+
+<h2 id="freq">freq</h2>
+<p>## 21 23 24 26 30 31 47 63 73 86
+##  2  2  1  1  1  1  1  1  1  1
+```</p>
+
+<h3 id="section-4">1.2 相关性</h3>
+
+<hr />
+
+<p>除了词条的频数，我们大都还会对词条之间的相关性感兴趣。如何计算，其实很简单：</p>
+
+<p>``` r
+corr &lt;- cor(as.matrix(dtm))
+corr[1:5, 1:5]</p>
+
+<h2 id="abdul-----abil------abl---abroad---accept">abdul     abil      abl   abroad   accept</h2>
+<p>## abdul   1.00000 -0.08812 -0.05263 -0.05263 -0.05263
+## abil   -0.08812  1.00000 -0.08812  0.79309 -0.08812
+## abl    -0.05263 -0.08812  1.00000 -0.05263 -0.05263
+## abroad -0.05263  0.79309 -0.05263  1.00000 -0.05263
+## accept -0.05263 -0.08812 -0.05263 -0.05263  1.00000</p>
+
+<p>dim(corr)</p>
+
+<h2 id="section-5">[1] 780 780</h2>
+<p>```</p>
+
+<p>比如我们想知道，与词条’oil’相关性超过0.8的词条有哪些：</p>
+
+<p>``` r
+op &lt;- options()
+options(digits = 2)
+name &lt;- setdiff(names(corr[, “oil”][corr[, “oil”] &gt; 0.8]), “oil”)
+value &lt;- corr[name, “oil”]
+matrix &lt;- matrix(value[order(value, decreasing = TRUE)])
+rownames(matrix) = names(value)
+colnames(matrix) = “oil”
+matrix</p>
+
+<h2 id="oil">oil</h2>
+<p>## name 0.87
+## opec 0.81
+## tri  0.81
+## want 0.81</p>
+
+<p>options(op)
+```</p>
+
+<p>但其实，’tm’包中提供了现成函数：</p>
+
+<p>``` r
+findAssocs(dtm, “oil”, 0.8)</p>
+
+<h2 id="oil-1">oil</h2>
+<p>## opec 0.87
+## name 0.81
+## tri  0.81
+## want 0.81
+```</p>
+
+<p>可以看到，这一个函数实现了上面我们那一长串的功能。<strong>但是，我觉得，提供的现成函数有好处，但还是需要自己想想如何实现这个现成的函数。这不仅对概念理解有帮助，也对程序编写以及了解别人写的函数有更加深刻的理解。</strong></p>
+
+<h3 id="section-6">1.3 删减稀疏条目</h3>
+
+<hr />
+
+<p>大部分时候，Document Term
+Matrix是一个很大的矩阵，而且是行数远小于列数。也就是说，这个矩阵实际上是很稀疏的，不妨来看看我们这个只有20个文档的矩阵，稀疏程度如何：</p>
+
+<p>``` r
+Sparse &lt;- length(which(matrix(dtm) == 0))
+Sparse</p>
+
+<h2 id="section-7">[1] 14030</h2>
+
+<p>Non &lt;- length(which(matrix(dtm) != 0))
+Non</p>
+
+<h2 id="section-8">[1] 1570</h2>
+
+<p>sprintf(“%d%%”, round(Sparse/(Non + Sparse), 2) * 100)</p>
+
+<h2 id="section-9">[1] “90%”</h2>
+<p>```</p>
+
+<p>可以看到，矩阵中等于零的数目是14030，不为零的为1570，稀疏程度达到了90%，显然是非常稀疏的。当然，其实这个可以不用自己算的：</p>
+
+<p>``` r
+dtm</p>
+
+<h2 id="documenttermmatrix-documents-20-terms-780">«DocumentTermMatrix (documents: 20, terms: 780)»</h2>
+<p>## Non-/sparse entries: 1570/14030
+## Sparsity           : 90%
+## Maximal term length: 13
+## Weighting          : term frequency (tf)
+```</p>
+
+<p>上面的输出，前两个就知道它的意思了。那么另外两个呢？“Maximal term
+length”，顾名思义，就是最长的那个词条的长度。不妨来看一下：</p>
+
+<p>``` r
+name &lt;- colnames(as.matrix(dtm))
+name.length &lt;- sapply(name, nchar)
+max.name &lt;- name[name.length == max(name.length)]
+max.value &lt;- name.length[max.name]
+max.value</p>
+
+<h2 id="responsibilit">responsibilit</h2>
+<p>##            13
+```</p>
+
+<p>可以看到是吻合的。至于最后一个“Weighting”，是指Document Term
+Matrix中的每一条目的值是如何计算的。这里用的是“term
+frequency”，就是词条频率，简写为“tf”。除了这个，还有一些其它计算方法，比如：tf-idf，即term
+frequency-inverse document frequency。这个以后再说。</p>
+
+<hr />
+
+<p><strong>回到主题：</strong>计算出了稀疏条目的比例，证实了矩阵的确是很稀疏的，那么下面就是要去删除一些条目。有些条目在很少的文档中出现，甚至只在一篇文档中出现了。一般来说，删除这样的条目不会对矩阵的信息继承带来显著的影响。</p>
+
+<p>``` r
+remove.sparseterms &lt;- function(dtm, per) {
+    dtm.Matrix &lt;- as.matrix(dtm)
+    term.per &lt;- apply(dtm.Matrix, 2, function(item) length(which(item == 0))/length(item))
+    name &lt;- names(term.per[which(term.per &lt; per)])
+    return(dtm.Matrix[, name])
+}
+remove.sparseterms(dtm, 0.4)</p>
+
+<h2 id="terms">Terms</h2>
+<p>## Docs  barrel oil one price reuter said
+##   127      2   5   0     5      1    3
+##   144      0  12   1     6      2   11
+##   191      1   2   0     2      1    1
+##   194      1   1   1     2      1    1
+##   211      0   1   0     0      1    3
+##   236      4   7   1     8      1   10
+##   237      0   4   1     1      1    1
+##   242      0   3   2     2      1    3
+##   246      1   5   1     2      1    5
+##   248      3   9   1    10      1    7
+##   273      3   5   1     5      1    8
+##   349      0   4   0     1      1    1
+##   352      1   5   0     5      1    2
+##   353      1   4   1     2      1    1
+##   368      0   3   0     0      1    3
+##   489      3   4   2     3      1    2
+##   502      3   5   2     3      1    2
+##   543      1   3   1     3      1    4
+##   704      0   3   4     3      1    4
+##   708      2   1   0     0      1    1
+```</p>
+
+<p>这边的计算就是：检查词条的稀疏程度是否低于给定的系数<code>per</code>，如果是，就保留该词条；如果不是，则舍弃。</p>
+
+<p>当然，在’tm’包中也有自带的函数可以解决：</p>
+
+<p>``` r
+rsterms &lt;- removeSparseTerms(dtm, 0.4)
+inspect(rsterms)</p>
+
+<h2 id="documenttermmatrix-documents-20-terms-6">«DocumentTermMatrix (documents: 20, terms: 6)»</h2>
+<p>## Non-/sparse entries: 103/17
+## Sparsity           : 14%
+## Maximal term length: 6
+## Weighting          : term frequency (tf)
+##
+##      Terms
+## Docs  barrel oil one price reuter said
+##   127      2   5   0     5      1    3
+##   144      0  12   1     6      2   11
+##   191      1   2   0     2      1    1
+##   194      1   1   1     2      1    1
+##   211      0   1   0     0      1    3
+##   236      4   7   1     8      1   10
+##   237      0   4   1     1      1    1
+##   242      0   3   2     2      1    3
+##   246      1   5   1     2      1    5
+##   248      3   9   1    10      1    7
+##   273      3   5   1     5      1    8
+##   349      0   4   0     1      1    1
+##   352      1   5   0     5      1    2
+##   353      1   4   1     2      1    1
+##   368      0   3   0     0      1    3
+##   489      3   4   2     3      1    2
+##   502      3   5   2     3      1    2
+##   543      1   3   1     3      1    4
+##   704      0   3   4     3      1    4
+##   708      2   1   0     0      1    1
+```</p>
+
+<p>与之前的结果相同。</p>
+
+<h2 id="section-10">二、相关的绘图</h2>
+
+<hr />
+
+<p>介绍完Document Term
+Matrix之后，其实已经可以开始使用模型去处理了。之前介绍过聚类、分类啊等等的内容，有了这个矩阵之后，其实都可以去做了。不过，在建立模型之前，我想先说说有关绘图的问题。</p>
+
+<p>我们前面算了很多的量，比如频数啊、相关系数啊等等。但其实，我们大多时候需要用图形将它们展示出来。在R中，我们可以使用<code>Rgraphviz</code>包来绘制词条之间的关系图：</p>
+
+<p><code>r
+require(Rgraphviz)
+plot(dtm, terms = findFreqTerms(dtm, lowfreq = 20))
+</code></p>
+
+<p><img src="/images/a42/TM2.2.11.png" alt="plot of chunk
+TM2.2.1" /></p>
+
+<p><code>r
+## 指定相关性必须在0.5之上才可连线
+plot(dtm, terms = findFreqTerms(dtm, lowfreq = 20), corThreshold = 0.5)
+</code></p>
+
+<p><img src="/images/a42/TM2.2.12.png" alt="plot of chunk
+TM2.2.1" /></p>
+
+<p>在默认不指定<code>terms</code>和<code>corThreshold</code>参数的情况下，<code>plot</code>函数会绘制随机20个词条，相关性至少0.7的图形。</p>
+
+<hr />
+
+<p>当然，我们还可以绘制熟悉的频数直方图：</p>
+
+<p>``` r
+freq &lt;- sort(colSums(as.matrix(dtm)), decreasing = TRUE)
+tf &lt;- data.frame(term = names(freq), freq = freq)</p>
+
+<p>g &lt;- ggplot(subset(tf, freq &gt; 20), aes(term, freq))
+g &lt;- g + geom_bar(stat = “identity”, aes(fill = freq))
+print(g)
+```</p>
+
+<p><img src="/images/a42/TM2.2.2.png" alt="plot of chunk TM2.2.2" /></p>
+
+<hr />
+
+<p>另外一个比较流行好看的图，应该就是文本云(wordcloud)了，可以使用<code>wordcloud</code>包实现：</p>
+
+<p><code>r
+require(wordcloud)
+wordcloud(names(freq), freq, min.freq = 5, max.words = 80)
+</code></p>
+
+<p><img src="/images/a42/TM2.2.31.png" alt="plot of chunk
+TM2.2.3" /></p>
+
+<p><code>r
+## 添加颜色
+require(RColorBrewer)
+wordcloud(names(freq), freq, min.freq = 5, max.words = 80, colors = brewer.pal(8,
+    "Paired"))
+</code></p>
+
+<p><img src="/images/a42/TM2.2.32.png" alt="plot of chunk
+TM2.2.3" /></p>
+
+<p>当然，<code>wordcloud()</code>函数提供了很多选项，可以自行查看，我就不多讲了。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学19：文本挖掘1-更新]]></title>
@@ -1003,134 +1325,6 @@ inspect(dtm[1:5, 1:10])
 <hr />
 
 <p>至此，因子分析的基础模型就介绍完了，下面剩下的就是如何去进行参数的估计，这一般有三种方法：主成分法、主因子法以及极大似然法。下一篇，我们就来详细说说因子分析的参数估计问题。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习15: 主成分分析]]></title>
-    <link href="http://jackycode.github.io/blog/2014/05/11/principal-components/"/>
-    <updated>2014-05-11T11:35:10+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/05/11/principal-components</id>
-    <content type="html"><![CDATA[<p><img src="/images/article/article33.jpg" alt="article 33" />
-<!-- more --></p>
-
-<p>图片为：本文实例数据得到的，前两个主成分的散点图！</p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>在之前<a href="http://jackycode.github.io/blog/2014/04/02/linear-regression3/">线性回归3</a>提到多重共线性问题，当时说了一些解决这个问题的办法，其中一种就是今天要说的<strong>主成分分析</strong>。</p>
-
-<p><strong>主成分分析</strong>，Principal Components Analysis，简称PCA，是变量选择的一种方法。其一般的目的就是：变量的降维和主成分的解释！当主成分用于聚类或者回归，这个时候就是在做变量的降维；而当用来分析变量，尤其是使用前两个主成分进行散点图的绘制时，此时就是在对变量利用主成分做出一些解释。在了解主成分分析的原理之后，相信对这两个目的就可以很容易直观的理解了！</p>
-
-<hr />
-
-<h4 id="section">一、原理初窥</h4>
-<hr />
-
-<p>在用数学公式和概率统计知识推导其原理之前，不妨先直观地看看主成分分析到底是要干嘛，以及大致是怎么干的！</p>
-
-<p>我们就用两个变量来说这个问题，变量分别记作<script type="math/tex">x_1,x_2</script>。那么，我们先画个散点图吧，也许它们的散点图是这个样子的：</p>
-
-<p><img src="/images/a33/images1.jpg" alt="" /></p>
-
-<p>我们可以看到，这两个变量明显呈现一种线性关系，如果在做线性回归时，将这两个变量都用作自变量，然后对某一个因变量进行线性拟合，那必定会存在一些问题。那么主成分分析是要做什么呢？其实主成分分析就是要寻找变量<script type="math/tex">y_1,y_2</script>去替代<script type="math/tex">x_1,x_2</script>，而且满足<script type="math/tex">y_1,y_2</script>几乎不相关，同时<script type="math/tex">y_1,y_2</script>能够保留<script type="math/tex">x_1,x_2</script>所包含的信息。</p>
-
-<p>那么主成分分析是如何做的呢？这个时候就需要考虑旋转坐标轴，当我们像下图那样旋转过坐标轴之后，上面提出的要求就得到了实现。</p>
-
-<p><img src="/images/a33/images2.jpg" alt="" /></p>
-
-<p>从这张图我们就可以看出，数据投影到<script type="math/tex">y_1,y_2</script>两轴后，数据基本不相关，而且在<script type="math/tex">y_1</script>轴就保留了原本数据的大部分信息，<script type="math/tex">y_2</script>保留了数据的另外一部分信息。由此可见，数据越是集中在<script type="math/tex">y_1</script>轴两侧，数据映射到<script type="math/tex">y_1</script>轴后保留的信息就越多，而<script type="math/tex">y_2</script>就越少。当<script type="math/tex">y_2</script>含有的信息非常少，少到接近于0时，那么此时就到达了变量选择的目的，因为此时只要保留<script type="math/tex">y_1</script>就可以了。</p>
-
-<hr />
-
-<h4 id="section-1">二、原理</h4>
-<hr />
-
-<p>我们将数据映射到<script type="math/tex">y_1,y_2</script>轴，其实就是将原数据做个线性变换。利用上面的内容举个简单地例子就是：</p>
-
-<p><img align="center" src="http://jackycode.github.io/images/a33/eq1.jpg" /></p>
-
-<p>其中的系数满足：<script type="math/tex">a_{11}^2 + a_{21}^2=1,a_{12}^2 + a_{22}^2=1</script>。这样就可以成功地将数据投影到<script type="math/tex">y_1,y_2</script>轴。这里我们考虑更一般的情况，考虑<script type="math/tex">p</script>维的情况：</p>
-
-<p><img align="center" src="http://jackycode.github.io/images/a33/eq2.jpg" /></p>
-
-<p>其中<script type="math/tex">a_i=(a_{1i},a_{2i},\dots,a_{pi})', i=1,2,\dots,p</script>，且满足<script type="math/tex">a_i'a_1=1</script>。</p>
-
-<p>下面要考虑的就是，如何选择<script type="math/tex">a_1</script>，使得<script type="math/tex">V(y_1)</script>到达最大，找到之后，<script type="math/tex">y_1</script>就是<strong>第一主成分</strong>。</p>
-
-<p>首先，<script type="math/tex">V(y_1)=a_1' \Sigma a_1</script>，其中<script type="math/tex">\Sigma=V(x)</script>为协方差矩阵。我们知道<script type="math/tex">\Sigma</script>是非负定的，那么其所有的特征值必定都是大于等于0的，我们可以排个序：<script type="math/tex">\lambda _{ 1 }\geqslant \lambda _{ 2 }\geqslant \dots \geqslant \lambda_p \geqslant 0</script>，其对应的特征向量记为：<script type="math/tex">t_1, t_2, \dots, t_p</script>，显然这些特征向量是相互正交的。记<script type="math/tex">T=(t_1, t_2, \dots, t_p)=(t_{ik}), \Lambda=diag(\lambda_1,\lambda_2,\dots,\lambda_p)</script>。</p>
-
-<p>那么根据谱分解就有：<script type="math/tex">\Sigma=T \Lambda T'=\sum_{i=1}^{p}\lambda_it_it_i'</script>。那么带入到<script type="math/tex">V(y_1)</script>中就有：</p>
-
-<script type="math/tex; mode=display">V(y_1)=\sum_{i=1}^{p} \lambda_i a_1' t_it_i' a_1 = \sum_{i=1}^{p} \lambda_i(a_1't_i)^2</script>
-
-<p>由于特征值中<script type="math/tex">\lambda_1</script>是最大的，那么就有：</p>
-
-<script type="math/tex; mode=display">V(y_1) \leqslant \lambda_1 \sum_{i=1}^{p} (a_1't_i)^2 = \lambda_1 \sum_{i=1}^{p} {a_1't_it_i'a_1} = \lambda_1 a_1' TT'a_1 = \lambda_1</script>
-
-<p>可以看到最终的结果是：<script type="math/tex">V(y_1) \leqslant \lambda_1</script>。那么什么时候取等号呢？取<script type="math/tex">a_1 = t_1</script>，则有：</p>
-
-<script type="math/tex; mode=display">t_1'\Sigma t_1 = t_1' (\lambda_1t_1) = \lambda_1</script>
-
-<p>到止为止，就可以看到。当<script type="math/tex">y_1=t_1'x</script>时就有其<script type="math/tex">V(y_1)</script>达到最大，为<script type="math/tex">\lambda_1</script>。那么此时<script type="math/tex">y_1=t_1'x</script>就是该数据第一主成分。</p>
-
-<p>同理可以求解第二主成分直至最后。<strong>但是，在求解第二第三主成分的时候，需要注意一个新的问题：主成分之间不相关，即<script type="math/tex">Cov(y_i,y_k)=0,i \neq k</script></strong>，如何证明非常简单，我就不说了，自己动动手吧。</p>
-
-<hr />
-
-<h4 id="section-2">三、具体实例</h4>
-<hr />
-
-<p>我们使用R语言来做个小例子：</p>
-
-<p>``` r
-# 构造一个数据集
-set.seed(10)
-x1 &lt;- seq(1, 50, 2) + rnorm(25, mean=1, sd=1)
-x2 &lt;- 2*x1 + rnorm(25, mean=1, sd=1)
-x3 &lt;- x1/2 + x2 + rnorm(25, mean=1, sd=1)
-x &lt;- data.frame(x1=x1, x2=x2, x3=x3)</p>
-
-<h1 id="section-3">计算协方差矩阵</h1>
-<p>Sig &lt;- cov(x)</p>
-
-<h1 id="section-4">计算特征值和特征向量</h1>
-<p>eigen(Sig)
-```
-得到结果如下：</p>
-
-<p>``` r
-$values
-[1] 2381.3724526    0.3681085    0.1165201</p>
-
-<p>$vectors
-           [,1]       [,2]        [,3]
-[1,] -0.2982259 -0.4601189  0.83627265
-[2,] -0.6002191 -0.5908325 -0.53912331
-[3,] -0.7421579  0.6627273  0.09997061
-```</p>
-
-<p>得到了特征值为：<script type="math/tex">\lambda_1=238.372, \lambda_2=0.368, \lambda_3=0.11652</script>，可以看到第一主成分<script type="math/tex">y_1=t_1'x=-0.298x_1-0.600x_2-0.742x_3</script>的特征值<script type="math/tex">\lambda_1</script>的值远大于其余的(由于数据构造时就是以<script type="math/tex">x_1</script>为底的)。说明第一主成分能够解释数据的大部分信息，那么如何衡量呢？</p>
-
-<p>这时候就需要使用到<strong>贡献率</strong>这个概念，某一个主成分<script type="math/tex">y_i</script>的贡献率定义为：<script type="math/tex">\frac{\lambda_i}{\sum_{i=1}^{p} \lambda_i}</script>。</p>
-
-<p>贡献率越大说明这个主成分能够解释数据的信息就越多，在具体的问题中，还常常用到一个概念，就是<strong>累积贡献率</strong>。前<script type="math/tex">k</script>个主成分的累计贡献率就是：<script type="math/tex">\frac{\sum_{i=1}^{k} \lambda_i}{\sum_{i=1}^{p} \lambda_i}</script>。实际中，当前<script type="math/tex">k</script>个主成分的累积贡献率达到某个临界值，比如<script type="math/tex">80\%</script>，就选择前<script type="math/tex">k</script>个主成分进行下一步操作(比如说聚类，回归或者单纯地做分析等等)</p>
-
-<h4 id="section-5">四、基于相关矩阵</h4>
-<hr />
-
-<p>考虑这样两种情况：各个变量的单位不全相同，也就是数据的量纲不同；各变量之间的单位相同，但是变量的方差较大，也就是数值大小相差较大。那么这个时候，如果从协方差矩阵出发求解主成分，就显得不大合适了。</p>
-
-<p>在之前的文章中提到过，当所有的变量都进行了标准化之后，协方差矩阵<script type="math/tex">\Sigma</script>就转换成了相关矩阵<script type="math/tex">R</script>！</p>
-
-<p>那么，剩下的求解过程就与上面相同了，这里不再叙述。需要指出的是，标准化与否，所得到的结果可能会有很大的不同，所以，判断一批数据是否需要标准化是很有必要的！</p>
-
-<h4 id="r">五、R语言实现</h4>
-<hr />
-
-<p>主成分分析的R语言实现比较简单，可以直接使用<code>eigen()</code>函数求出特征值特征向量。当然也有自带的函数：<code>princomp()</code>以及<code>psych</code>包中的<code>principal()</code>函数，可以自己查找一下帮助文档，这里就不做介绍了。</p>
 ]]></content>
   </entry>
   
