@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-06-26T15:29:28+08:00</updated>
+  <updated>2014-07-09T16:41:27+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,329 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[R与Python的协作：rpy2简介]]></title>
+    <link href="http://jackycode.github.io/blog/2014/07/09/rpy2/"/>
+    <updated>2014-07-09T16:14:12+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/07/09/rpy2</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article43.jpg" alt="article 43" />
+<!-- more --></p>
+
+<p>图片为rpy2的logo</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>R语言作为统计分析软件，其在统计分析、图形绘制等等方面是强大的，无与伦比的！但是，如果让R去处理一些文件操作、处理文本、获取数据等等的活，一般来讲，R并不太擅长。举个例子来讲，想从自己的Gmail邮箱中获取邮件信息数据，使用R去完成就有点悲剧了，使用Ruby或者Python，这样的活还是挺容易的。</p>
+
+<p>当然，使用Python做数据分析也是蛮不错的。这里我不想比较Python与R，只想说，我平时使用的习惯是“Python + R”。具体点就是：使用R做数据分析，使用Python完成其它工作！用上面那个例子来说，我会使用Python获取Gmail的数据，然后使用R对数据进行分析处理，大致就是这样！</p>
+
+<p>rpy2是Python的一个第三方程序库，可以实现用python读取R的对象、调⽤R的方法等等。好了，废话不说了，开始说说rpy2吧。</p>
+
+<h3 id="section">安装</h3>
+<hr />
+
+<p>与安装其它Python第三方程序库相同，使用<code>pip install rpy2</code>或者<code>easy_install rpy2</code>就OK了。当然，前提是你的电脑已经安装了R(3.0或以上的版本)。</p>
+
+<h3 id="section-1">开始使用</h3>
+<hr />
+
+<p>安装好之后，就需要导入rpy2。在rpy2中有一个模块：rpy2.robjects，是对R的一个高级封装，这个模块包含了R对象和一些了的R语言的函数。使用rpy2，一般来讲就是使用这个模块。简单理解，Python可以通过“rpy2.robjects”这座桥，连接到R。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">rpy2.robjects</span> <span class="kn">as</span> <span class="nn">robjects</span>
+</span><span class="line"><span class="n">data</span><span class="o">.</span><span class="n">table</span> <span class="mf">1.9</span><span class="o">.</span><span class="mi">2</span>  <span class="n">For</span> <span class="n">help</span> <span class="nb">type</span><span class="p">:</span> <span class="n">help</span><span class="p">(</span><span class="s">&quot;data.table&quot;</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">Welcome</span> <span class="n">at</span>  <span class="n">Wed</span> <span class="n">Jul</span>  <span class="mi">9</span> <span class="mi">10</span><span class="p">:</span><span class="mi">59</span><span class="p">:</span><span class="mi">11</span> <span class="mi">2014</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><em>注</em>：如果你跟我一样，R中安装了“data.table”包，并且设置<code>.First()</code>函数输出“Welcome”的话，你得到跟我一样的返回。</p>
+
+<h3 id="r">R实例</h3>
+<hr />
+
+<p><code>rpy2.robjects</code>中有一个r对象，即r实例指的就是<code>rpy2.robjects</code>.r。它是Python中的嵌入式R进程，可以理解成，通过<code>rpy2.robjects.r</code>，可以在Python中使用R命令，获取R对象。</p>
+
+<p>在rpy2的官方介绍里面，是这么说的：</p>
+
+<blockquote>
+  <p>The object <strong>r</strong> in <strong>rpy2.robjects</strong> represents the running embedded <em>R</em> Process.</p>
+</blockquote>
+
+<p>举个例子，比如说获取R中的对象<code>pi</code>：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">pi</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;pi&#39;</span><span class="p">]</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">pi</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">FloatVector</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c434998</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09d4a1808</span><span class="o">&gt;</span>
+</span><span class="line"><span class="p">[</span><span class="mf">3.141593</span><span class="p">]</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">pi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class="line"><span class="mf">3.141592653589793</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>可见，<code>pi</code>是一个浮点数向量，是从R中获取的，使用<code>[</code>可以获取它的值。这里有一点需要注意的就是，这里获取得到的<code>pi</code>是一个向量：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">piPlus2</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="s">&#39;pi&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">piPlus2</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">FloatVector</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c591170</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09d657828</span><span class="o">&gt;</span>
+</span><span class="line"><span class="p">[</span><span class="mf">3.141593</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">]</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">piPlus2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class="line"><span class="mf">3.141592653589793</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">piPlus2</span><span class="o">.</span><span class="n">r_repr</span><span class="p">()</span>
+</span><span class="line"><span class="s">&#39;c(3.14159265358979, 2)&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>可以使用<code>r_repr()</code>方法，显示从R中调过来的对象，在R中的表示。所以如果单纯地想做<code>pi + 2</code>，必须先转换成Python中的数值。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">piPlus2</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="s">&#39;pi&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">piPlus2</span>
+</span><span class="line"><span class="mf">5.141592653589793</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="r-1">创建R向量</h3>
+<hr />
+
+<p>既然使用<code>robjects.r</code>获取的R对象<code>pi</code>是R向量，那么自然就会想到，如何在Python中创建R向量，其实很简单：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">StrVector</span><span class="p">([</span><span class="s">&#39;ab&#39;</span><span class="p">,</span> <span class="s">&#39;bc&#39;</span><span class="p">])</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="nb">str</span><span class="o">.</span><span class="n">r_repr</span><span class="p">()</span>
+</span><span class="line"><span class="s">&#39;c(&quot;ab&quot;, &quot;bc&quot;)&#39;</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="nb">str</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">StrVector</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c6dbe18</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09d5a12e8</span><span class="o">&gt;</span>
+</span><span class="line"><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="nb">str</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class="line"><span class="s">&#39;ab&#39;</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+</span><span class="line"><span class="mi">2</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>可以看到，str就是一个字符向量，属于R中的对象，在Python中使用<code>[</code>可以取出其中的值。</p>
+
+<p>同理，可以创建其它类型的向量：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">IntVector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="nb">int</span><span class="o">.</span><span class="n">r_repr</span><span class="p">()</span>
+</span><span class="line"><span class="s">&#39;1:3&#39;</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">FloatVector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="nb">float</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">FloatVector</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c6dbf80</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09d7e7608</span><span class="o">&gt;</span>
+</span><span class="line"><span class="p">[</span><span class="mf">1.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">,</span> <span class="mf">3.000000</span><span class="p">]</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="nb">float</span><span class="o">.</span><span class="n">r_repr</span><span class="p">()</span>
+</span><span class="line"><span class="s">&#39;c(1, 2, 3)&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>解决向量，那么就要考虑矩阵了，想想在R中是如何构建矩阵的：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="r"><span class="line"><span class="o">&gt;</span> x <span class="o">&lt;-</span> c<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">6</span><span class="p">)</span>
+</span><span class="line"><span class="o">&gt;</span> x.mat <span class="o">&lt;-</span> matrix<span class="p">(</span>x<span class="p">,</span> nrow <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</span><span class="line"><span class="o">&gt;</span> x.mat
+</span><span class="line">     <span class="p">[,</span><span class="m">1</span><span class="p">]</span> <span class="p">[,</span><span class="m">2</span><span class="p">]</span> <span class="p">[,</span><span class="m">3</span><span class="p">]</span>
+</span><span class="line"><span class="p">[</span><span class="m">1</span><span class="p">,]</span>    <span class="m">1</span>    <span class="m">3</span>    <span class="m">5</span>
+</span><span class="line"><span class="p">[</span><span class="m">2</span><span class="p">,]</span>    <span class="m">2</span>    <span class="m">4</span>    <span class="m">6</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>可以看到，我们需要用的函数<code>matrix()</code>。那么我们就需要调用R中的对象<code>matrix()</code>函数：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">FloatVector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">xMat</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;matrix&#39;</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="n">nrow</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">xMat</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">Matrix</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c6dbb00</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09da59c20</span><span class="o">&gt;</span>
+</span><span class="line"><span class="p">[</span><span class="mf">1.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">,</span> <span class="mf">3.000000</span><span class="p">,</span> <span class="mf">4.000000</span><span class="p">,</span> <span class="mf">5.000000</span><span class="p">,</span> <span class="mf">6.000000</span><span class="p">]</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">xMat</span><span class="o">.</span><span class="n">r_repr</span><span class="p">()</span>
+</span><span class="line"><span class="s">&#39;structure(c(1, 2, 3, 4, 5, 6), .Dim = 2:3)&#39;</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">xMat</span><span class="p">)</span>
+</span><span class="line">     <span class="p">[,</span><span class="mi">1</span><span class="p">]</span> <span class="p">[,</span><span class="mi">2</span><span class="p">]</span> <span class="p">[,</span><span class="mi">3</span><span class="p">]</span>
+</span><span class="line"><span class="p">[</span><span class="mi">1</span><span class="p">,]</span>    <span class="mi">1</span>    <span class="mi">3</span>    <span class="mi">5</span>
+</span><span class="line"><span class="p">[</span><span class="mi">2</span><span class="p">,]</span>    <span class="mi">2</span>    <span class="mi">4</span>    <span class="mi">6</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>想想，这样其实蛮麻烦的，在R中我们可以使用<code>1:6</code>创建向量，这边打这么长可是不喜欢。那么就有两种方式可以解决：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">FloatVector</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">FloatVector</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c434ab8</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09b7b5820</span><span class="o">&gt;</span>
+</span><span class="line"><span class="p">[</span><span class="mf">1.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">,</span> <span class="mf">3.000000</span><span class="p">,</span> <span class="mf">4.000000</span><span class="p">,</span> <span class="mf">5.000000</span><span class="p">,</span> <span class="mf">6.000000</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这种就是使用Python本身的<code>range()</code>函数，然后使用<code>robjects.FloatVector()</code>转换数据结构。还有一种，就是使用R对象<code>:</code>：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;:&#39;</span><span class="p">](</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">IntVector</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c44f170</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09b125b58</span><span class="o">&gt;</span>
+</span><span class="line"><span class="p">[</span>       <span class="mi">1</span><span class="p">,</span>        <span class="mi">2</span><span class="p">,</span>        <span class="mi">3</span><span class="p">,</span>        <span class="mi">4</span><span class="p">,</span>        <span class="mi">5</span><span class="p">,</span>        <span class="mi">6</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="r-2">调用R函数</h3>
+<hr />
+
+<p>上面已经试过了调用R中的<code>matrix()</code>函数，再试试调用R中的函数<code>mean()</code>函数：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">rmean</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;mean&#39;</span><span class="p">]</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;:&#39;</span><span class="p">](</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">IntVector</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c6dba28</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09bb9b298</span><span class="o">&gt;</span>
+</span><span class="line"><span class="p">[</span>       <span class="mi">1</span><span class="p">,</span>        <span class="mi">2</span><span class="p">,</span>        <span class="mi">3</span><span class="p">]</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">rmean</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class="line"><span class="mf">2.0</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>这里需要记住的就是，调用的R函数作用在R对象上，返回的仍然是R对象。</p>
+
+<p>知道了如何调用R函数，那么如果是自己想写一个R函数呢？其实我们可以直接在<code>robjects.r</code>中添加对象：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="s">&#39;&#39;&#39;</span>
+</span><span class="line"><span class="s">...         f &lt;- function(x) {</span>
+</span><span class="line"><span class="s">...             if (length(x) &gt; 2) {</span>
+</span><span class="line"><span class="s">...                 return(mean(x))</span>
+</span><span class="line"><span class="s">...             }</span>
+</span><span class="line"><span class="s">...             return(sum(x))</span>
+</span><span class="line"><span class="s">...         }</span>
+</span><span class="line"><span class="s">...         &#39;&#39;&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">SignatureTranslatedFunction</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c6dbc20</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09d25aea8</span><span class="o">&gt;</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">rf</span> <span class="o">=</span> <span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;f&#39;</span><span class="p">]</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">rf</span><span class="p">(</span><span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;:&#39;</span><span class="p">](</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">FloatVector</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c6dbd40</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09bd4ea68</span><span class="o">&gt;</span>
+</span><span class="line"><span class="p">[</span><span class="mf">3.500000</span><span class="p">]</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">rf</span><span class="p">(</span><span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;:&#39;</span><span class="p">](</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">IntVector</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c6f12d8</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09bd4dcf8</span><span class="o">&gt;</span>
+</span><span class="line"><span class="p">[</span>       <span class="mi">3</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>在<code>robjects.r</code>中添加了<code>f()</code>函数的对象，我们就可以调用它了。当然，还可以在Python中直接写R的脚本，然后直接运行：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="python"><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">rscript</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+</span><span class="line"><span class="s">...         f &lt;- function(x) {</span>
+</span><span class="line"><span class="s">...             if (length(x) &gt; 2) {</span>
+</span><span class="line"><span class="s">...                 return(mean(x))</span>
+</span><span class="line"><span class="s">...             }</span>
+</span><span class="line"><span class="s">...         return(sum(x))</span>
+</span><span class="line"><span class="s">...         }</span>
+</span><span class="line"><span class="s">...</span>
+</span><span class="line"><span class="s">...         f(1:2)</span>
+</span><span class="line"><span class="s">...         &#39;&#39;&#39;</span>
+</span><span class="line"><span class="o">&gt;&gt;&gt;</span> <span class="n">robjects</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="n">rscript</span><span class="p">)</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">IntVector</span> <span class="o">-</span> <span class="n">Python</span><span class="p">:</span><span class="mh">0x10c6db7e8</span> <span class="o">/</span> <span class="n">R</span><span class="p">:</span><span class="mh">0x7fd09bd4e268</span><span class="o">&gt;</span>
+</span><span class="line"><span class="p">[</span>       <span class="mi">3</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>上面两种其实是一个意思，都是在<code>robjects.r</code>中添加了R脚本。当然，也可以运行写好的”*.r”的脚本，使用<code>robjects.r.source(&lt;path&gt;)</code>即可。</p>
+
+<h3 id="section-2">最后</h3>
+<hr />
+
+<p>对<code>rpy2</code>的简单介绍就到这吧，这是一个很不错的库，功能远远不止我上面介绍的这一些，感兴趣的话，可以去<a href="http://rpy.sourceforge.net/">它的官网</a>查看其介绍的文档，你肯定会发现很多新鲜好玩的东西。</p>
+
+<h4 id="section-3">参考</h4>
+<hr />
+
+<ol>
+  <li><a href="http://rpy.sourceforge.net/rpy2/doc-2.4/html/overview.html#installation">rpy2的官方文档</a></li>
+  <li><a href="http://www.jeffkit.info/2010/02/475/">让R与Python共舞</a></li>
+  <li><a href="https://www.google.com.hk/search?q=rpy2">…</a></li>
+</ol>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学20：文本挖掘2]]></title>
@@ -4272,181 +4595,6 @@ TM2.2.3" /></p>
 <p><img src="\images\a24\kmeans2.jpg" alt="kmeans2" /></p>
 
 <p>从图中可以看出，kmeans的分类效果还是蛮不错的，当然我们可以计算一下误判，不过这显然是很小的。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习8: 决策树之ID3]]></title>
-    <link href="http://jackycode.github.io/blog/2014/04/14/id3/"/>
-    <updated>2014-04-14T16:02:45+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/04/14/id3</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article23.jpg" alt="article 23" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>ID3算法的核心问题就在于：如何选取在决策树的每个节点处要测试的属性。那么如何去选择呢？当然，我们要选取<strong>分类能力最好的属性</strong>，那么怎么去确定哪个属性是分类能力最好的呢？ID3算法中，使用<strong>信息增益</strong>作为评判标准。在看信息增益之前，我们先看看这个决策树的构造过程：</p>
-
-<h3 id="section">一、构造过程</h3>
-<hr />
-
-<ol>
-  <li>选取<strong>分类能力最好的属性</strong>作为决策树根部节点的测试；</li>
-  <li>为根节点属性的每一个可能值产生一个分支；</li>
-  <li>以各个分支节点为根节点，重复上述过程。</li>
-</ol>
-
-<h3 id="section-1">二、信息增益</h3>
-<hr />
-
-<h4 id="section-2">1. 熵</h4>
-<hr />
-
-<p>在看信息增益之前，首先需要介绍一个概念，那就是<strong>香农熵</strong>，简称为<strong>熵</strong>。相信学过物理的应该大都听过这个名词，在热力学中不就有个熵增原理嘛。其实，<strong>熵是信息论中广泛使用的一个度量标准，刻画了任意样例集合的纯度。</strong></p>
-
-<p><strong>熵是信息的期望值</strong>，所以可以用熵来刻画一个数据集的纯度。若用$x_i,i=1,2,\dots,n$来表示数据集所包含的属性，那么这个数据集的熵为：</p>
-
-<script type="math/tex; mode=display"> H = - \sum_{i=1}^{n}{p(x_i)l(x_i)} </script>
-
-<p>其中，$p(x_i)$表示选取$x_i$作为分类的最终类别的概率；$l(x_i)$为$x_i$的信息，定义为：<script type="math/tex"> l(x_i) = - \log_2p(x_i)</script>。</p>
-
-<h4 id="section-3">2. 信息增益</h4>
-<hr />
-
-<p>有了熵之后就可以刻画一个数据集的纯度，也就是熵值。那么什么信息增益呢？</p>
-
-<p>简单来说，<strong>一个属性的信息增益就是：使用这个属性分割样例集合而导致的熵值降低</strong>。那么要选取分类能力最好的属性，就是要选取使得信息增益最大的那个属性。</p>
-
-<p>一个属性A对样例集合S的信息增益定义为：</p>
-
-<script type="math/tex; mode=display"> Gain(S, A) = H(S) - \sum_{v \in A} { \frac{\# S_v}{\# S} H(S_v) } </script>
-
-<p>其中，<script type="math/tex">S_v</script>表示集合S中，属性A取值为$v$的那部分数据；<script type="math/tex">\# S_v</script>表示，集合S中，属性A取值为$v$的个数；<script type="math/tex">\# S</script>表示集合S中观测的个数。</p>
-
-<h4 id="section-4">3. 简单的例子</h4>
-<hr />
-
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: center">序号</th>
-      <th style="text-align: center">age</th>
-      <th style="text-align: center">income</th>
-      <th style="text-align: center">buy_iphone</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center">1</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">2</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">low</td>
-      <td style="text-align: center">no</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">3</td>
-      <td style="text-align: center">youth</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">4</td>
-      <td style="text-align: center">youth</td>
-      <td style="text-align: center">low</td>
-      <td style="text-align: center">no</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">5</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">6</td>
-      <td style="text-align: center">youth</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">yes</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">7</td>
-      <td style="text-align: center">senior</td>
-      <td style="text-align: center">high</td>
-      <td style="text-align: center">no</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>考虑上面这个问题，我们来计算一下各个属性的信息增益。</p>
-
-<p>首先，我们可以看到，这个数据集S最终分类buy_iphone有两种取值：$yes,no$。则数据集S的熵值为：</p>
-
-<script type="math/tex; mode=display"> H(S) = -\frac{4}{7} \log_2{\frac{4}{7} } - \frac{3}{7} \log_2{\frac{3}{7} }  \approx 0.985</script>
-
-<p>若按照age分类，age有两个属性：$senior, youth$，分别有4个和3个。age = senior时，yes有2个，no有2个则有：</p>
-
-<script type="math/tex; mode=display"> H_{age}(S_{senior}) = -\frac{2}{4} \log_2{\frac{2}{4}} - \frac{2}{4} \log_2{\frac{2}{4}} \approx 1 </script>
-
-<script type="math/tex; mode=display"> H_{age}(S_{youth}) = -\frac{2}{3} \log_2 {\frac{2}{3}} - \frac{1}{3} \log_2 {\frac{1}{3}} \approx 0.918 </script>
-
-<p>则有：</p>
-
-<script type="math/tex; mode=display"> H_{age}(S) = \frac{4}{7} \times 1 + \frac{3}{7} \times 0.918 = 0.965 </script>
-
-<p>则age属性的信息增益为：</p>
-
-<script type="math/tex; mode=display"> H(S) - H_{age}(S) = 0.985 - 0.965 = 0.020 </script>
-
-<p>那么属性income的信息增益怎么去计算，可以动手试试。</p>
-
-<h3 id="id3">三、ID3算法的伪代码</h3>
-<hr />
-
-<h5 id="section-5">定义：</h5>
-<ul>
-  <li>data：为训练样本集</li>
-  <li>label：为目标属性 （比如例子中的属性buy_iphone）</li>
-  <li>attrs：出目标属性外，供算法学习测试使用的其它属性 （比如例子中的age和income属性）</li>
-</ul>
-
-<h5 id="section-6">伪代码：</h5>
-<p>ID3(data, label, attrs)：</p>
-
-<ol>
-  <li>创建决策树的Root节点；</li>
-  <li>若lable中取值单一，则返回 <code>label=label</code> 的单节点树；</li>
-  <li>若attrs为空，则返回 <code>label=（data中取值最多的那个label）</code> 的单节点树；</li>
-  <li>否则：
-    <ol>
-      <li>选取attrs中分类能力最好的属性作为Root的决策属性，记为A；</li>
-      <li>对A的每一个可能取值vi：
-        <ol>
-          <li>在Root添加一个分支对应 <code>A = vi </code>；</li>
-          <li>data_vi = data中 <code>A = vi</code> 的子集，label_vi 表示 data_vi 所对应的目标属性取值；</li>
-          <li>若 data_vi 为空集：
-            <ol>
-              <li>在新分支下加一个叶子节点，节点 <code>label =（data中取值最多的那个label）</code> ;</li>
-              <li>否则，加一个子树：ID3(data_vi, label_vi, attrs);</li>
-            </ol>
-          </li>
-        </ol>
-      </li>
-    </ol>
-  </li>
-  <li>结束</li>
-  <li>返回Root</li>
-</ol>
-
-<h3 id="r">四、R语言实现</h3>
-<hr />
-
-<p>见<a href="http://jackycode.github.io/datascience">我的项目</a></p>
 ]]></content>
   </entry>
   

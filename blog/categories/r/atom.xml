@@ -1,0 +1,1074 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: R | Jacky and MSC]]></title>
+  <link href="http://jackycode.github.io/blog/categories/r/atom.xml" rel="self"/>
+  <link href="http://jackycode.github.io/"/>
+  <updated>2014-07-09T16:41:27+08:00</updated>
+  <id>http://jackycode.github.io/</id>
+  <author>
+    <name><![CDATA[Jacky Code]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[R与Python的协作：rpy2简介]]></title>
+    <link href="http://jackycode.github.io/blog/2014/07/09/rpy2/"/>
+    <updated>2014-07-09T16:14:12+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/07/09/rpy2</id>
+    <content type="html"><![CDATA[<p><img src="/images/article/article43.jpg" alt="article 43" />
+<!-- more --></p>
+
+<p>图片为rpy2的logo</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>R语言作为统计分析软件，其在统计分析、图形绘制等等方面是强大的，无与伦比的！但是，如果让R去处理一些文件操作、处理文本、获取数据等等的活，一般来讲，R并不太擅长。举个例子来讲，想从自己的Gmail邮箱中获取邮件信息数据，使用R去完成就有点悲剧了，使用Ruby或者Python，这样的活还是挺容易的。</p>
+
+<p>当然，使用Python做数据分析也是蛮不错的。这里我不想比较Python与R，只想说，我平时使用的习惯是“Python + R”。具体点就是：使用R做数据分析，使用Python完成其它工作！用上面那个例子来说，我会使用Python获取Gmail的数据，然后使用R对数据进行分析处理，大致就是这样！</p>
+
+<p>rpy2是Python的一个第三方程序库，可以实现用python读取R的对象、调⽤R的方法等等。好了，废话不说了，开始说说rpy2吧。</p>
+
+<h3 id="section">安装</h3>
+<hr />
+
+<p>与安装其它Python第三方程序库相同，使用<code>pip install rpy2</code>或者<code>easy_install rpy2</code>就OK了。当然，前提是你的电脑已经安装了R(3.0或以上的版本)。</p>
+
+<h3 id="section-1">开始使用</h3>
+<hr />
+
+<p>安装好之后，就需要导入rpy2。在rpy2中有一个模块：rpy2.robjects，是对R的一个高级封装，这个模块包含了R对象和一些了的R语言的函数。使用rpy2，一般来讲就是使用这个模块。简单理解，Python可以通过“rpy2.robjects”这座桥，连接到R。</p>
+
+<p>``` python
+»&gt; import rpy2.robjects as robjects
+data.table 1.9.2  For help type: help(“data.table”)</p>
+
+<p>Welcome at  Wed Jul  9 10:59:11 2014
+```</p>
+
+<p><em>注</em>：如果你跟我一样，R中安装了“data.table”包，并且设置<code>.First()</code>函数输出“Welcome”的话，你得到跟我一样的返回。</p>
+
+<h3 id="r">R实例</h3>
+<hr />
+
+<p><code>rpy2.robjects</code>中有一个r对象，即r实例指的就是<code>rpy2.robjects</code>.r。它是Python中的嵌入式R进程，可以理解成，通过<code>rpy2.robjects.r</code>，可以在Python中使用R命令，获取R对象。</p>
+
+<p>在rpy2的官方介绍里面，是这么说的：</p>
+
+<blockquote>
+  <p>The object <strong>r</strong> in <strong>rpy2.robjects</strong> represents the running embedded <em>R</em> Process.</p>
+</blockquote>
+
+<p>举个例子，比如说获取R中的对象<code>pi</code>：</p>
+
+<p><code>python
+&gt;&gt;&gt; pi = robjects.r['pi']
+&gt;&gt;&gt; pi
+&lt;FloatVector - Python:0x10c434998 / R:0x7fd09d4a1808&gt;
+[3.141593]
+&gt;&gt;&gt; pi[0]
+3.141592653589793
+</code></p>
+
+<p>可见，<code>pi</code>是一个浮点数向量，是从R中获取的，使用<code>[</code>可以获取它的值。这里有一点需要注意的就是，这里获取得到的<code>pi</code>是一个向量：</p>
+
+<p><code>python
+&gt;&gt;&gt; piPlus2 = robjects.r('pi') + 2
+&gt;&gt;&gt; piPlus2
+&lt;FloatVector - Python:0x10c591170 / R:0x7fd09d657828&gt;
+[3.141593, 2.000000]
+&gt;&gt;&gt; piPlus2[0]
+3.141592653589793
+&gt;&gt;&gt; piPlus2.r_repr()
+'c(3.14159265358979, 2)'
+</code></p>
+
+<p>可以使用<code>r_repr()</code>方法，显示从R中调过来的对象，在R中的表示。所以如果单纯地想做<code>pi + 2</code>，必须先转换成Python中的数值。</p>
+
+<p><code>python
+&gt;&gt;&gt; piPlus2 = robjects.r('pi')[0] + 2
+&gt;&gt;&gt; piPlus2
+5.141592653589793
+</code></p>
+
+<h3 id="r-1">创建R向量</h3>
+<hr />
+
+<p>既然使用<code>robjects.r</code>获取的R对象<code>pi</code>是R向量，那么自然就会想到，如何在Python中创建R向量，其实很简单：</p>
+
+<p><code>python
+&gt;&gt;&gt; str = robjects.StrVector(['ab', 'bc'])
+&gt;&gt;&gt; str.r_repr()
+'c("ab", "bc")'
+&gt;&gt;&gt; str
+&lt;StrVector - Python:0x10c6dbe18 / R:0x7fd09d5a12e8&gt;
+[str, str]
+&gt;&gt;&gt; str[0]
+'ab'
+&gt;&gt;&gt; len(str)
+2
+</code></p>
+
+<p>可以看到，str就是一个字符向量，属于R中的对象，在Python中使用<code>[</code>可以取出其中的值。</p>
+
+<p>同理，可以创建其它类型的向量：</p>
+
+<p><code>python
+&gt;&gt;&gt; int = robjects.IntVector([1, 2, 3])
+&gt;&gt;&gt; int.r_repr()
+'1:3'
+&gt;&gt;&gt; float = robjects.FloatVector([1, 2, 3.0])
+&gt;&gt;&gt; float
+&lt;FloatVector - Python:0x10c6dbf80 / R:0x7fd09d7e7608&gt;
+[1.000000, 2.000000, 3.000000]
+&gt;&gt;&gt; float.r_repr()
+'c(1, 2, 3)'
+</code></p>
+
+<p>解决向量，那么就要考虑矩阵了，想想在R中是如何构建矩阵的：</p>
+
+<p><code>r
+&gt; x &lt;- c(1, 2, 3, 4, 5, 6)
+&gt; x.mat &lt;- matrix(x, nrow = 2)
+&gt; x.mat
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+</code></p>
+
+<p>可以看到，我们需要用的函数<code>matrix()</code>。那么我们就需要调用R中的对象<code>matrix()</code>函数：</p>
+
+<p><code>python
+&gt;&gt;&gt; x = robjects.FloatVector([1, 2, 3, 4, 5, 6])
+&gt;&gt;&gt; xMat = robjects.r['matrix'](x, nrow = 2)
+&gt;&gt;&gt; xMat
+&lt;Matrix - Python:0x10c6dbb00 / R:0x7fd09da59c20&gt;
+[1.000000, 2.000000, 3.000000, 4.000000, 5.000000, 6.000000]
+&gt;&gt;&gt; xMat.r_repr()
+'structure(c(1, 2, 3, 4, 5, 6), .Dim = 2:3)'
+&gt;&gt;&gt; print(xMat)
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+</code></p>
+
+<p>想想，这样其实蛮麻烦的，在R中我们可以使用<code>1:6</code>创建向量，这边打这么长可是不喜欢。那么就有两种方式可以解决：</p>
+
+<p><code>python
+&gt;&gt;&gt; x = robjects.FloatVector(range(7)[1:])
+&gt;&gt;&gt; x
+&lt;FloatVector - Python:0x10c434ab8 / R:0x7fd09b7b5820&gt;
+[1.000000, 2.000000, 3.000000, 4.000000, 5.000000, 6.000000]
+</code></p>
+
+<p>这种就是使用Python本身的<code>range()</code>函数，然后使用<code>robjects.FloatVector()</code>转换数据结构。还有一种，就是使用R对象<code>:</code>：</p>
+
+<p><code>python
+&gt;&gt;&gt; x = robjects.r[':'](1, 6)
+&gt;&gt;&gt; x
+&lt;IntVector - Python:0x10c44f170 / R:0x7fd09b125b58&gt;
+[       1,        2,        3,        4,        5,        6]
+</code></p>
+
+<h3 id="r-2">调用R函数</h3>
+<hr />
+
+<p>上面已经试过了调用R中的<code>matrix()</code>函数，再试试调用R中的函数<code>mean()</code>函数：</p>
+
+<p><code>python
+&gt;&gt;&gt; rmean = robjects.r['mean']
+&gt;&gt;&gt; x = robjects.r[':'](1, 3)
+&gt;&gt;&gt; x
+&lt;IntVector - Python:0x10c6dba28 / R:0x7fd09bb9b298&gt;
+[       1,        2,        3]
+&gt;&gt;&gt; rmean(x)[0]
+2.0
+</code></p>
+
+<p>这里需要记住的就是，调用的R函数作用在R对象上，返回的仍然是R对象。</p>
+
+<p>知道了如何调用R函数，那么如果是自己想写一个R函数呢？其实我们可以直接在<code>robjects.r</code>中添加对象：</p>
+
+<p><code>python
+&gt;&gt;&gt; robjects.r('''
+...         f &lt;- function(x) {
+...             if (length(x) &gt; 2) {
+...                 return(mean(x))
+...             }
+...             return(sum(x))
+...         }
+...         ''')
+&lt;SignatureTranslatedFunction - Python:0x10c6dbc20 / R:0x7fd09d25aea8&gt;
+&gt;&gt;&gt; rf = robjects.r['f']
+&gt;&gt;&gt; rf(robjects.r[':'](1, 6))
+&lt;FloatVector - Python:0x10c6dbd40 / R:0x7fd09bd4ea68&gt;
+[3.500000]
+&gt;&gt;&gt; rf(robjects.r[':'](1, 2))
+&lt;IntVector - Python:0x10c6f12d8 / R:0x7fd09bd4dcf8&gt;
+[       3]
+</code></p>
+
+<p>在<code>robjects.r</code>中添加了<code>f()</code>函数的对象，我们就可以调用它了。当然，还可以在Python中直接写R的脚本，然后直接运行：</p>
+
+<p><code>python
+&gt;&gt;&gt; rscript = '''
+...         f &lt;- function(x) {
+...             if (length(x) &gt; 2) {
+...                 return(mean(x))
+...             }
+...         return(sum(x))
+...         }
+...
+...         f(1:2)
+...         '''
+&gt;&gt;&gt; robjects.r(rscript)
+&lt;IntVector - Python:0x10c6db7e8 / R:0x7fd09bd4e268&gt;
+[       3]
+</code></p>
+
+<p>上面两种其实是一个意思，都是在<code>robjects.r</code>中添加了R脚本。当然，也可以运行写好的”*.r”的脚本，使用<code>robjects.r.source(&lt;path&gt;)</code>即可。</p>
+
+<h3 id="section-2">最后</h3>
+<hr />
+
+<p>对<code>rpy2</code>的简单介绍就到这吧，这是一个很不错的库，功能远远不止我上面介绍的这一些，感兴趣的话，可以去<a href="http://rpy.sourceforge.net/">它的官网</a>查看其介绍的文档，你肯定会发现很多新鲜好玩的东西。</p>
+
+<h4 id="section-3">参考</h4>
+<hr />
+
+<ol>
+  <li><a href="http://rpy.sourceforge.net/rpy2/doc-2.4/html/overview.html#installation">rpy2的官方文档</a></li>
+  <li><a href="http://www.jeffkit.info/2010/02/475/">让R与Python共舞</a></li>
+  <li><a href="https://www.google.com.hk/search?q=rpy2">…</a></li>
+</ol>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[R语言记录8：Loop Functions]]></title>
+    <link href="http://jackycode.github.io/blog/2014/05/04/loop-functions/"/>
+    <updated>2014-05-04T14:56:40+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/05/04/loop-functions</id>
+    <content type="html"><![CDATA[<p><img src="/images/article/article30.jpg" alt="ariticle 30" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>循环对于编程的重要性不言而喻，但是大量的使用<code>for</code>语句、<code>while</code>语句在R语言这种交互式命令行上，其实并不和谐。而且，很多时候，我们希望使用更短更少的代码去完成一个事情。这就需要用到R语言中自带的一些函数，使用这些函数可以把循环变得容易表述。不过，这当然是有学习成本的，要想掌握得多尝试多思考。</p>
+
+<p>在RSeries系列中，我之前也介绍过<code>tapply</code>这样的Loop function，但是并没有很全面地去说这个问题。没有介绍这块内容呢，总觉得对于R语言编程来说缺少了点什么，今天就来详细地说说R语言中的Loop Functions。</p>
+
+<p>在R语言中，处理循环的函数常用的大致有这么几个：<code>lapply</code>, <code>sapply</code>, <code>apply</code>, <code>tapply</code>, <code>mapply</code>。每一个函数都有其自身的特性与用途，下面我们来一个一个地说。</p>
+
+<hr />
+
+<h4 id="lapply">1. <code>lapply</code>函数</h4>
+<hr />
+
+<p><code>lapply</code>函数：<strong>对list的每一个元素(list[[i]])执行指定的函数操作，其返回值总是一个列表</strong>。举个简单地例子，比如：</p>
+
+<p><code>r
+x &lt;- list(1:4, 2:5, 10:14)
+lapply(x, mean)
+</code></p>
+
+<p><code>
+## [[1]]
+## [1] 2.5
+##
+## [[2]]
+## [1] 3.5
+##
+## [[3]]
+## [1] 12
+</code></p>
+
+<p>也就是对列表x的每一个元素<code>x[[i]]</code>执行指定的函数操作，这边就是求均值<code>mean</code>。</p>
+
+<p>当然，<code>lapply</code>函数不仅仅可以对列表做出处理，也可以是向量，不过这个情况并不适用于任何地方。比如，你想生成随机数，第一次生成1个，第二次生成3个，第三次5个，那么可以试试这个函数：</p>
+
+<p><code>r
+lapply(c(1, 3, 5), rnorm)
+</code></p>
+
+<p><code>
+## [[1]]
+## [1] -0.5622
+##
+## [[2]]
+## [1] -0.8519  0.3671  0.4243
+##
+## [[3]]
+## [1]  0.09395 -1.19474  1.52337 -1.97529  0.47370
+</code></p>
+
+<p>这样使用的情况非常少，使用时需要特别注意一下。</p>
+
+<p>当然，在<code>lapply</code>中你也可以使用自定义的函数，比如：</p>
+
+<p><code>r
+x &lt;- list(1:4, 2:5, 10:14)
+lapply(x, function(item) any(item == 5))
+</code></p>
+
+<p><code>
+## [[1]]
+## [1] FALSE
+##
+## [[2]]
+## [1] TRUE
+##
+## [[3]]
+## [1] FALSE
+</code></p>
+
+<p>这边，自定义函数中使用<code>item</code>代表<code>x</code>的每一个元素，你也可以使用任何你想用的字符表示。</p>
+
+<hr />
+
+<h4 id="sapply">2. <code>sapply</code>函数</h4>
+<hr />
+
+<p><code>sapply</code>函数与<code>lapply</code>函数使用与处理上完全相同，唯一不同的是，<code>sapply</code>会尽可能地简化输出地结果。如果可能，<code>sapply</code>会输出向量或者矩阵；当然，如果实在不行，它就会输出列表，这个时候就与<code>lapply</code>函数一模一样了。接着上面一个例子看看：</p>
+
+<p><code>r
+x &lt;- list(1:4, 2:5, 10:14)
+sapply(x, function(item) any(item == 5))
+</code></p>
+
+<p><code>
+## [1] FALSE  TRUE FALSE
+</code></p>
+
+<hr />
+
+<h4 id="apply">3. <code>apply</code>函数</h4>
+<hr />
+
+<p><code>apply</code>函数：对数组或矩阵，按行或者按列进行指定的函数操作。看个简单地例子：</p>
+
+<p><code>r
+x &lt;- matrix(1:12, 4, 3)
+x
+</code></p>
+
+<p><code>
+##      [,1] [,2] [,3]
+## [1,]    1    5    9
+## [2,]    2    6   10
+## [3,]    3    7   11
+## [4,]    4    8   12
+</code></p>
+
+<p>```r</p>
+
+<p>apply(x, 1, mean)
+```</p>
+
+<p><code>
+## [1] 5 6 7 8
+</code></p>
+
+<p><code>r
+apply(x, 2, mean)
+</code></p>
+
+<p><code>
+## [1]  2.5  6.5 10.5
+</code></p>
+
+<p>其中，<code>apply(data, margin, fun)</code>，<code>margin=1</code>即是按行求；<code>margin=2</code>即是按列求。</p>
+
+<hr />
+
+<h4 id="tapply">4. <code>tapply</code>函数</h4>
+<hr />
+
+<p><code>tapply</code>函数：对向量的一个子集执行指定的函数。</p>
+
+<p><code>r
+str(tapply)
+</code></p>
+
+<p><code>
+## function (X, INDEX, FUN = NULL, ..., simplify = TRUE)
+</code></p>
+
+<p>其中<code>x</code>是需要处理的向量，<code>INDEX</code>是因子(因子列表)，<code>FUN</code>是需要执行的函数，<code>simplify</code>指是否简化输入结果(考虑sapply对于lapply的简化)。</p>
+
+<p>看个简单地例子：</p>
+
+<p><code>r
+x &lt;- 1:12
+x
+</code></p>
+
+<p><code>
+##  [1]  1  2  3  4  5  6  7  8  9 10 11 12
+</code></p>
+
+<p>```r</p>
+
+<p>Index &lt;- gl(3, 4)
+Index
+```</p>
+
+<p><code>
+##  [1] 1 1 1 1 2 2 2 2 3 3 3 3
+## Levels: 1 2 3
+</code></p>
+
+<p>```r</p>
+
+<p>Index2 &lt;- gl(4, 3)
+Index2
+```</p>
+
+<p><code>
+##  [1] 1 1 1 2 2 2 3 3 3 4 4 4
+## Levels: 1 2 3 4
+</code></p>
+
+<p>```r</p>
+
+<p>tapply(x, Index, sum)
+```</p>
+
+<p><code>
+##  1  2  3
+## 10 26 42
+</code></p>
+
+<p><code>r
+tapply(x, Index2, sum)
+</code></p>
+
+<p><code>
+##  1  2  3  4
+##  6 15 24 33
+</code></p>
+
+<p>不简化输出结果：</p>
+
+<p><code>r
+tapply(x, Index2, sum, simplify = FALSE)
+</code></p>
+
+<p><code>
+## $`1`
+## [1] 6
+##
+## $`2`
+## [1] 15
+##
+## $`3`
+## [1] 24
+##
+## $`4`
+## [1] 33
+</code></p>
+
+<h4 id="mapply">5. <code>mapply</code>函数</h4>
+<hr />
+
+<p><code>mapply</code>函数：对一个函数，使用指定的参数集合进行运算。看个简单地例子：</p>
+
+<p><code>r
+mapply(mean, 1:4, 5:8, 3:6)
+</code></p>
+
+<p><code>
+## [1] 1 2 3 4
+</code></p>
+
+<p>上面这个指令进行了什么运算呢？就是计算了集合(1,5,3),(2,6,4),(3,7,5),(4,8,6)四个集合各自的平均值。</p>
+
+<h5 id="section">如何处理其他参数</h5>
+
+<p>很多时候，函数并非只有一个输入参数，有一些其它的参数怎么处理呢？</p>
+
+<p>使用<code>rnorm</code>函数来举个例子：</p>
+
+<p><code>r
+set.seed(10)
+mapply(rnorm, 1:3, mean = 2, sd = 1:3)
+</code></p>
+
+<p><code>
+## [[1]]
+## [1] 2.019
+##
+## [[2]]
+## [1]  1.6315 -0.7427
+##
+## [[3]]
+## [1] 0.2025 2.8836 3.1694
+</code></p>
+
+<p><code>r
+set.seed(10)
+mapply(rnorm, 1:3, mean = 1:3, sd = 1)
+</code></p>
+
+<p><code>
+## [[1]]
+## [1] 1.019
+##
+## [[2]]
+## [1] 1.8157 0.6287
+##
+## [[3]]
+## [1] 2.401 3.295 3.390
+</code></p>
+
+<p>上述的命令应该与下面的命令效果相同：</p>
+
+<p><code>r
+set.seed(10)
+list(rnorm(1, 2, 1), rnorm(2, 2, 2), rnorm(3, 2, 3))
+</code></p>
+
+<p><code>
+## [[1]]
+## [1] 2.019
+##
+## [[2]]
+## [1]  1.6315 -0.7427
+##
+## [[3]]
+## [1] 0.2025 2.8836 3.1694
+</code></p>
+
+<p><code>r
+set.seed(10)
+list(rnorm(1, 1, 1), rnorm(2, 2, 1), rnorm(3, 3, 1))
+</code></p>
+
+<p><code>
+## [[1]]
+## [1] 1.019
+##
+## [[2]]
+## [1] 1.8157 0.6287
+##
+## [[3]]
+## [1] 2.401 3.295 3.390
+</code></p>
+
+<h4 id="section-1">小节</h4>
+<hr />
+
+<p>Loop Functions可以在很大程度上简化我们所写的代码，能够帮我们简化很多操作，比如重复地输入一些东西等等！学好它可能对于程序运行本身没有多大的帮助，但是代码并不只是写给计算机看的，也是写给人看的！我认为，好的代码应该是简洁舒适的，阅读起来让自己和别人都觉得是一种美的享受！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[R语言记录7：相关分析]]></title>
+    <link href="http://jackycode.github.io/blog/2014/03/17/rseries7/"/>
+    <updated>2014-03-17T16:46:47+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/03/17/rseries7</id>
+    <content type="html"><![CDATA[<p><img src="/images/article/article10.jpg" alt="ariticle 10" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>变量之间的关系，大致可分为两种：<em>函数关系</em>和<em>相关关系</em>。</p>
+
+<p>函数关系，简单来说就是可以将变量之间的关系用方程(其实就是函数)来描述：$y=f(x)$，处理这种关系对应的统计方法就是<strong><em>回归分析</em></strong>。</p>
+
+<p>相关关系，就是指变量之间存在不完全确定的依赖关系，其数值不能够使用函数表示出来，这个对应的就是<strong><em>相关分析</em></strong>。</p>
+
+<p>判断变量之间是否存在相关关系，最直接简单的方法就是画出两个变量之间的散点图。</p>
+
+<h4 id="section">1. 散点图</h4>
+<p>我们使用<code>cars</code>数据集中的数据进行演示,<code>cars</code>数据集中包含了汽车速度与制动距离的数据，显然直观感觉这两个变量之间肯定存在相关关系。画个散点图看看：</p>
+
+<p><code>r Correlation_Analysis.r https://github.com/JackyCode/RSeries
+&gt; head(cars)
+  speed dist
+1     4    2
+2     4   10
+3     7    4
+4     7   22
+5     8   16
+6     9   10
+&gt; with (cars, {
++ 	plot(speed, dist)
++ })
+</code></p>
+
+<p>得到如下图形：</p>
+
+<p><img src="/images/RSeries7/scatter.jpg" alt="scatter" /></p>
+
+<p>从散点图看，汽车速度与其制动距离存在相关关系。但是，仅仅从图像来看，我们只能得到大概是否相关，而不能给出一个确切的描述。那么就希望能够找到一个方法，能够描述变量之间有多相关，程度有多大。</p>
+
+<h4 id="section-1">2. 相关的种类</h4>
+<p>根据相关程度，我们可以给相关进行分类：完全相关，不完全相关，完全不相关；而根据相关方向的不同，又可以分类：正相关(一个变大另一个也变大)，负相关。那么怎么用数学的方式去描述这些种类呢，那就需要用到相关系数。</p>
+
+<h5 id="section-2">(1). 相关系数</h5>
+<p>相关系数的符号用来代表正负相关($+$ -&gt; 正；$-$ -&gt; 负)，其值的大小用来描述相关程度的大小(0~1:完全不相关~完全相关)。相关系数的定义有很多，常用的有Person相关系数、Spearman相关系数等等。这里给出最常用的Person相关系数的计算方法：</p>
+
+<script type="math/tex; mode=display">\gamma=\frac{\sum_{i=1}^{n}{(x_i-\overline{x})(y_i-\overline{y})}}{\sqrt{\sum_{i=1}^{n}{(x_i-\overline{x})^2}\sum_{i=1}^{n}{(y_i-\overline{y})^2}}}</script>
+
+<p>当样本个数充分大时，样本相关系数可以作为总体相关系数的估计。</p>
+
+<p>在R中，可以使用<code>cor</code>函数来得到变量间的相关系数矩阵：</p>
+
+<p><code>r Correlation_Analysis.r https://github.com/JackyCode/RSeries
+&gt; cor(cars)
+          speed      dist
+speed 1.0000000 0.8068949
+dist  0.8068949 1.0000000
+</code></p>
+
+<p>可以看到，$corr(speed, dist)=0.8068949$，说明汽车速度与其制动距离之间存在较强的正相关关系。</p>
+
+<h6 id="section-3">注：</h6>
+<p>可以指定<code>cor</code>的参数得到不同的相关系数：</p>
+
+<p><code>r Correlation_Analysis.r https://github.com/JackyCode/RSeries
+&gt; cor(cars, method='spearman')
+          speed      dist
+speed 1.0000000 0.8303568
+dist  0.8303568 1.0000000
+</code></p>
+
+<h5 id="section-4">(2). 相关性的显著性检验</h5>
+<p>得到了两个变量之间的相关系数，那就需要检验，得到的结果是否能够通过显著性检验。即相关性到底显著与否。</p>
+
+<p>这里需要建立假设检验：$H_0:$ 变量X和Y不相关；那么可以构造检验统计量如下：</p>
+
+<script type="math/tex; mode=display">T = \frac{\gamma(X,Y)\sqrt{n-2}}{\sqrt{1-\gamma(X,Y)^2}}</script>
+
+<p>在零假设成立的条件下，<script type="math/tex">T \sim t(n-2)</script>。那么若有$T &gt; t_{1-\alpha}(n-2)$，则拒绝原假设，说明变量X和Y存在显著的相关关系。</p>
+
+<h6 id="section-5">注：这里提到的内容可以到参数统计的书籍上寻找。</h6>
+
+<p>在R中，我们可以使用<code>cor.test</code>函数很轻松地对此进行检验：</p>
+
+<p>``` r Correlation_Analysis.r https://github.com/JackyCode/RSeries
+&gt; with(cars, {
++ 	cor.test(speed, dist)
++ })</p>
+
+<pre><code>Pearson's product-moment correlation
+</code></pre>
+
+<p>data:  speed and dist
+t = 9.464, df = 48, p-value = 1.49e-12
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.6816422 0.8862036
+sample estimates:
+      cor
+0.8068949
+```</p>
+
+<p>从结果可以看到，$t=9.464$这个不容易看出来结果，因为还需要查表。我们可以选择直接看$p$值：1.49e-12，比0.05小太多了。故而拒绝原假设，认为汽车速度与制动距离存在高度相关关系。</p>
+
+<h6 id="spearman">注：这里如何修改，使得其使用spearman相关系数呢？</h6>
+
+<p>到此，就将相关分析的大致内容进行了阐述。但是，相关分析也还有很多其它内容，比如偏相关等等。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[R语言记录6：描述统计2]]></title>
+    <link href="http://jackycode.github.io/blog/2014/03/14/rseries6/"/>
+    <updated>2014-03-14T16:31:26+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/03/14/rseries6</id>
+    <content type="html"><![CDATA[<p><img src="/images/article/article9.jpg" alt="ariticle 9" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<h4 id="section">二. 可视化</h4>
+<p>开头我们就说过，描述性统计分析包括计算统计量的值，也可以进行制表画图。首先我们看看如何在R中绘制列联表：</p>
+
+<h5 id="section-1">1. 频数表和列联表</h5>
+<p>如果数据集中对应的变量都是定性变量，即是上一节中我们所说的分类数据（还记得分组数据的描述性统计量的计算吗）。对于这种数据，作图很多时候并没有太大的意义。一般，我们会采取绘制列联表的方式去描述数据。</p>
+
+<p>在数据集<code>mtcars</code>中，有不少定性变量，这里取出其中的<code>am</code>,<code>gear</code>和<code>carb</code>作演示。首先看看一维的情况：</p>
+
+<p>``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+&gt; dataSub &lt;- data.frame(am=mtcars$am, gear=mtcars$gear, carb=mtcars$carb)
+&gt; head(dataSub)
+  am gear carb
+1  1    4    4
+2  1    4    4
+3  1    4    1
+4  0    3    1
+5  0    3    2
+6  0    3    1
+&gt; with(dataSub, {
++ 	mytable &lt;- list(table(am), table(gear), table(carb))
++ 	mytable
++ })
+[[1]]
+am
+ 0  1
+19 13</p>
+
+<p>[[2]]
+gear
+ 3  4  5
+15 12  5</p>
+
+<p>[[3]]
+carb
+ 1  2  3  4  6  8
+ 7 10  3 10  1  1
+```</p>
+
+<p>一维的情况，其实就是统计频数，把每个类别各自的频数计算出来就可以了。像<code>am</code>变量，其结果告诉我们，用自动挡的有19人，用手动挡的是13人(0 -&gt; 19; 1 -&gt; 13)。再来看看二维的：</p>
+
+<p>``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+&gt; with(dataSub, {
++ 	mytable2 &lt;- list(table(am, carb), table(carb, am))
++ 	mytable2
++ })
+[[1]]
+   carb
+am  1 2 3 4 6 8
+  0 3 6 3 7 0 0
+  1 4 4 0 3 1 1</p>
+
+<p>[[2]]
+    am
+carb 0 1
+   1 3 4
+   2 6 4
+   3 3 0
+   4 7 3
+   6 0 1
+   8 0 1
+```</p>
+
+<p>可以看到，对于二维来说，绘制的方法与一维类似。但是，这里有个可以深入的东西，那就是边际列表。也就是利用二维列联表得到一维列联表：</p>
+
+<p>``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+&gt; with(dataSub, {
++ 	mytable2 &lt;- list(table(am, carb), table(carb, am))
++ 	mytableConvert &lt;- list(margin.table(mytable2[[1]], 1),
++ 		margin.table(mytable2[[1]], 2)) # 选项1和2控制按行和按列
++ 	mytableConvert
++ })
+[[1]]
+am
+ 0  1
+19 13</p>
+
+<p>[[2]]
+carb
+ 1  2  3  4  6  8
+ 7 10  3 10  1  1
+```</p>
+
+<p>可以看到，使用<code>margin.table</code>函数可以很容易得到一个列表的边际列表。下面看看三维的情况：</p>
+
+<p>``` r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+&gt; with(dataSub, {
++ 	mytable3 &lt;- table(am, carb, gear)
++ 	mytable3
++ })
+, , gear = 3</p>
+
+<p>carb
+am  1 2 3 4 6 8
+  0 3 4 3 5 0 0
+  1 0 0 0 0 0 0</p>
+
+<p>, , gear = 4</p>
+
+<p>carb
+am  1 2 3 4 6 8
+  0 0 2 0 2 0 0
+  1 4 2 0 2 0 0</p>
+
+<p>, , gear = 5</p>
+
+<p>carb
+am  1 2 3 4 6 8
+  0 0 0 0 0 0 0
+  1 0 2 0 1 1 1
+```</p>
+
+<p>其实<code>table</code>函数可以处理三维以及三维以上的列联表，你可以自己试一试。现在我们已经能够使用R轻松地绘制出频数表了，但很多时候，我们希望得到的是频率表，那应该怎么绘制呢？试试这个函数<code>prop.table()</code>：</p>
+
+<p><code>r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+&gt; with(dataSub, {
++ 	mytable &lt;- list(table(am), table(gear), table(carb))
++ 	prop.table(mytable[[1]])
++ })
+am
+      0       1
+0.59375 0.40625
+</code></p>
+
+<p>二维以及以上都可以这么处理。那么，如果需要求的是全局相对频率列联表呢？想想，那不就是频数除以总数嘛，直接一句代码不就搞定了嘛：</p>
+
+<p><code>r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+&gt; with(dataSub, {
++ 	mytable2 &lt;- list(table(am, carb), table(carb, am))
++ 	mytable2[[1]]/sum(mytable2[[1]])
++ })
+   carb
+am        1       2       3       4       6       8
+  0 0.09375 0.18750 0.09375 0.21875 0.00000 0.00000
+  1 0.12500 0.12500 0.00000 0.09375 0.03125 0.03125
+</code></p>
+
+<h5 id="section-2">2. 图形</h5>
+<p>常用的图形一般有：直方图，散点图，框须图等等。我们一个一个来看一下：</p>
+
+<h6 id="a-">a. 直方图</h6>
+<p>我们使用<code>mtcars$mpg</code>数据作演示，首先你可以检查一下<code>mpg</code>的范围，然后确定频数直方图的分割大小(使用参数<code>break</code>设定)，这里我们不设定，让R自动生成：</p>
+
+<p><code>r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+&gt; range(mtcars$mpg)
+[1] 10.4 33.9
+&gt; hist(mtcars$mpg)
+</code></p>
+
+<p>得到如下的图形：</p>
+
+<p><img src="/images/RSeries6/Histogram1.jpg" alt="Histogram1" /></p>
+
+<p>其实更多地，我们希望得到频率直方图，并且给出其核密度曲线以及正态密度曲线。</p>
+
+<p><code>r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+&gt; hist(mtcars$mpg, probability=TRUE)
+&gt; dens &lt;- density(mtcars$mpg)
+&gt; mean &lt;- mean(mtcars$mpg)
+&gt; sd &lt;- sd(mtcars$mpg)
+&gt; lines(dens, col='red', lty=2)
+&gt; curve(dnorm(x, mean, sd), col='blue', add=TRUE)
+&gt; legend("topright", inset = 0.05, c("density", "normal"),
++   lty = c(2, 1), col = c("red", "blue"))
+</code></p>
+
+<p>得到图形如下：</p>
+
+<p><img src="/images/RSeries6/Histogram2.jpg" alt="Histogram2" /></p>
+
+<h6 id="b-">b. 散点图</h6>
+<p>我们可以使用<code>plot</code>函数直接画出散点图，此外，我这里还给散点图加上了一条拟合曲线。<code>lowess()</code>函数可以用特殊的曲线对二维数据进行非线性拟合(多维的情况需要使用<code>loess()</code>函数)。</p>
+
+<p><code>r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+&gt; plot(mtcars$disp ~ mtcars$mpg)
+&gt; lines(lowess(mtcars$mpg, mtcars$disp), lwd=2, col='blue')
+</code></p>
+
+<p><img src="/images/RSeries6/Scatter.jpg" alt="Scatter" /></p>
+
+<h6 id="c-">c. 框须图</h6>
+<p>框须图,也称为盒形图、箱线图。其通过绘制连续型变量的五数(最小最大值，中位数以及上下侧四分位数)来描述变量的分布。可以使用<code>boxplot</code>函数来得到：</p>
+
+<p><code>r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+&gt; boxplot(mtcars$mpg)
+</code></p>
+
+<p><img src="/images/RSeries6/box1.jpg" alt="box1" /></p>
+
+<p>也可以使用<code>boxplot</code>函数展示分组变量，例如这里<code>mtcars</code>中有<code>am</code>变量，可以使用该函数画出不同的<code>am</code>值对应的箱线图：</p>
+
+<p><code>r descriptvie_statistics2.R https://github.com/JackyCode/RSeries
+&gt; boxplot(mpg ~ am, data=mtcars)
+</code></p>
+
+<p><img src="/images/RSeries6/box2.jpg" alt="box2" /></p>
+
+<p>到这边，就基本上把描述统计的一些主体内容说了一下。不过，描述统计并不是只有这点东西，此外，我讲的这些作图啊，制表啊其实都没有深入地去讲。而且对于R语言的研究学习来说，我上面做的图还太简单了，没有给图起名称，也没有横纵轴的名称等等。这些在R语言的帮助文档里有详细的讲解说明，有兴趣的话可以看看。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[R语言记录5：描述统计1]]></title>
+    <link href="http://jackycode.github.io/blog/2014/03/12/rseries5/"/>
+    <updated>2014-03-12T15:57:02+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/03/12/rseries5</id>
+    <content type="html"><![CDATA[<p><img src="/images/article/article8.jpg" alt="ariticle 8" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>数据的统计分析分为：<strong><em>描述性统计分析</em></strong>和<strong><em>统计推断</em></strong>两个部分。描述性统计分析，一般又称为探索性统计分析。简单来讲，描述统计就是用简单直观的方法给出数据的一种易于理解的描述，比如说散点图，频率直方图；又或者计算简单的统计量，如均值方差等等。下面先来看看如何计算常用的描述性统计量：</p>
+
+<h4 id="section">一. 描述性统计量</h4>
+
+<h5 id="section-1">1. 单组数据</h5>
+<p>常用的描述性统计量大致有这么几个：</p>
+
+<h6 id="n">1. 样本大小。即样本的个数，一般用$n$表示；</h6>
+
+<h6 id="overlinexfrac1nsumi1nxi">2. 样本均值。即$\overline{X}=\frac{1}{n}\sum_{i=1}^{n}{X_i}$；</h6>
+
+<h6 id="s2frac1nsumi1nxi-overlinex2">3. 样本方差。即$s^2=\frac{1}{n}\sum_{i=1}^{n}{(X_i-\overline{X})^2}$;</h6>
+
+<h6 id="section-2">4. 样本分位数、偏度、峰度等等。</h6>
+
+<p>在R语言中，<code>summary()</code>函数可以得到样本数据的最小值、最大值、四分位数以及均值。这里我们使用R语言自带的数据集<code>mtcars</code>作演示，你可以使用我们之前教过的方法先看看<code>mtcars</code>中的数据长什么样子(<code>head</code>函数，<code>??</code>得到帮助)。</p>
+
+<p><code>r descriptive_statistics1.R https://github.com/JackyCode/RSeries
+&gt; str(mtcars) # 可以查看数据集的一些基本信息
+'data.frame':	32 obs. of  11 variables:
+ $ mpg : num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+ $ cyl : num  6 6 4 6 8 6 8 4 4 6 ...
+ $ disp: num  160 160 108 258 360 ...
+ $ hp  : num  110 110 93 110 175 105 245 62 95 123 ...
+ $ drat: num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...
+ $ wt  : num  2.62 2.88 2.32 3.21 3.44 ...
+ $ qsec: num  16.5 17 18.6 19.4 17 ...
+ $ vs  : num  0 0 1 1 0 1 0 1 1 1 ...
+ $ am  : num  1 1 1 0 0 0 0 0 0 0 ...
+ $ gear: num  4 4 4 3 3 3 3 4 4 4 ...
+ $ carb: num  4 4 1 1 2 1 4 2 2 4 ...
+&gt; summary(mtcars$mpg)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  10.40   15.42   19.20   20.09   22.80   33.90
+</code></p>
+
+<p>可以使用<code>mean</code>和<code>sd</code>函数得到样本均值和样本标准差，<code>quantile</code>函数计算样本分位数：</p>
+
+<p><code>r descriptive_statistics1.R https://github.com/JackyCode/RSeries
+&gt; mean(mtcars$mpg)
+[1] 20.09062
+&gt; sd(mtcars$mpg)
+[1] 6.026948
+&gt; quantile(mtcars$mpg, 0.25)
+   25%
+15.425
+&gt; quantile(mtcars$mpg, c(0.25, 0.75))
+   25%    75%
+15.425 22.800
+</code></p>
+
+<p>但是在R的基础包里面并没有计算偏度(skewness)和峰度(kurtosis)的函数，我们可以自定义一个函数，用来计算常用的描述性统计量：</p>
+
+<p>首先给出偏度$\beta_s$与峰度$\beta_k$的计算公式：</p>
+
+<script type="math/tex; mode=display">\beta_s = \frac{E(X-E(X))^3}{[E(X-E(X))^2]^{3/2}}</script>
+
+<script type="math/tex; mode=display">\beta_k = \frac{E(X-E(X))^4}{[E(X-E(X))^2]^2} - 3</script>
+
+<p>``` r descriptive_statistics1.R https://github.com/JackyCode/RSeries
+&gt; desc.stats &lt;- function(x, na.omit=FALSE) { # na.omit=TRUE 表示忽略缺失值
++ 	if (na.omit)
++ 		x &lt;- x[!is.na(x)]
++
++ 	n &lt;- length(x)
++ 	mean &lt;- mean(x)
++ 	var &lt;- var(x)
++ 	sd &lt;- sd(x)
++ 	skew &lt;- sum((x-mean)^3/sd^3)/n
++ 	kurt &lt;- sum((x-mean)^4/sd^4)/n - 3
++
++ 	return(list(mean=mean, Variance=var, skewness=skew, kurtosis=kurt))
++ }
+&gt; desc.stats(mtcars$mpg)
+$mean
+[1] 20.09062</p>
+
+<p>$Variance
+[1] 36.3241</p>
+
+<p>$skewness
+[1] 0.610655</p>
+
+<p>$kurtosis
+[1] -0.372766
+```</p>
+
+<p>到此为止，我们就可以使用R语言对一组数据进行简单的探索性分析了。其实，在R语言的很多扩展包里面，都有计算描述性统计量的函数，例如Hmisc包中有<code>describe()</code>函数，可以返回变量数目，缺失值数目，均值，分位数等等信息；在fBasic包中有<code>skewness()</code>和<code>kurtosis()</code>函数，可以分别求偏度与峰度，在该包内还有一个函数，<code>basicStats()</code>可以得到大部分的描述性统计量。</p>
+
+<h5 id="section-3">2. 多组数据</h5>
+<p>若是存在多组数据，那么在R中如何对数据进行统计量的计算呢？我们不妨先来试试<code>summary</code>函数能否对多组数据做出很好的处理：</p>
+
+<p><code>r descriptive_statistics1.R https://github.com/JackyCode/RSeries
+&gt; mtcars.sub &lt;- data.frame(mpg=mtcars$mpg, wt=mtcars$wt) # 取出两个变量
+&gt; summary(mtcars.sub)
+      mpg              wt
+ Min.   :10.40   Min.   :1.513
+ 1st Qu.:15.43   1st Qu.:2.581
+ Median :19.20   Median :3.325
+ Mean   :20.09   Mean   :3.217
+ 3rd Qu.:22.80   3rd Qu.:3.610
+ Max.   :33.90   Max.   :5.424
+</code></p>
+
+<p>显然，<code>summary</code>函数能够直接对多组数据进行计算。那么怎么批量地对多组数据使用我们自定义的函数<code>desc.stats</code>呢？还记得我们曾经介绍过<code>sapply</code>函数吗，想想它的功能就知道如何解决这个问题了吧。</p>
+
+<p><code>r descriptive_statistics1.R https://github.com/JackyCode/RSeries
+&gt; sapply(mtcars.sub, desc.stats)
+         mpg       wt
+mean     20.09062  3.21725
+Variance 36.3241   0.957379
+skewness 0.610655  0.4231465
+kurtosis -0.372766 -0.02271075
+</code></p>
+
+<h5 id="section-4">3. 分组数据</h5>
+<p>我们知道，很多时候我们会对数据进行分类。像这里的数据<code>mtcars</code>，其有变量<code>am</code>用来表示自动挡(0)和手动挡(1)。那么我们就需要对其进行分组，然后求出各组的描述性统计量。还记得<code>tapply()</code>,<code>by()</code>和<code>aggregate()</code>函数吗?试试看：</p>
+
+<p>``` r descriptive_statistics1.R https://github.com/JackyCode/RSeries
+&gt; mtcars.sub2 &lt;- data.frame(mpg=mtcars$mpg, am=mtcars$am, carb=mtcars$carb)
+&gt; tapply(mtcars.sub2$mpg, mtcars.sub2$am, summary)
+$<code>0</code>
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  10.40   14.95   17.30   17.15   19.20   24.40</p>
+
+<p>$<code>1</code>
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  15.00   21.00   22.80   24.39   30.40   33.90</p>
+
+<blockquote>
+  <p>by(mtcars.sub2$mpg, mtcars.sub2$am, summary)
+mtcars.sub2$am: 0
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  10.40   14.95   17.30   17.15   19.20   24.40
+————————————————————
+mtcars.sub2$am: 1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  15.00   21.00   22.80   24.39   30.40   33.90</p>
+
+  <p>aggregate(mpg ~ am, mtcars.sub2, summary)
+  am mpg.Min. mpg.1st Qu. mpg.Median mpg.Mean mpg.3rd Qu. mpg.Max.
+1  0    10.40       14.95      17.30    17.15       19.20    24.40
+2  1    15.00       21.00      22.80    24.39       30.40    33.90
+```
+同样的，如果存在多个分类，我们依旧可以使用上面的函数作出处理：</p>
+</blockquote>
+
+<p><code>r descriptive_statistics1.R https://github.com/JackyCode/RSeries
+&gt; aggregate(mpg ~ am+carb, mtcars.sub2, summary)
+  am carb mpg.Min. mpg.1st Qu. mpg.Median mpg.Mean mpg.3rd Qu. mpg.Max.
+1  0    1    18.10       19.75      21.40    20.33       21.45    21.50
+2  1    1    22.80       26.18      29.85    29.10       32.78    33.90
+3  0    2    15.20       16.30      18.95    19.30       21.90    24.40
+4  1    2    21.40       24.85      28.20    27.05       30.40    30.40
+5  0    3    15.20       15.80      16.40    16.30       16.85    17.30
+6  0    4    10.40       11.85      14.30    14.30       16.25    19.20
+7  1    4    15.80       18.40      21.00    19.27       21.00    21.00
+8  1    6    19.70       19.70      19.70    19.70       19.70    19.70
+9  1    8    15.00       15.00      15.00    15.00       15.00    15.00
+</code></p>
+
+<p>到此为止，就介绍完了如何使用R计算描述性统计量的内容。下一次我们讲看看如何将数据可视化，也就是如何在R中作图以及制表。</p>
+
+]]></content>
+  </entry>
+  
+</feed>

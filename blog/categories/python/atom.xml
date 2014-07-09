@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Python | Jacky and MSC]]></title>
+  <link href="http://jackycode.github.io/blog/categories/python/atom.xml" rel="self"/>
+  <link href="http://jackycode.github.io/"/>
+  <updated>2014-07-09T16:41:27+08:00</updated>
+  <id>http://jackycode.github.io/</id>
+  <author>
+    <name><![CDATA[Jacky Code]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[R与Python的协作：rpy2简介]]></title>
+    <link href="http://jackycode.github.io/blog/2014/07/09/rpy2/"/>
+    <updated>2014-07-09T16:14:12+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/07/09/rpy2</id>
+    <content type="html"><![CDATA[<p><img src="/images/article/article43.jpg" alt="article 43" />
+<!-- more --></p>
+
+<p>图片为rpy2的logo</p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>R语言作为统计分析软件，其在统计分析、图形绘制等等方面是强大的，无与伦比的！但是，如果让R去处理一些文件操作、处理文本、获取数据等等的活，一般来讲，R并不太擅长。举个例子来讲，想从自己的Gmail邮箱中获取邮件信息数据，使用R去完成就有点悲剧了，使用Ruby或者Python，这样的活还是挺容易的。</p>
+
+<p>当然，使用Python做数据分析也是蛮不错的。这里我不想比较Python与R，只想说，我平时使用的习惯是“Python + R”。具体点就是：使用R做数据分析，使用Python完成其它工作！用上面那个例子来说，我会使用Python获取Gmail的数据，然后使用R对数据进行分析处理，大致就是这样！</p>
+
+<p>rpy2是Python的一个第三方程序库，可以实现用python读取R的对象、调⽤R的方法等等。好了，废话不说了，开始说说rpy2吧。</p>
+
+<h3 id="section">安装</h3>
+<hr />
+
+<p>与安装其它Python第三方程序库相同，使用<code>pip install rpy2</code>或者<code>easy_install rpy2</code>就OK了。当然，前提是你的电脑已经安装了R(3.0或以上的版本)。</p>
+
+<h3 id="section-1">开始使用</h3>
+<hr />
+
+<p>安装好之后，就需要导入rpy2。在rpy2中有一个模块：rpy2.robjects，是对R的一个高级封装，这个模块包含了R对象和一些了的R语言的函数。使用rpy2，一般来讲就是使用这个模块。简单理解，Python可以通过“rpy2.robjects”这座桥，连接到R。</p>
+
+<p>``` python
+»&gt; import rpy2.robjects as robjects
+data.table 1.9.2  For help type: help(“data.table”)</p>
+
+<p>Welcome at  Wed Jul  9 10:59:11 2014
+```</p>
+
+<p><em>注</em>：如果你跟我一样，R中安装了“data.table”包，并且设置<code>.First()</code>函数输出“Welcome”的话，你得到跟我一样的返回。</p>
+
+<h3 id="r">R实例</h3>
+<hr />
+
+<p><code>rpy2.robjects</code>中有一个r对象，即r实例指的就是<code>rpy2.robjects</code>.r。它是Python中的嵌入式R进程，可以理解成，通过<code>rpy2.robjects.r</code>，可以在Python中使用R命令，获取R对象。</p>
+
+<p>在rpy2的官方介绍里面，是这么说的：</p>
+
+<blockquote>
+  <p>The object <strong>r</strong> in <strong>rpy2.robjects</strong> represents the running embedded <em>R</em> Process.</p>
+</blockquote>
+
+<p>举个例子，比如说获取R中的对象<code>pi</code>：</p>
+
+<p><code>python
+&gt;&gt;&gt; pi = robjects.r['pi']
+&gt;&gt;&gt; pi
+&lt;FloatVector - Python:0x10c434998 / R:0x7fd09d4a1808&gt;
+[3.141593]
+&gt;&gt;&gt; pi[0]
+3.141592653589793
+</code></p>
+
+<p>可见，<code>pi</code>是一个浮点数向量，是从R中获取的，使用<code>[</code>可以获取它的值。这里有一点需要注意的就是，这里获取得到的<code>pi</code>是一个向量：</p>
+
+<p><code>python
+&gt;&gt;&gt; piPlus2 = robjects.r('pi') + 2
+&gt;&gt;&gt; piPlus2
+&lt;FloatVector - Python:0x10c591170 / R:0x7fd09d657828&gt;
+[3.141593, 2.000000]
+&gt;&gt;&gt; piPlus2[0]
+3.141592653589793
+&gt;&gt;&gt; piPlus2.r_repr()
+'c(3.14159265358979, 2)'
+</code></p>
+
+<p>可以使用<code>r_repr()</code>方法，显示从R中调过来的对象，在R中的表示。所以如果单纯地想做<code>pi + 2</code>，必须先转换成Python中的数值。</p>
+
+<p><code>python
+&gt;&gt;&gt; piPlus2 = robjects.r('pi')[0] + 2
+&gt;&gt;&gt; piPlus2
+5.141592653589793
+</code></p>
+
+<h3 id="r-1">创建R向量</h3>
+<hr />
+
+<p>既然使用<code>robjects.r</code>获取的R对象<code>pi</code>是R向量，那么自然就会想到，如何在Python中创建R向量，其实很简单：</p>
+
+<p><code>python
+&gt;&gt;&gt; str = robjects.StrVector(['ab', 'bc'])
+&gt;&gt;&gt; str.r_repr()
+'c("ab", "bc")'
+&gt;&gt;&gt; str
+&lt;StrVector - Python:0x10c6dbe18 / R:0x7fd09d5a12e8&gt;
+[str, str]
+&gt;&gt;&gt; str[0]
+'ab'
+&gt;&gt;&gt; len(str)
+2
+</code></p>
+
+<p>可以看到，str就是一个字符向量，属于R中的对象，在Python中使用<code>[</code>可以取出其中的值。</p>
+
+<p>同理，可以创建其它类型的向量：</p>
+
+<p><code>python
+&gt;&gt;&gt; int = robjects.IntVector([1, 2, 3])
+&gt;&gt;&gt; int.r_repr()
+'1:3'
+&gt;&gt;&gt; float = robjects.FloatVector([1, 2, 3.0])
+&gt;&gt;&gt; float
+&lt;FloatVector - Python:0x10c6dbf80 / R:0x7fd09d7e7608&gt;
+[1.000000, 2.000000, 3.000000]
+&gt;&gt;&gt; float.r_repr()
+'c(1, 2, 3)'
+</code></p>
+
+<p>解决向量，那么就要考虑矩阵了，想想在R中是如何构建矩阵的：</p>
+
+<p><code>r
+&gt; x &lt;- c(1, 2, 3, 4, 5, 6)
+&gt; x.mat &lt;- matrix(x, nrow = 2)
+&gt; x.mat
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+</code></p>
+
+<p>可以看到，我们需要用的函数<code>matrix()</code>。那么我们就需要调用R中的对象<code>matrix()</code>函数：</p>
+
+<p><code>python
+&gt;&gt;&gt; x = robjects.FloatVector([1, 2, 3, 4, 5, 6])
+&gt;&gt;&gt; xMat = robjects.r['matrix'](x, nrow = 2)
+&gt;&gt;&gt; xMat
+&lt;Matrix - Python:0x10c6dbb00 / R:0x7fd09da59c20&gt;
+[1.000000, 2.000000, 3.000000, 4.000000, 5.000000, 6.000000]
+&gt;&gt;&gt; xMat.r_repr()
+'structure(c(1, 2, 3, 4, 5, 6), .Dim = 2:3)'
+&gt;&gt;&gt; print(xMat)
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+</code></p>
+
+<p>想想，这样其实蛮麻烦的，在R中我们可以使用<code>1:6</code>创建向量，这边打这么长可是不喜欢。那么就有两种方式可以解决：</p>
+
+<p><code>python
+&gt;&gt;&gt; x = robjects.FloatVector(range(7)[1:])
+&gt;&gt;&gt; x
+&lt;FloatVector - Python:0x10c434ab8 / R:0x7fd09b7b5820&gt;
+[1.000000, 2.000000, 3.000000, 4.000000, 5.000000, 6.000000]
+</code></p>
+
+<p>这种就是使用Python本身的<code>range()</code>函数，然后使用<code>robjects.FloatVector()</code>转换数据结构。还有一种，就是使用R对象<code>:</code>：</p>
+
+<p><code>python
+&gt;&gt;&gt; x = robjects.r[':'](1, 6)
+&gt;&gt;&gt; x
+&lt;IntVector - Python:0x10c44f170 / R:0x7fd09b125b58&gt;
+[       1,        2,        3,        4,        5,        6]
+</code></p>
+
+<h3 id="r-2">调用R函数</h3>
+<hr />
+
+<p>上面已经试过了调用R中的<code>matrix()</code>函数，再试试调用R中的函数<code>mean()</code>函数：</p>
+
+<p><code>python
+&gt;&gt;&gt; rmean = robjects.r['mean']
+&gt;&gt;&gt; x = robjects.r[':'](1, 3)
+&gt;&gt;&gt; x
+&lt;IntVector - Python:0x10c6dba28 / R:0x7fd09bb9b298&gt;
+[       1,        2,        3]
+&gt;&gt;&gt; rmean(x)[0]
+2.0
+</code></p>
+
+<p>这里需要记住的就是，调用的R函数作用在R对象上，返回的仍然是R对象。</p>
+
+<p>知道了如何调用R函数，那么如果是自己想写一个R函数呢？其实我们可以直接在<code>robjects.r</code>中添加对象：</p>
+
+<p><code>python
+&gt;&gt;&gt; robjects.r('''
+...         f &lt;- function(x) {
+...             if (length(x) &gt; 2) {
+...                 return(mean(x))
+...             }
+...             return(sum(x))
+...         }
+...         ''')
+&lt;SignatureTranslatedFunction - Python:0x10c6dbc20 / R:0x7fd09d25aea8&gt;
+&gt;&gt;&gt; rf = robjects.r['f']
+&gt;&gt;&gt; rf(robjects.r[':'](1, 6))
+&lt;FloatVector - Python:0x10c6dbd40 / R:0x7fd09bd4ea68&gt;
+[3.500000]
+&gt;&gt;&gt; rf(robjects.r[':'](1, 2))
+&lt;IntVector - Python:0x10c6f12d8 / R:0x7fd09bd4dcf8&gt;
+[       3]
+</code></p>
+
+<p>在<code>robjects.r</code>中添加了<code>f()</code>函数的对象，我们就可以调用它了。当然，还可以在Python中直接写R的脚本，然后直接运行：</p>
+
+<p><code>python
+&gt;&gt;&gt; rscript = '''
+...         f &lt;- function(x) {
+...             if (length(x) &gt; 2) {
+...                 return(mean(x))
+...             }
+...         return(sum(x))
+...         }
+...
+...         f(1:2)
+...         '''
+&gt;&gt;&gt; robjects.r(rscript)
+&lt;IntVector - Python:0x10c6db7e8 / R:0x7fd09bd4e268&gt;
+[       3]
+</code></p>
+
+<p>上面两种其实是一个意思，都是在<code>robjects.r</code>中添加了R脚本。当然，也可以运行写好的”*.r”的脚本，使用<code>robjects.r.source(&lt;path&gt;)</code>即可。</p>
+
+<h3 id="section-2">最后</h3>
+<hr />
+
+<p>对<code>rpy2</code>的简单介绍就到这吧，这是一个很不错的库，功能远远不止我上面介绍的这一些，感兴趣的话，可以去<a href="http://rpy.sourceforge.net/">它的官网</a>查看其介绍的文档，你肯定会发现很多新鲜好玩的东西。</p>
+
+<h4 id="section-3">参考</h4>
+<hr />
+
+<ol>
+  <li><a href="http://rpy.sourceforge.net/rpy2/doc-2.4/html/overview.html#installation">rpy2的官方文档</a></li>
+  <li><a href="http://www.jeffkit.info/2010/02/475/">让R与Python共舞</a></li>
+  <li><a href="https://www.google.com.hk/search?q=rpy2">…</a></li>
+</ol>
+]]></content>
+  </entry>
+  
+</feed>
