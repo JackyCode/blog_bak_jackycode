@@ -3,7 +3,7 @@ layout: post
 title: "R语言记录7：相关分析"
 date: 2014-03-17 16:46:47 +0800
 comments: true
-categories: RSeries
+categories: RSeries R
 ---
 
 ![ariticle 10](/images/article/article10.jpg)

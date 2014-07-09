@@ -1,0 +1,232 @@
+---
+layout: post
+title: "R与Python的协作：rpy2简介"
+date: 2014-07-09 16:14:12 +0800
+comments: true
+categories: R Python
+---
+
+
+![article 43](/images/article/article43.jpg)
+<!-- more -->
+
+图片为rpy2的logo
+
+*“文章原创，转载请注明出处”*
+
+***
+
+R语言作为统计分析软件，其在统计分析、图形绘制等等方面是强大的，无与伦比的！但是，如果让R去处理一些文件操作、处理文本、获取数据等等的活，一般来讲，R并不太擅长。举个例子来讲，想从自己的Gmail邮箱中获取邮件信息数据，使用R去完成就有点悲剧了，使用Ruby或者Python，这样的活还是挺容易的。
+
+当然，使用Python做数据分析也是蛮不错的。这里我不想比较Python与R，只想说，我平时使用的习惯是“Python + R”。具体点就是：使用R做数据分析，使用Python完成其它工作！用上面那个例子来说，我会使用Python获取Gmail的数据，然后使用R对数据进行分析处理，大致就是这样！
+
+rpy2是Python的一个第三方程序库，可以实现用python读取R的对象、调⽤R的方法等等。好了，废话不说了，开始说说rpy2吧。
+
+### 安装
+***
+
+与安装其它Python第三方程序库相同，使用`pip install rpy2`或者`easy_install rpy2`就OK了。当然，前提是你的电脑已经安装了R(3.0或以上的版本)。
+
+### 开始使用
+***
+
+安装好之后，就需要导入rpy2。在rpy2中有一个模块：rpy2.robjects，是对R的一个高级封装，这个模块包含了R对象和一些了的R语言的函数。使用rpy2，一般来讲就是使用这个模块。简单理解，Python可以通过“rpy2.robjects”这座桥，连接到R。
+
+``` python
+>>> import rpy2.robjects as robjects
+data.table 1.9.2  For help type: help("data.table")
+
+Welcome at  Wed Jul  9 10:59:11 2014
+```
+
+*注*：如果你跟我一样，R中安装了“data.table”包，并且设置`.First()`函数输出“Welcome”的话，你得到跟我一样的返回。
+
+### R实例
+***
+
+`rpy2.robjects`中有一个r对象，即r实例指的就是`rpy2.robjects`.r。它是Python中的嵌入式R进程，可以理解成，通过`rpy2.robjects.r`，可以在Python中使用R命令，获取R对象。
+
+在rpy2的官方介绍里面，是这么说的：
+
+> The object **r** in **rpy2.robjects** represents the running embedded *R* Process.
+
+举个例子，比如说获取R中的对象`pi`：
+
+``` python
+>>> pi = robjects.r['pi']
+>>> pi
+<FloatVector - Python:0x10c434998 / R:0x7fd09d4a1808>
+[3.141593]
+>>> pi[0]
+3.141592653589793
+```
+
+可见，`pi`是一个浮点数向量，是从R中获取的，使用`[`可以获取它的值。这里有一点需要注意的就是，这里获取得到的`pi`是一个向量：
+
+``` python
+>>> piPlus2 = robjects.r('pi') + 2
+>>> piPlus2
+<FloatVector - Python:0x10c591170 / R:0x7fd09d657828>
+[3.141593, 2.000000]
+>>> piPlus2[0]
+3.141592653589793
+>>> piPlus2.r_repr()
+'c(3.14159265358979, 2)'
+```
+
+可以使用`r_repr()`方法，显示从R中调过来的对象，在R中的表示。所以如果单纯地想做`pi + 2`，必须先转换成Python中的数值。
+
+``` python
+>>> piPlus2 = robjects.r('pi')[0] + 2
+>>> piPlus2
+5.141592653589793
+```
+
+### 创建R向量
+***
+
+既然使用`robjects.r`获取的R对象`pi`是R向量，那么自然就会想到，如何在Python中创建R向量，其实很简单：
+
+``` python
+>>> str = robjects.StrVector(['ab', 'bc'])
+>>> str.r_repr()
+'c("ab", "bc")'
+>>> str
+<StrVector - Python:0x10c6dbe18 / R:0x7fd09d5a12e8>
+[str, str]
+>>> str[0]
+'ab'
+>>> len(str)
+2
+```
+
+可以看到，str就是一个字符向量，属于R中的对象，在Python中使用`[`可以取出其中的值。
+
+同理，可以创建其它类型的向量：
+
+``` python
+>>> int = robjects.IntVector([1, 2, 3])
+>>> int.r_repr()
+'1:3'
+>>> float = robjects.FloatVector([1, 2, 3.0])
+>>> float
+<FloatVector - Python:0x10c6dbf80 / R:0x7fd09d7e7608>
+[1.000000, 2.000000, 3.000000]
+>>> float.r_repr()
+'c(1, 2, 3)'
+```
+
+解决向量，那么就要考虑矩阵了，想想在R中是如何构建矩阵的：
+
+``` r
+> x <- c(1, 2, 3, 4, 5, 6)
+> x.mat <- matrix(x, nrow = 2)
+> x.mat
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+```
+
+可以看到，我们需要用的函数`matrix()`。那么我们就需要调用R中的对象`matrix()`函数：
+
+``` python
+>>> x = robjects.FloatVector([1, 2, 3, 4, 5, 6])
+>>> xMat = robjects.r['matrix'](x, nrow = 2)
+>>> xMat
+<Matrix - Python:0x10c6dbb00 / R:0x7fd09da59c20>
+[1.000000, 2.000000, 3.000000, 4.000000, 5.000000, 6.000000]
+>>> xMat.r_repr()
+'structure(c(1, 2, 3, 4, 5, 6), .Dim = 2:3)'
+>>> print(xMat)
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+```
+
+想想，这样其实蛮麻烦的，在R中我们可以使用`1:6`创建向量，这边打这么长可是不喜欢。那么就有两种方式可以解决：
+
+``` python
+>>> x = robjects.FloatVector(range(7)[1:])
+>>> x
+<FloatVector - Python:0x10c434ab8 / R:0x7fd09b7b5820>
+[1.000000, 2.000000, 3.000000, 4.000000, 5.000000, 6.000000]
+```
+
+这种就是使用Python本身的`range()`函数，然后使用`robjects.FloatVector()`转换数据结构。还有一种，就是使用R对象`:`：
+
+``` python
+>>> x = robjects.r[':'](1, 6)
+>>> x
+<IntVector - Python:0x10c44f170 / R:0x7fd09b125b58>
+[       1,        2,        3,        4,        5,        6]
+```
+
+### 调用R函数
+***
+
+上面已经试过了调用R中的`matrix()`函数，再试试调用R中的函数`mean()`函数：
+
+``` python
+>>> rmean = robjects.r['mean']
+>>> x = robjects.r[':'](1, 3)
+>>> x
+<IntVector - Python:0x10c6dba28 / R:0x7fd09bb9b298>
+[       1,        2,        3]
+>>> rmean(x)[0]
+2.0
+```
+
+这里需要记住的就是，调用的R函数作用在R对象上，返回的仍然是R对象。
+
+知道了如何调用R函数，那么如果是自己想写一个R函数呢？其实我们可以直接在`robjects.r`中添加对象：
+
+``` python
+>>> robjects.r('''
+...         f <- function(x) {
+...             if (length(x) > 2) {
+...                 return(mean(x))
+...             }
+...             return(sum(x))
+...         }
+...         ''')
+<SignatureTranslatedFunction - Python:0x10c6dbc20 / R:0x7fd09d25aea8>
+>>> rf = robjects.r['f']
+>>> rf(robjects.r[':'](1, 6))
+<FloatVector - Python:0x10c6dbd40 / R:0x7fd09bd4ea68>
+[3.500000]
+>>> rf(robjects.r[':'](1, 2))
+<IntVector - Python:0x10c6f12d8 / R:0x7fd09bd4dcf8>
+[       3]
+```
+
+在`robjects.r`中添加了`f()`函数的对象，我们就可以调用它了。当然，还可以在Python中直接写R的脚本，然后直接运行：
+
+``` python
+>>> rscript = '''
+...         f <- function(x) {
+...             if (length(x) > 2) {
+...                 return(mean(x))
+...             }
+...         return(sum(x))
+...         }
+...
+...         f(1:2)
+...         '''
+>>> robjects.r(rscript)
+<IntVector - Python:0x10c6db7e8 / R:0x7fd09bd4e268>
+[       3]
+```
+
+上面两种其实是一个意思，都是在`robjects.r`中添加了R脚本。当然，也可以运行写好的"*.r"的脚本，使用`robjects.r.source(<path>)`即可。
+
+### 最后
+***
+
+对`rpy2`的简单介绍就到这吧，这是一个很不错的库，功能远远不止我上面介绍的这一些，感兴趣的话，可以去[它的官网](http://rpy.sourceforge.net/)查看其介绍的文档，你肯定会发现很多新鲜好玩的东西。
+
+#### 参考
+***
+
+1. [rpy2的官方文档](http://rpy.sourceforge.net/rpy2/doc-2.4/html/overview.html#installation)
+2. [让R与Python共舞](http://www.jeffkit.info/2010/02/475/)
+3. [...](https://www.google.com.hk/search?q=rpy2)

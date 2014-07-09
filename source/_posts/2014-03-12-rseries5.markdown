@@ -3,7 +3,7 @@ layout: post
 title: "R语言记录5：描述统计1"
 date: 2014-03-12 15:57:02 +0800
 comments: true
-categories: RSeries
+categories: RSeries R
 ---
 ![ariticle 8](/images/article/article8.jpg)
 <!-- more -->

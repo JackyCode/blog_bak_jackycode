@@ -3,7 +3,7 @@ layout: post
 title: "R语言记录4：自定义函数的深入"
 date: 2014-03-10 16:50:29 +0800
 comments: true
-categories: RSeries
+categories: RSeries R
 ---
 
 ![ariticle 7](/images/article/article7.jpg)

@@ -3,7 +3,7 @@ layout: post
 title: "R语言记录8：Loop Functions"
 date: 2014-05-04 14:56:40 +0800
 comments: true
-categories: RSeries
+categories: RSeries R
 ---
 
 ![ariticle 30](/images/article/article30.jpg)

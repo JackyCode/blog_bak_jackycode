@@ -3,7 +3,7 @@ layout: post
 title: "R语言记录1 ：基础"
 date: 2014-03-06 15:27:28 +0800
 comments: true
-categories: RSeries
+categories: RSeries R
 ---
 
 ![ariticle 4](/images/article/article4.jpg)

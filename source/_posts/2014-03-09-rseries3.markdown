@@ -3,7 +3,7 @@ layout: post
 title: "R语言记录3:数据的导入及复杂操作"
 date: 2014-03-09 11:16:58 +0800
 comments: true
-categories: RSeries
+categories: RSeries R
 ---
 
 ![ariticle 6](/images/article/article6.jpg)
