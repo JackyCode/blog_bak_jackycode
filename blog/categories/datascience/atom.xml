@@ -4,7 +4,7 @@
   <title><![CDATA[Category: DataScience | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/datascience/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-08-18T15:39:17+08:00</updated>
+  <updated>2014-08-18T17:10:00+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -1146,11 +1146,11 @@ inspect(dtm[1:5, 1:10])
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[数据科学之机器学习17:因子分析2]]></title>
+    <title type="html"><![CDATA[因子分析2]]></title>
     <link href="http://jackycode.github.io/blog/2014/05/19/factor-analysis2/"/>
     <updated>2014-05-19T15:00:02+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/19/factor-analysis2</id>
-    <content type="html"><![CDATA[<p><img src="/images/article/article35.jpg" alt="article 35" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article35_new.jpg" alt="article 35" />
 <!-- more --></p>
 
 <p>图片来源于<a href="http://software.ssri.co.jp/statweb2/column/column0811.html">网址</a></p>
@@ -1232,16 +1232,22 @@ inspect(dtm[1:5, 1:10])
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[数据科学之机器学习16:因子分析1]]></title>
+    <title type="html"><![CDATA[因子分析1]]></title>
     <link href="http://jackycode.github.io/blog/2014/05/14/factor-analysis1/"/>
     <updated>2014-05-14T16:05:45+08:00</updated>
     <id>http://jackycode.github.io/blog/2014/05/14/factor-analysis1</id>
-    <content type="html"><![CDATA[<p><img src="/images/article/article34.jpg" alt="article 34" />
+    <content type="html"><![CDATA[<p><img src="/images/article/article34_new.jpg" alt="article 34" />
 <!-- more --></p>
 
 <p>图片来源于<a href="http://software.ssri.co.jp/statweb2/column/column0811.html">网址</a></p>
 
 <p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p><em>updata:</em></p>
+
+<p>感谢谢老大的提醒，让我发觉，在机器学习下放置因子分析并不合适。详细情况参见文章的回复板块。</p>
 
 <hr />
 

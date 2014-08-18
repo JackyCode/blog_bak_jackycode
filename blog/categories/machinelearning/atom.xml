@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MachineLearning | Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/blog/categories/machinelearning/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-08-18T15:39:17+08:00</updated>
+  <updated>2014-08-18T17:10:00+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,189 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习17:因子分析2]]></title>
-    <link href="http://jackycode.github.io/blog/2014/05/19/factor-analysis2/"/>
-    <updated>2014-05-19T15:00:02+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/05/19/factor-analysis2</id>
-    <content type="html"><![CDATA[<p><img src="/images/article/article35.jpg" alt="article 35" />
-<!-- more --></p>
-
-<p>图片来源于<a href="http://software.ssri.co.jp/statweb2/column/column0811.html">网址</a></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>这两天来了个同学，大家聚了聚，我也乘机休息了两天（好奢侈！）。这两天属于什么都没有写，就翻看了两本书。一本是二月河的<a href="http://www.amazon.cn/gp/product/B0032K0X6Q/ref=olp_product_details?ie=UTF8&amp;me=&amp;seller=">康熙大帝</a>，另外一本是<a href="http://www.ituring.com.cn/book/894">推荐系统实践</a>，这本书的电子版，图灵正在打折，有兴趣可以买本看看。</p>
-
-<hr />
-
-<p>好了，不废话了，下面就接着上一篇讲的继续！上一篇简单介绍了因子分析的一些概念，以及最基础的因子模型：<strong>正交因子模型</strong>。那么这一篇，就来说说正交因子模型的<strong>参数估计问题</strong>。</p>
-
-<p>对于一组p维样本，有n个观测值：<script type="math/tex">x_1, x_2, \dots, x_n</script>，则其均值和协方差矩阵可以使用样本均值和样本协方差矩阵来估计：</p>
-
-<script type="math/tex; mode=display"> \hat{\mu} = \overline{x} = \frac{1}{n} {\sum_{i=1}^{n} x_i} </script>
-
-<script type="math/tex; mode=display"> \hat{\Sigma} = S = \frac{1}{n-1} {\sum_{i=1}^{n} (x_i-\overline{x})(x_i-\overline{x})'} </script>
-
-<p>在因子模型中，需要估计的有两个参数：<strong>因子载荷矩阵</strong><script type="math/tex">A=(a_{ij}:p \times m)</script>以及<strong>特殊方差矩阵</strong><script type="math/tex">D = diag(\sigma_1^2, \sigma_2^2, \dots, \sigma_p^2)</script>。</p>
-
-<hr />
-
-<h4 id="section">1. 主成分法</h4>
-<hr />
-
-<p>主成分法的思想取自于主成分分析，即是取出前m个成分作为主成分，然后以此来得到因子载荷矩阵的估计；然后再以协方差阵和因子载荷矩阵为条件，直接推出特殊方差矩阵。具体如下：</p>
-
-<ol>
-  <li>求出协方差矩阵<script type="math/tex">S</script>的特征值：<script type="math/tex">\hat{\lambda}_1 \geqslant \hat{\lambda}_2 \geqslant \dots \geqslant \hat{\lambda}_p \geqslant 0</script>，其对应的特征向量为：<script type="math/tex">\hat{t}_1, \hat{t}_2, \dots, \hat{t}_p</script>。</li>
-  <li>选一个较小因子数<script type="math/tex">m</script>，并且使得前m项累计贡献率<script type="math/tex">\frac{\sum_{i=1}^{m} \hat{\lambda}_i}{\sum_{i=1}^{p} \hat{\lambda}_i} </script>高于设定值。</li>
-  <li>将协方差矩阵<script type="math/tex">S</script>做这样的近似：<script type="math/tex">S = \sum_{i=1}^{m} \hat{\lambda}_i + \sum_{i=m+1}^{p} \hat{\lambda}_i \approx \sum_{i=1}^{m} \hat{\lambda}_i + \hat{D} := \hat{A}\hat{A}' + \hat{D} </script></li>
-</ol>
-
-<p>其中，<script type="math/tex">A = (\sqrt{\hat{\lambda}_1}t_1, \sqrt{\hat{\lambda}_2}t_2, \dots, \sqrt{\hat{\lambda}_m}t_m) </script>,<script type="math/tex">\hat{D} = diag(\hat{\sigma}_1^2, \hat{\sigma}_2^2, \dots, \hat{\sigma}_p^2) </script>,<script type="math/tex">\hat{\sigma}_i^2 = s_{ii} - \sum_{j=1}^{m} \hat{a}_{ij}^2 </script></p>
-
-<p>从上述的过程来看，我们是使用了一种近似的方法估计出了<script type="math/tex">A</script>和<script type="math/tex">D</script>，那么这就有一个<strong>残差矩阵</strong><script type="math/tex">S - (\hat{A}\hat{A}' + \hat{D}) </script>，显然这个矩阵的对角线元素为0。既然是一种近似，那么，如果这个残差矩阵的非对角线元素都非常小的时候，我们就可以认为取<script type="math/tex">m</script>个因子的模型就可以很好地解释或者是拟合原始的数据了。</p>
-
-<hr />
-
-<h4 id="section-1">2. 主因子法</h4>
-<hr />
-
-<p>对于因子模型，我们先对原始向量进行标准化，则有：<script type="math/tex"> R = AA' + D</script>。取<strong>约相关矩阵</strong><script type="math/tex">R^* = R - D = AA'</script>，假设特殊方差<script type="math/tex">\sigma_i^2</script>的一个估计值<script type="math/tex">\hat{\sigma}^2</script>为初始估计，则有约相关矩阵的估计值为：</p>
-
-<p><img src="/images/a35/eq2_1.png" alt="" /></p>
-
-<p>其中<script type="math/tex">\hat{R}</script>为样本相关矩阵，<script type="math/tex">\hat{D} = diag(\hat{\sigma^2_1},\hat{\sigma_2^2}, \dots, \hat{\sigma_p^2}) </script>, <script type="math/tex">\hat{h_i^2} = 1 - \hat{\sigma_i^2} </script>为<script type="math/tex">h_i^2</script>的初始估计。</p>
-
-<p>计算<script type="math/tex">\hat{R}^*</script>的特征值，取足够小，但累计贡献率达到要求的m：<script type="math/tex">\hat{\lambda^*_1} \geqslant \hat{\lambda^*_2} \geqslant \dots \geqslant \hat{\lambda^*_m} > 0 </script>，其对应的特征向量为：<script type="math/tex">\hat{t^*_1}, \hat{t^*_2}, \dots, \hat{t^*_m}</script>，则得到 <script type="math/tex">A</script> 的估计值：</p>
-
-<script type="math/tex; mode=display"> \hat{A} = (\sqrt{\hat{\lambda^*_1}}t^*_1, \sqrt{\hat{\lambda^*_2}}t^*_2, \dots, \sqrt{\hat{\lambda^*_m}}t^*_m ) </script>
-
-<p>那么<script type="math/tex">\sigma^2_i</script>的最终估计为： <script type="math/tex"> \hat{\sigma_i^2} = 1-\hat{h_i^2} = 1 - \sum_{j=1}^{m} \hat{a_{ij}^2} </script>。</p>
-
-<p>可以看到，这是一个可以迭代的过程，我们可以一直迭代，直到结果达到稳定为止！从过程来看，这里其实也是利用了主成分，因而，主因子法也是主成分法的一种修正！</p>
-
-<p>那么接下来的问题就是，这个特殊方差<script type="math/tex">\sigma^2_i</script>的初始估计值应该如何取呢？最常用的取法：<script type="math/tex"> \hat{\sigma_i^2} = 1/r^{ii} </script>, 其中<script type="math/tex"> r^{ii} </script>为<script type="math/tex">\hat{R}^{-1}</script>对角线元素的第<script type="math/tex">i</script>个。</p>
-
-<hr />
-
-<h4 id="section-2">3. 极大似然法</h4>
-<hr />
-
-<p>使用极大似然估计，那么就肯定需要使用样本的分布，这里我们假定公共因子<script type="math/tex">f \sim N_m(0, I) </script>，特殊因子<script type="math/tex"> \varepsilon \sim N_p(0, D) </script>，并且相互独立！这里的假设其实就是来源于模型的正交性假设，只不过是将正交性假设进一步限定，假设它们都是属于多元正态分布！</p>
-
-<p>有了上述假设，通过模型就可以知道<script type="math/tex">x \sim N_p(\mu, \Sigma) </script>，有了这个就可以计算样本的似然函数了，这里涉及到较为复杂的矩阵计算，不想多说，有兴趣的话可以查找一些资料；或者学习一下线性模型中关于矩阵求导的知识，然后自己推导一下。</p>
-
-<p>一般情况下，极大似然法使用得并不太多，因为这个方法是算不出显式解的，在没有限制条件的情况下，解也并不唯一确定！但是如果是在因子分部可以明显知道的情况下，使用这个方法就比较好了！</p>
-
-<hr />
-
-<h3 id="section-3">总结</h3>
-<hr />
-
-<p>到这边，对于基础的因子模型就介绍结束了。回顾一下，主要就是介绍了正交因子模型以及它的参数估计问题。但是，到这里，我们还没有说到模型中的公共因子如何解释这个问题！对于这个问题的解释，通常结合实际的问题，需要一定的专业知识和经验，然后才能给每个公共因子给出一个实际意义。而且，公共因子的解释，在很大程度上也依赖于因子模型中因子载荷矩阵的元素结构！这个时候就会牵扯出因子分析中其它的一些问题：<strong>因子旋转</strong>和<strong>因子得分</strong>。因为这两个问题涉及到一些比较复杂的数学知识，我不能够在清减数学的情况下说好它，如果单说怎么用，我觉得没有必要，所以暂时并不打算介绍这两个问题。有兴趣的，可以翻阅一些多元统计的书籍，一般都会有讲。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习16:因子分析1]]></title>
-    <link href="http://jackycode.github.io/blog/2014/05/14/factor-analysis1/"/>
-    <updated>2014-05-14T16:05:45+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/05/14/factor-analysis1</id>
-    <content type="html"><![CDATA[<p><img src="/images/article/article34.jpg" alt="article 34" />
-<!-- more --></p>
-
-<p>图片来源于<a href="http://software.ssri.co.jp/statweb2/column/column0811.html">网址</a></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<p>前一篇介绍的主成分分析(PCA)，是一种降维技术；这一篇介绍的因子分析也是一种降维的方法，不仅如此，还可以将因子分析看作是主成分分析的一种推广和发展。与之主成分分析相比较，因子分析更为灵活，对变量降维后的解释能够更加清楚。</p>
-
-<p>但因子分析和主成分分析有非常多的不同点。</p>
-
-<ol>
-  <li>主成分分析不能作为一个模型来描述，主成分是观测变量的线性组合；</li>
-  <li>因子分析需要构造因子模型，观测的原始变量是因子的线性组合。</li>
-</ol>
-
-<hr />
-
-<h4 id="section">初窥</h4>
-<hr />
-
-<p>在介绍因子模型之前，可以先看看这个因子分析到底是要干什么，以及是怎么干的！</p>
-
-<p>在二维空间中，主成分分析，它想做的是寻找一组新的变量<script type="math/tex">y_1,y_2</script>，用它去替代原来的变量<script type="math/tex">x_1,x_2</script>，并且满足<script type="math/tex">y_1</script>和<script type="math/tex">y_2</script>这两个变量都是<script type="math/tex">x_1,x_2</script>两个变量的线性组合！即：</p>
-
-<p><img src="/images/a34/eq1.jpg" alt="" /></p>
-
-<p>而在因子模型中，我们需要做的跟此不同。我们需要找到一组潜在变量(不可观测)，用这组潜在变量的线性组合去表示原始变量<script type="math/tex">x_1,x_2</script>。这里假设有1个潜在变量<script type="math/tex">f_1</script>，那么因子模型可以描述成：</p>
-
-<p><img src="/images/a34/eq2.png" alt="" /></p>
-
-<p>其中，<script type="math/tex">f_1</script>就是因子，称为<strong>公共因子</strong>；<script type="math/tex">a_{ij}</script>称之为变量<script type="math/tex">x_i</script>在因子<script type="math/tex">f_j</script>上的<strong>载荷</strong>；<script type="math/tex">\mu_i</script>是<script type="math/tex">x_i</script>的均值；<script type="math/tex">\varepsilon_i</script>为特殊因子，即不能被公共因子解释的部分。</p>
-
-<hr />
-
-<h4 id="section-1">正交因子模型</h4>
-<hr />
-
-<p>首先看看最基础的因子模型，就是正交假设下的因子模型：</p>
-
-<p><img src="/images/a34/eq3.png" alt="" /></p>
-
-<p>在给出假定之前，我们先将上面式子转换成矩阵形式：</p>
-
-<script type="math/tex; mode=display"> x = \mu + Af + \varepsilon </script>
-
-<p>其中，<script type="math/tex">x = (x_1, x_2, \dots, x_p)'</script>，<script type="math/tex">\mu = (\mu_1, \mu_2, \dots, \mu_p)'</script>为均值向量，<script type="math/tex">\varepsilon = (\varepsilon_1, \varepsilon_2, \dots, \varepsilon_p)'</script>为特殊因子向量, <script type="math/tex">f = (f_1, f_2, \dots, f_p)'</script>为公共因子向量，<script type="math/tex"> A = (a_{ij}):p \times m </script>为载荷矩阵。那么我们就可以给出如下的正交假设：</p>
-
-<p><img src="/images/a34/eq4.png" alt="" /></p>
-
-<p>在这样的假定下，我们首先来计算一下，原始变量<script type="math/tex">x</script>的协方差：</p>
-
-<script type="math/tex; mode=display"> \Sigma = V(x) = V(Af+\varepsilon) = Cov(Af+\varepsilon,Af+\varepsilon) </script>
-
-<p>又：<script type="math/tex">Cov(Af+\varepsilon,Af+\varepsilon)=AV(f)A'+ACov(f,\varepsilon)+Cov(\varepsilon,f)A'+V(\varepsilon)</script></p>
-
-<p>由于<script type="math/tex">V(f) = I, Cov(f, \varepsilon) = Cov(\varepsilon, f) = 0</script>，所以：</p>
-
-<script type="math/tex; mode=display"> \Sigma = AA' + V(\varepsilon) = AA' + D </script>
-
-<p><strong>显然，我们要处理正交因子模型，最重要的就是求解<script type="math/tex">A,D</script>的估计值，那么这里就给出了这两个量与原始变量的协方差矩阵间的关系。</strong></p>
-
-<p><strong>那么我们开始所说的，因子分析也是一种降维手段体现在哪里呢？</strong>这个就体现在，公共因子的数量上，当公共因子的数量少于原始变量的数量时，使用因子去解释原始变量就达到了一种降维的目的！</p>
-
-<hr />
-
-<p><strong><em>载荷矩阵</em></strong></p>
-
-<p>显然，载荷矩阵<script type="math/tex">A</script>是我们关心的一个重点。首先，我们想弄明白<script type="math/tex">A</script>中的元素<script type="math/tex">a_{ij}</script>是否有什么具体的含义：</p>
-
-<script type="math/tex; mode=display">Cov(x_i,f_j)=Cov(\sum_{k=1}^{m}a_{ik}f_k + \varepsilon_i, f_j) =a_{ij}Cov(f_j,f_j) = a_{ij} </script>
-
-<p>那么可以看到，<script type="math/tex">a_{ij}</script>是<script type="math/tex">x_i</script>和<script type="math/tex">f_j</script>之间的协方差函数。</p>
-
-<p>经过上面的计算，我们容易得到：</p>
-
-<script type="math/tex; mode=display">V(x_i) = a_{i1}^2 + a_{i2}^2 + \dots + a_{1m}^2 + V(\varepsilon_i)</script>
-
-<p>记<script type="math/tex">h_i^2 = \sum_{j=1}^{m}a_{ij}^2</script>，那么上式可转化为：</p>
-
-<script type="math/tex; mode=display"> (V(x_i) =) \sigma_{ii} = h_i^2 + \sigma_i^2, i=1,2,\dots,p</script>
-
-<p>这样就将<script type="math/tex">x_i</script>的方差进行了一个分解，一部分由公共因子解释，即<script type="math/tex">h_i^2</script>，称为<strong>共性方差</strong>；另一部分由特殊因子解释，即<script type="math/tex">\sigma_i^2</script>，称为<strong>特殊方差</strong>。</p>
-
-<hr />
-
-<p>至此，因子分析的基础模型就介绍完了，下面剩下的就是如何去进行参数的估计，这一般有三种方法：主成分法、主因子法以及极大似然法。下一篇，我们就来详细说说因子分析的参数估计问题。</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[数据科学之机器学习15: 主成分分析]]></title>
@@ -559,6 +376,135 @@ inspect(rules)
 <hr />
 
 <p>这篇简单介绍了一下关联分析的一些概念问题，以及如何度量一个关联规则。但是，试想一想，要是$I$中包含的项很多，事物数据表$T$也很大，那么要计算所有关联规则的支持度和可信度，难度可想而知！这时候就需要使用一些算法去解决这个问题，现在比较流行的算法就是：处理静态关联规则的Apriori算法和处理动态关联规则的Carma算法。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习12: Logisic回归]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/27/logistic-regression/"/>
+    <updated>2014-04-27T10:34:11+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/27/logistic-regression</id>
+    <content type="html"><![CDATA[<p><img src="/images/article/article27.jpg" alt="article 27" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>在数据科学系列的开头，花了三篇介绍了线性回归。线性回归模型应该是定量分析中最常用的一种统计分析方法。但是线性回归处理数据时，要求因变量是连续型变量。但是很多时候，需要处理的数据，其因变量并不是连续的。像性别、对错等等，这种离散的因变量，一般称为分类响应变量。</p>
+
+<p>在机器学习的<a href="http://jackycode.github.io/blog/2014/03/30/data-science-an-introduction-to-machine-learning/">介绍篇</a>中，已经介绍了监督学习与非监督学习。在监督学习中，最主要的两类问题，一个就是回归，另一个就是分类。而Logistic回归就是处理二元分类的一种方法，当然其也存在自身的问题，这个后面再讲。</p>
+
+<h4 id="sigmoid">Sigmoid函数</h4>
+<hr />
+
+<p>要了解Logistic回归，首先需要了解一下Sigmoid函数。为什么呢？</p>
+
+<p>一般来说，我们会定义二元分类变量的输出为0和1，这种函数叫做单位阶跃函数，也称Heaviside step function。这个函数的特点就是其取值可以从0突变到1，反之也可。学过数分的话就知道，这种函数有时候会非常难以处理，因为带跳突变，导致了不可微不可导。在这里，就可以借助Sigmoid函数，因为这个函数可以近似地描述单位阶跃函数的特点。首先看看Sigmoid函数：</p>
+
+<script type="math/tex; mode=display"> p = \frac{exp(y)}{1+exp(y)} = \frac{1}{1 + exp(-y)}</script>
+
+<p>简单看一下这个函数，当$y=0$时，$p=0.5$；当$y$变大，趋近于无穷时，$y$趋近1；反之，$y$趋近0。而且，这种趋近的速度是非常快的。正是因为这个趋近速度非常快，我们可以使用Sigmoid函数来处理这边的单位阶跃函数。</p>
+
+<h4 id="logistic">Logistic回归</h4>
+<hr />
+
+<h5 id="section">模型建立</h5>
+
+<p>利用Sigmoid函数可以将单位阶跃函数做个近似，而Sigmoid函数是连续的，那么就可以利用之前的线性回归来建立模型。</p>
+
+<p>令$ y = X\beta $，又<script type="math/tex"> p = \frac{1}{1 + exp(-y)} </script>，变形可得Logistic回归模型：</p>
+
+<script type="math/tex; mode=display"> logit(p) = ln(\frac{p}{1-p}) = X\beta </script>
+
+<p>上述的$logit(p)$称为$logit$变换，此时$p$就是响应变量，$X$就是自变量。到这，模型就建立好了，剩下就是如何对参数进行估计了。</p>
+
+<h5 id="section-1">参数估计</h5>
+
+<p>参数估计可以从两个方面来考虑，一个从最优化的方式，一个从统计角度！</p>
+
+<p><strong>最优化的方式</strong>，是将模型转换成：<script type="math/tex"> p = sigmod(X\beta) </script>来考虑，对于估计值<script type="math/tex">\hat{\beta}</script>，应该使得其预测值<script type="math/tex">\hat{p}</script>与实际值<script type="math/tex">p</script>之间的差达到最小！即：</p>
+
+<script type="math/tex; mode=display"> \hat{\beta} = \min_{\beta} \mid p - sigmod(X\beta) \mid</script>
+
+<p>有了这个，我们就可以使用最速下降法等等最优化的方法去求解参数的估计值了。</p>
+
+<p><strong>统计角度</strong>，那就需要考虑模型中<script type="math/tex">p</script>的统计意义了，这个属于广义线性模型的范畴，现在不想多说，有兴趣的话可以翻翻资料！也可以根据下面说的<strong>统计中的解释</strong>去试试，看看如何使用极大似然估计去估计参数。</p>
+
+<h5 id="section-2">统计中的解释</h5>
+<hr />
+
+<p>这里面的$p$除了利用Sigmoid函数来解释之外，还可以利用统计中的二项分布来解释，而且从某种角度来说，这个解释会更便于理解。试想，我们这边需要处理的二元分类变量就是0和1。我们考虑0就是“不发生”，1就是“发生”，那么我们可以将前面的$p$理解成发生的概率。通过对已知数据建立模型，估计出参数，我们就可以利用模型去预测在不同的自变量条件下，“发生”的概率是多大，从而达到一个分类的目的。</p>
+
+<p>从这边的分析就可以看到，Logistic回归的缺点：那就是欠拟合，会导致分类的精度下降。</p>
+
+<h5 id="r">R语言实现</h5>
+<hr />
+
+<p>因为Logistic回归是属于广义线性回归模型的，在R中有专门处理广义线性模型的函数<code>glm</code>：</p>
+
+<p><code>
+model &lt;- glm(formula, family=binominal(link = "logit"), data=data.frame)
+</code></p>
+
+<p>这里处理的方式中，利用了连接函数(link=logit)，感兴趣的话可以找找广义线性模型的内容看看，当然，以后如果介绍统计模型的话，这个肯定也是必讲得内容。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[数据科学之机器学习11: 聚类分析2]]></title>
+    <link href="http://jackycode.github.io/blog/2014/04/24/cluster-analysis2/"/>
+    <updated>2014-04-24T09:39:02+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/04/24/cluster-analysis2</id>
+    <content type="html"><![CDATA[<p><img src="/images/article/article26.jpg" alt="article 26" />
+<!-- more --></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>上一篇介绍了聚类分析的定义，给出了很多不同的相似性的度量方法。这一篇主要想介绍一下除了快速聚类之外的另外一种聚类方法：<strong>系统聚类法</strong>。</p>
+
+<h3 id="section">二、系统聚类法</h3>
+<hr />
+
+<p>系统聚类法，hierarchical clustering method，是聚类分析方法中用的较多的一种。其具体过程如下：</p>
+
+<ol>
+  <li>对于n个样品，构造n个类，每个样品单独作为一类。计算每个类之间的距离；</li>
+  <li>合并距离最近的两个类为一个新类；</li>
+  <li>计算新类与其它类之间的距离，重复2直到所有类合并称为1个类为止。</li>
+</ol>
+
+<p>那么类与类之间的距离如何定义呢？</p>
+
+<p>其实，类与类之间的距离有很多中定义方式常见的有：</p>
+
+<ol>
+  <li>最短距离法，single linkage method，<script type="math/tex"> D_{KL} = \min_{i \in G_K,j \in G_L} d_{ij} </script>；</li>
+  <li>最长距离法，complete linkage method，<script type="math/tex"> D_{KL} = \max_{i \in G_K,j \in G_L} d_{ij} </script>；</li>
+  <li>中间距离法，median linkage method，即取最远距离与最近距离两者的中间距离；</li>
+  <li>类平均法，average linkage method，<script type="math/tex"> D_{KL} = \frac{1}{n_Kn_L} \sum_{i \in G_K,j \in G_L} d_{ij} </script>；</li>
+  <li>重心法，centroid hierarchical method，即取类重心之间的距离；</li>
+  <li>离差平方和法，Ward’s minimum variance method, 定义较为繁琐，可以自行Google；</li>
+</ol>
+
+<p><strong>注</strong>：系统聚类的方法并不困难，但是实现时会存在计算量的问题。系统聚类法一般是在样品间距离矩阵的基础上进行的，它需要计算所有点到所有点之间的距离，当样品量很大时，这个计算量会变得非常的大。因而，很多时候人们会采用动态聚类的方法去处理数据，动态聚类法中一种最常用的方法就是之前已经介绍过的KMeans方法。</p>
+
+<h4 id="r">R语言实现</h4>
+
+<p>在R语言中，自带了一个函数可以实现系统聚类：<code>hclust</code>。可以自己查阅help。</p>
+
+<h3 id="section-1">三、聚类的一些问题</h3>
+<hr />
+
+<ol>
+  <li>量纲问题。实际问题中，由于数据采用的量纲不同，很多时候需要对数据进行一些变换，最常用的就是标准化。但也有一些其它方式：极差变换（数据除以极差）；主成分变换（用主成分代替本身数据）；对数变换等等。</li>
+  <li>kmeans算法只有在类的平均值可以被定义的情况下使用，所以在一些特殊的场合，kmeans并不适用。比如分类数据等等!!</li>
+  <li>kmeans算法使用平均值作为衡量，这就造成了一个新的问题。即kmeans不适用于含有异常值的数据，非凸面的数据以及大小值相差很大的数据。</li>
+  <li>聚类的一个<strong>难点</strong>在于：确定类的个数。通过上面介绍的算法来看，所有的方法都需要自己去定义类的个数。那么如何去定义类的个数呢？这是一个到现在还没有满意解决的问题。常用的方式就是观察样品散点图，查看变化率，以及使用一些假设检验的方式（感兴趣可以翻阅专业的书籍材料，比如上海财经出版社的应用多元分析中就有讲到这部分内容）。</li>
+</ol>
+
 ]]></content>
   </entry>
   
