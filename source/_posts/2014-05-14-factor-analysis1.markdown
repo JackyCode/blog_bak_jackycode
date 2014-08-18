@@ -1,17 +1,23 @@
 ---
 layout: post
-title: "数据科学之机器学习16:因子分析1"
+title: "因子分析1"
 date: 2014-05-14 16:05:45 +0800
 comments: true
-categories: DataScience MachineLearning
+categories: DataScience
 ---
 
-![article 34](/images/article/article34.jpg)
+![article 34](/images/article/article34_new.jpg)
 <!-- more -->
 
 图片来源于[网址](http://software.ssri.co.jp/statweb2/column/column0811.html)
 
 *“文章原创，转载请注明出处”*
+
+***
+
+*updata:*
+
+感谢谢老大的提醒，让我发觉，在机器学习下放置因子分析并不合适。详细情况参见文章的回复板块。
 
 ***
 

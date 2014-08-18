@@ -1,12 +1,12 @@
 ---
 layout: post
-title: "数据科学之机器学习17:因子分析2"
+title: "因子分析2"
 date: 2014-05-19 15:00:02 +0800
 comments: true
-categories: DataScience MachineLearning
+categories: DataScience
 ---
 
-![article 35](/images/article/article35.jpg)
+![article 35](/images/article/article35_new.jpg)
 <!-- more -->
 
 图片来源于[网址](http://software.ssri.co.jp/statweb2/column/column0811.html)
