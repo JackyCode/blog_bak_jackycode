@@ -4,7 +4,7 @@
   <title><![CDATA[Jacky and MSC]]></title>
   <link href="http://jackycode.github.io/atom.xml" rel="self"/>
   <link href="http://jackycode.github.io/"/>
-  <updated>2014-07-09T16:41:27+08:00</updated>
+  <updated>2014-08-18T15:39:17+08:00</updated>
   <id>http://jackycode.github.io/</id>
   <author>
     <name><![CDATA[Jacky Code]]></name>
@@ -12,6 +12,58 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[吃鸡蛋想到的一个小问题]]></title>
+    <link href="http://jackycode.github.io/blog/2014/08/18/eggs-probability/"/>
+    <updated>2014-08-18T15:14:05+08:00</updated>
+    <id>http://jackycode.github.io/blog/2014/08/18/eggs-probability</id>
+    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article44.jpg" alt="article 44" />
+<!-- more --></p>
+
+<p>图片来自<a href="http://www.mensfitness.co.uk/nutrition/3370/eggs-nature%E2%80%99s-superfood">网络</a></p>
+
+<p><em>“文章原创，转载请注明出处”</em></p>
+
+<hr />
+
+<p>最近好久没有更新，实在是有点小忙。因为这是在学校的最后一个暑假，光是写论文就蛮耗脑子的，每每想写点什么的时候，总是提不起劲来。</p>
+
+<p>今天早上吃鸡蛋的时候，想到了一个问题，觉得还蛮有意思的，就说说吧。话说，我早上煮鸡蛋吃，共拿了4个鸡蛋，两个是上个星期买的（旧），两个是昨天买的（新）。鸡蛋烧好后，从外观上是无法分辨哪个是旧的，哪个是新的。那么，在我吃第二个鸡蛋的时候，我就想说，这个鸡蛋是旧的的概率是多少。</p>
+
+<p>这个问题其实很简单，答案肯定是1/2。我们从一开始的开始看：</p>
+
+<ol>
+  <li>
+    <p>吃第一个鸡蛋，吃的是旧的的概率必然是<script type="math/tex"> \frac{2}{4}=0.5 </script>。</p>
+  </li>
+  <li>
+    <p>吃第二个鸡蛋，吃的是旧的概率是<script type="math/tex"> \frac{2}{4} \frac{1}{3} + \frac{2}{4} \frac{2}{3} = 0.5 </script>。</p>
+  </li>
+  <li>
+    <p>吃第三个鸡蛋，吃的是旧的的概率是<script type="math/tex"> \frac{2}{4} \frac{2}{3} \frac{1}{2} + \frac{2}{4} \frac{2}{3} \frac{1}{2} + \frac{2}{4} \frac{1}{3} \frac{2}{2} = 0.5 </script></p>
+  </li>
+  <li>
+    <p>吃第四个鸡蛋，吃的是旧的的概率是0.5。</p>
+  </li>
+</ol>
+
+<p>发现，所有的值都是0.5。也就是说，无论是吃了几（1-3）个鸡蛋，下一个鸡蛋是旧的的概率依旧是0.5。其实，这个很容易理解，以吃第二个鸡蛋为例，我不知道第一个鸡蛋吃的是旧的还是新的。所以，我在吃第二个鸡蛋的时候，实际上还是从或新或旧两个等可能性的选项中选择，所以是0.5。</p>
+
+<p>又或者，你比较熟悉概率论，那么这个更容易说，这其实就是等概率无放回的独立重复试验，同样以吃第二个鸡蛋为例，由于不知道第一次取出的鸡蛋是新的还是旧的，那就没有先验信息，没有先验信息，那么概率不变，依旧是0.5。</p>
+
+<p>说到这，不由得想起来抓阄。现在来看的话，一场公平的抓阄，需要保证的不是谁先谁后去抓，而是要保证，后面抓的人不知道前面抓的人手中的阄是什么。也就是要保证每一个人都没有了解先验信息，那么，每个人抓到目标的可能性就是相同的。</p>
+
+<p>好吧，我承认好久没有看概率论了，说起概率论的术语有点儿怪怪的。说到如何公平地抓阄，让我想起在概率论里面有一个很出名的经典问题，三门问题，也就是蒙提霍尔悖论：</p>
+
+<p>大致的意思是：有三个关着的门，其中一扇门后面是一辆汽车，另外两扇门后各是一只山羊，选中后面有车的那扇门就可以获得那辆汽车。当参赛的人选定了一扇门，但未去开启它的时候，主持人会开启剩下两扇门中的其中一扇，露出一只山羊。然后，主持人会问参赛者要不要换另一扇仍然关着的门。问题就是，换门能不能增加参赛者获得汽车的可能性。</p>
+
+<p>这个问题是一个很违反直觉的经典问题，最关键的地方就在于，按照题意，其实主持人是知道哪一扇门后面是汽车的，也就是说，主持人会提供给你一定的信息。具体来说，如果你选中了后面是山羊的一扇门，那么主持人在剩下的两扇门中，只能选中那扇后面是山羊的门，而不能选中后面是汽车的那扇门；如果你选中了后面是车的那扇门，那么主持人可以随便选一扇。</p>
+
+<p>那么如何求解呢？其实也很简单，在解决这类问题的时候，最关键的是抓住随机事件之间的关系，这里就是需要了解两个随机事件：不换门赢得汽车以及换门赢得汽车两个随机事件。搞清楚这两个事件之间的关系，那么这个问题就很容易解决了，这里不再赘述。有需要的话，可以自行Google，这类讨论网上有很多。</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[R与Python的协作：rpy2简介]]></title>
@@ -4486,115 +4538,6 @@ TM2.2.3" /></p>
 <hr />
 
 <p>到这边，就把统计中常用的用于度量相似性的定义讲了一些。这些定义，大都有其自身的数学背景。有些来自于几何学，有些来自于线性空间理论。对于使用者来说，搞明白什么时候选择什么样的度量方式更加重要！下一篇，我们讲一讲聚类分析中的一个常用方法：<strong>系统聚类法</strong>。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[数据科学之机器学习9: 聚类算法之KMeans]]></title>
-    <link href="http://jackycode.github.io/blog/2014/04/19/kmeans/"/>
-    <updated>2014-04-19T13:01:02+08:00</updated>
-    <id>http://jackycode.github.io/blog/2014/04/19/kmeans</id>
-    <content type="html"><![CDATA[<p><img src="http://jackycode.github.io/images/article/article24.jpg" alt="article 24" />
-<!-- more --></p>
-
-<p><em>“文章原创，转载请注明出处”</em></p>
-
-<hr />
-
-<h2 id="the-k-means-algorithm">The k-means algorithm</h2>
-<hr />
-
-<p>前面写了很多监督学习的东西，除了回归就是分类，今儿有点想换换口味，写写无监督学习的算法。k-means算法是一种聚类算法，聚类就是无监督学习里面的内容。那么先来说说聚类：</p>
-
-<h3 id="section">一、聚类简介</h3>
-<hr />
-
-<ol>
-  <li>
-    <p>聚类是一种无监督学习方法，它主要就是将相似的对象归并到一个类别中。</p>
-  </li>
-  <li>
-    <p>聚类分析的目的是把分类对象按照一定的规则，分成若干个类。这些类并不是事先给定的，而是在处理数据时，根据数据的特征确定的。因而，在处理之前无需对类的数目、结构等等作出假定(理论如此，实际应用时并不完全这样，以后讲聚类分析时再具体说)。</p>
-  </li>
-  <li>
-    <p>在同一类别中，对象具有某种意义下的相似性；不同的类别中，对象具有某种意义下的不相似。</p>
-  </li>
-  <li>
-    <p><strong>聚类与分类的最大不同</strong>：分类的目标事先已知，而聚类未知。正因为聚类产生的结构与分类相同，只是类别没有预先定义，所以聚类也被称为“无监督分类”。</p>
-  </li>
-</ol>
-
-<h3 id="k-means">二、k-means法</h3>
-<hr />
-
-<p>k-means法是由MacQueen提出并命名的一种聚类算法。其使用聚类中的均值进行聚类划分，这样说不大好理解，可以先看一下算法的基本步骤：</p>
-
-<ol>
-  <li>从n个数据对象中任意取出k个样品对象作为初始聚类点（或者将所有数据分成k份，计算每一份中的重心（均值）作为初始聚类点）；</li>
-  <li>对所有样品对象逐个归类，将每一个对象归入距离他最近的那个类（距离一般使用欧式距离），并将该类的凝聚点更新为这个类当前的均值；</li>
-  <li>重复步骤2，直至所有对象都不能再分配为止。</li>
-</ol>
-
-<h3 id="r">三、R语言实现</h3>
-<hr />
-
-<h4 id="section-1">1. 自定义函数</h4>
-<hr />
-
-<p>自定义一个函数<code>se_kmeans</code>，使用这个函数可以通过输入需要聚类的数据集以及类别数目k，即可得到每一个样品的类别以及各个类别的中心。该函数使用欧式距离作为相似性的度量（当然还有很多其它方式，之后的聚类分析中会讲到），具体的程序可以在<a href="http://jackycode.github.io/datascience">我的项目</a>中找到，也可以直接到我的<a href="https://github.com/JackyCode/Data_Science">github</a>中查看源代码。这边给出测试代码以及结果：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">x1 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
-</span><span class="line">x2 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
-</span><span class="line">x <span class="o">&lt;-</span> rbind<span class="p">(</span>x1<span class="p">,</span> x2<span class="p">)</span>
-</span><span class="line">
-</span><span class="line">clusters <span class="o">&lt;-</span> se_kmeans<span class="p">(</span>x<span class="p">,</span> <span class="m">2</span><span class="p">)</span>
-</span><span class="line">clusters
-</span><span class="line">plot<span class="p">(</span>x<span class="p">,</span> col<span class="o">=</span>clusters<span class="o">$</span>cluster<span class="p">,</span> pch<span class="o">=</span>as.character<span class="p">(</span>clusters<span class="o">$</span>cluster<span class="p">),</span> cex<span class="o">=</span><span class="m">0.5</span><span class="p">)</span>
-</span><span class="line">points<span class="p">(</span>clusters<span class="o">$</span>center<span class="p">,</span> col<span class="o">=</span><span class="s">&#39;green&#39;</span><span class="p">,</span> pch<span class="o">=</span><span class="s">&#39;o&#39;</span><span class="p">,</span> cex <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>得到如下的一张图</p>
-
-<p><img src="\images\a24\kmeans1.jpg" alt="kmeans1" /></p>
-
-<p>可以看到，分类效果是很好的。</p>
-
-<h4 id="kmeans">2. 使用<code>kmeans</code>函数</h4>
-<hr />
-
-<p>可以使用<code>stats</code>包中的<code>kmeans</code>函数来实现，示例如下：</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-</pre></td><td class="code"><pre><code class="r"><span class="line">x1 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
-</span><span class="line">x2 <span class="o">&lt;-</span> matrix<span class="p">(</span>rnorm<span class="p">(</span><span class="m">500</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">0.5</span><span class="p">),</span> <span class="m">100</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
-</span><span class="line">x <span class="o">&lt;-</span> rbind<span class="p">(</span>x1<span class="p">,</span> x2<span class="p">)</span>
-</span><span class="line">
-</span><span class="line">clusters <span class="o">&lt;-</span> kmeans<span class="p">(</span>x<span class="p">,</span> <span class="m">2</span><span class="p">)</span>
-</span><span class="line">clusters
-</span><span class="line">plot<span class="p">(</span>x<span class="p">,</span> col<span class="o">=</span>clusters<span class="o">$</span>cluster<span class="p">,</span> pch<span class="o">=</span>as.character<span class="p">(</span>clusters<span class="o">$</span>cluster<span class="p">),</span> cex<span class="o">=</span><span class="m">0.5</span><span class="p">)</span>
-</span><span class="line">points<span class="p">(</span>clusters<span class="o">$</span>centers<span class="p">,</span> col<span class="o">=</span><span class="s">&#39;green&#39;</span><span class="p">,</span> pch<span class="o">=</span><span class="s">&#39;o&#39;</span><span class="p">,</span> cex <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>得到这样一张图</p>
-
-<p><img src="\images\a24\kmeans2.jpg" alt="kmeans2" /></p>
-
-<p>从图中可以看出，kmeans的分类效果还是蛮不错的，当然我们可以计算一下误判，不过这显然是很小的。</p>
 ]]></content>
   </entry>
   
